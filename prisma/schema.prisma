@@ -1,0 +1,178 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User{
+  id                Int       @id @default(autoincrement())
+  supabaseUserId    String    @unique @map("supabase_user_id")
+  name              String
+  userName          String    @map("user_name")
+  thumbnailUrl      String    @map("thumbnail_url")
+  yearOfBirth       Int       @map("year_of_birth")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  children          Child[]
+  posts             Post[]
+  favorites         Favorite[]
+  histories         History[]
+}
+
+model Child {
+  id                Int       @id @default(autoincrement())
+  userId            Int       @map("user_id")
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  birthYear         Int       @map("birth_year")
+  birthMonth        Int       @map("birth_month")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+}
+
+
+model Shop{
+  id                Int         @id @default(autoincrement())
+  prefectureId      Int         @map("prefecture_id")
+  prefecture        Prefecture  @relation(fields: [prefectureId], references: [id], onDelete: Cascade)
+  name              String
+  address           String
+  lat               Decimal
+  lng               Decimal
+  googlePlaceId     String      @unique @map("google_place_id")
+  createdAt         DateTime    @default(now()) @map("created_at")
+  updatedAt         DateTime    @updatedAt @map("updated_at")
+
+  posts             Post[]
+  favorites         Favorite[]
+  histories         History[]
+}
+
+model Prefecture {
+  id                Int         @id @default(autoincrement())
+  name              String      @unique
+
+  shops             Shop[]
+}
+
+enum Rating{
+  ONE
+  TWO
+  THREE
+}
+
+model Post {
+  id                 Int         @id @default(autoincrement())
+
+  userId             Int         @map("user_id")
+  user               User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  shopId             Int         @map("shop_id")
+  shop               Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  visitedDate        DateTime    @map("visited_date")
+  rating             Rating
+  comment            String
+  childFriendlyVote  Boolean     @map("child_friendly_vote")
+  createdAt          DateTime    @default(now()) @map("created_at")
+  updatedAt          DateTime    @updatedAt @map("updated_at")
+
+  postChildren       PostChild[]
+  postImages         PostImage[]
+  postFeatures       PostFeature[]
+}
+
+enum AgeGroup{
+  ZERO_TO_TWO
+  THREE_TO_FIVE
+  OVER_SIX
+}
+
+model PostChild {
+  id         Int         @id @default(autoincrement())
+  postId     Int         @map("post_id")
+  post       Post        @relation(fields: [postId], references: [id], onDelete: Cascade)
+  ageGroup   AgeGroup
+}
+
+model PostImage {
+  id         Int         @id @default(autoincrement())
+  postId     Int         @map("post_id")
+  post       Post        @relation(fields: [postId], references: [id], onDelete: Cascade)
+  imageUrl   String      @map("image_url")
+
+  sortOrder  Int @default(0)
+}
+
+model Feature {
+  id             Int         @id @default(autoincrement())
+  name           String
+
+  categoryId     Int         @map("category_id")
+  category       Category    @relation(fields: [categoryId], references: [id])
+
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  postFeatures   PostFeature[]
+
+  @@unique([categoryId, name])
+}
+
+
+model PostFeature {
+  id          Int         @id @default(autoincrement())
+
+  featureId   Int          @map("feature_id")
+  feature     Feature      @relation(fields: [featureId], references: [id])
+
+  postId      Int         @map("post_id")
+  post        Post        @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, featureId])
+}
+
+model Category {
+  id         Int         @id @default(autoincrement())
+  label      String      @unique
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+
+  features   Feature[]
+}
+
+model Favorite {
+  id         Int         @id @default(autoincrement())
+
+  userId             Int         @map("user_id")
+  user               User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  shopId             Int         @map("shop_id")
+  shop               Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+
+  @@unique([userId, shopId])
+}
+
+model History {
+  id         Int         @id @default(autoincrement())
+
+  userId             Int         @map("user_id")
+  user               User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  shopId             Int         @map("shop_id")
+  shop               Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  visitedAt DateTime     @default(now()) @map("visited_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+}
