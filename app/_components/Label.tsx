@@ -1,10 +1,8 @@
 
-type Props = React.ComponentProps<'label'> &{
-  htmlFor?: string;
-}
+type Props = React.ComponentProps<'label'>;
 
-export default function Label({ htmlFor, children, ...props}: Props) {
+export default function Label({ children, ...props}: Props) {
   return (
-    <label htmlFor={htmlFor} {...props}> { children } </label>
+    <label {...props}> { children } </label>
   )
 }

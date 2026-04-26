@@ -2,9 +2,9 @@ import { ComponentPropsWithRef, forwardRef } from "react";
 
 
 
-type BaseInputProps = ComponentPropsWithRef<'input'>;
+type Props = ComponentPropsWithRef<'input'>;
 
-export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
+export const BaseInput = forwardRef<HTMLInputElement, Props>(
   ({ className, ...props }, ref) => {
     return (
       <input
