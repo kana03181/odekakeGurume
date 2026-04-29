@@ -1,8 +1,8 @@
 
-type Props = React.ComponentProps<'label'>;
+type Props = React.ComponentProps<'label'>
 
-export default function Label({ children, ...props}: Props) {
+export default function Label({children, ...props}: Props) {
   return (
-    <label {...props}> { children } </label>
+    <label className="block text-sm font-medium text-[#544437]" {...props}> { children } </label>
   )
 }
