@@ -68,7 +68,7 @@ export default function Page() {
           {errors.root.message}</p>
       )}
       <form onSubmit={handleSubmit(signUpSubmit)} className='space-y-4 w-full max-w-100'>
-        <div>
+        <div className='space-y-2'>
           <Label htmlFor='email'>
               メールアドレス
           </Label>
@@ -84,7 +84,7 @@ export default function Page() {
               {errors.email.message}</p>
           )}
         </div>
-        <div>
+        <div className='space-y-2'>
           <Label htmlFor='password'>
               パスワード（半角英数字6文字以上）
           </Label>

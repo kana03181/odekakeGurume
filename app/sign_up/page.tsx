@@ -77,7 +77,7 @@ export default function Page() {
   return (
     <div className='flex justify-center pt-60'>
       <form onSubmit={handleSubmit(signUpSubmit)} className='space-y-4 w-full max-w-100'>
-        <div>
+        <div className='space-y-2'>
           <Label htmlFor='email'>
               メールアドレス
           </Label>
@@ -93,7 +93,7 @@ export default function Page() {
               {errors.email.message}</p>
           )}
         </div>
-        <div>
+        <div className='space-y-2'>
           <Label htmlFor='password'>
               パスワード（半角英数字6文字以上）
           </Label>
@@ -110,7 +110,7 @@ export default function Page() {
             </p>
           )}
         </div>
-        <div>
+        <div className='space-y-2'>
           <Label htmlFor='username'>
               ユーザー名（4文字以上）
           </Label>
