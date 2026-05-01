@@ -3,30 +3,23 @@
 import { supabase } from '@/app/_libs/supabase'
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Link from "next/link";
-import { userSchema, type UserForm } from "@/app/_libs/schemas/user.schema";
+import { useRouter } from "next/navigation";
+import { signInSchema, type SignInForm } from "@/app/_libs/schemas/signIn.schema";
 import { TextInput } from "@/app/_components/TextInput";
-import Label from "@/app/_components/Label";
-import { useIsLocationState } from "@/app/resetPassword/_hook/useIsLocationState";
-import { signInSchema } from '@/app/_libs/schemas/signIn.schema';
+
 
 export default function Page() {
-  useIsLocationState("/sign_in");
-
-  //signInSchemaからメールアドレスを抽出
-  const signInSchema = z.object({
-    email: signInSchema.shape.email,
-  });
+  const router = useRouter()
 
   const {
+    register,
     handleSubmit,
-    control,
     reset,
+    setError,
     formState: {
       errors,
       isSubmitting,
-      isSubmitSuccessful,
     }
   } = useForm<SignInForm>({
     mode: "onChange",
@@ -36,29 +29,55 @@ export default function Page() {
     resolver: zodResolver(signInSchema),
   });
 
+
+
+  const sendEmailSubmit = async (data:SignInForm) => {
+    console.log("submitされてる？");
+
+    const { email } = data;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/resetPassword/sendEmail`,
+    });
+
+    if ( error ) {
+      setError("root", {
+        message: "パスワード再設定メールの送信に失敗しました"
+      });
+      console.log((error));
+
+
+    } else {
+      console.log("成功");
+      alert("パスワード再設定メールの送信しました")
+      router.replace("/resetPassword/sendEmail")
+      reset({
+        email: "",
+      });
+    }
+  }
+
   return (
     <div className='flex items-center justify-center flex-col pt-60'>
+      <div className='text-center mb-4'>
+        <p className='text-[#1D1B19] font-medium text-xl'>パスワードのリセット</p>
+        <p className='text-[#544437] font-medium '>パスワード再設定用のリンクを送信します。登録しているメールアドレスを入力してください。</p>
+      </div>
       {errors.root && (
         <p className="text-red-700 text-md pb-4">
           {errors.root.message}</p>
       )}
-      <form onSubmit={handleSubmit(signUpSubmit)} className='space-y-4 w-full max-w-100'>
-        <div>
-          <div>
-            <p className='text-md font-medium text-[#544437]'>パスワードのリセット</p>
-            <p className='text-sm font-medium text-[#544437]'>パスワード再設定用のリンクを送信します。登録しているメールアドレスを入力してください。</p>
-          </div>
+      <form onSubmit={handleSubmit(sendEmailSubmit)} className='space-y-4 w-full max-w-100'>
+        <div className='space-y-2'>
           <TextInput
-            {...register("password")}
-            type='password'
-            id='password'
-            placeholder='パスワードを入力'
+            {...register("email")}
+            type='email'
+            id='email'
+            placeholder="メールアドレスを入力"
             className='bg-[#F8F7F5] text-[#1D1B19] placeholder-[#B4A89F] block w-full p-2.5'
           />
-          {errors.password && (
+          {errors.email && (
             <p className="text-red-500 text-sm">
-              {errors.password.message}
-            </p>
+              {errors.email.message}</p>
           )}
         </div>
         <div>
@@ -72,9 +91,8 @@ export default function Page() {
         </div>
       </form>
       <div className='mt-10 text-center'>
-        <Link href={"/sign_in"} className='text-[#FF9F43] font-bold'>ログインに戻る</Link>
+        <Link href={"/sign_in"} className='text-[#FF9F43] font-medium'>ログインに戻る</Link>
       </div>
     </div>
-  );
-
+  )
 }

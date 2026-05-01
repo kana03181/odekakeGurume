@@ -18,24 +18,19 @@ export default function Page() {
     handleSubmit,
     reset,
     setError,
-    // watch,
     formState: {
       errors,
       isSubmitting,
-      // isValid,
     }
   } = useForm<SignInForm>({
     mode: "onChange",
     defaultValues: {
       email: "",
       password: "",
-      // agree: false,
     },
     resolver: zodResolver(signInSchema),
   });
 
-  // const isAgreed = watch("agree");
-  // const isEnabled = isValid && isAgreed;
 
 
   const signUpSubmit = async (data:SignInForm) => {
@@ -102,7 +97,7 @@ export default function Page() {
           )}
         </div>
         <div className='text-right'>
-          <p className='text-[#544437] font-medium'>パスワードをお忘れの方は<Link href={"/"} className='text-[#FF9F43] font-bold'>こちら</Link></p>
+          <p className='text-[#544437] font-medium'>パスワードをお忘れの方は<Link href={"/resetPassword/sendEmail"} className='text-[#FF9F43] font-bold'>こちら</Link></p>
         </div>
         <div>
           <button
