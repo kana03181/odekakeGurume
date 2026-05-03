@@ -4,13 +4,11 @@ import { supabase } from '@/app/_libs/supabase'
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { signInSchema, type SignInForm } from "@/app/_libs/schemas/signIn.schema";
+import { resetPasswordSchema, type resetPasswordForm } from "@/app/_libs/schemas/resetPassword.schema";
 import { TextInput } from "@/app/_components/TextInput";
 
 
 export default function Page() {
-  const router = useRouter()
 
   const {
     register,
@@ -21,35 +19,31 @@ export default function Page() {
       errors,
       isSubmitting,
     }
-  } = useForm<SignInForm>({
+  } = useForm<resetPasswordForm>({
     mode: "onChange",
     defaultValues: {
       email: "",
     },
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(resetPasswordSchema),
   });
 
-
-
-  const sendEmailSubmit = async (data:SignInForm) => {
-    console.log("submitされてる？");
+  const sendEmailSubmit = async (data:resetPasswordForm) => {
+    // console.log("submitされたよ");
 
     const { email } = data;
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/resetPassword/sendEmail`,
+      redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/resetPassword/setting`,
     });
 
     if ( error ) {
       setError("root", {
         message: "パスワード再設定メールの送信に失敗しました"
       });
-      console.log((error));
-
+      throw new Error(error.message);
 
     } else {
-      console.log("成功");
+      // console.log("送信成功");
       alert("パスワード再設定メールの送信しました")
-      router.replace("/resetPassword/sendEmail")
       reset({
         email: "",
       });
@@ -64,7 +58,8 @@ export default function Page() {
       </div>
       {errors.root && (
         <p className="text-red-700 text-md pb-4">
-          {errors.root.message}</p>
+          {errors.root.message}
+        </p>
       )}
       <form onSubmit={handleSubmit(sendEmailSubmit)} className='space-y-4 w-full max-w-100'>
         <div className='space-y-2'>
@@ -77,7 +72,8 @@ export default function Page() {
           />
           {errors.email && (
             <p className="text-red-500 text-sm">
-              {errors.email.message}</p>
+              {errors.email.message}
+            </p>
           )}
         </div>
         <div>
