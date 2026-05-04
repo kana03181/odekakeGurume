@@ -7,7 +7,7 @@ import Link from "next/link";
 import { userSchema, type UserForm } from "@/app/_libs/schemas/user.schema";
 import { TextInput } from "@/app/_components/TextInput";
 import Label from "@/app/_components/Label";
-
+import { Button } from "@/app/_components/button";
 
 export default function Page() {
 
@@ -86,10 +86,10 @@ export default function Page() {
             type='email'
             id='email'
             placeholder="メールアドレスを入力"
-            className='bg-[#F8F7F5] text-[#1D1B19] placeholder-[#B4A89F] block w-full p-2.5'
+            className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
           />
           {errors.email && (
-            <p className="text-red-500 text-sm">
+            <p className="text-caution text-sm font-bold">
               {errors.email.message}</p>
           )}
         </div>
@@ -102,10 +102,10 @@ export default function Page() {
             type='password'
             id='password'
             placeholder='パスワードを入力'
-            className='bg-[#F8F7F5] text-[#1D1B19] placeholder-[#B4A89F] block w-full p-2.5'
+            className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
           />
           {errors.password && (
-            <p className="text-red-500 text-sm">
+            <p className="text-caution text-sm font-bold">
               {errors.password.message}
             </p>
           )}
@@ -119,10 +119,10 @@ export default function Page() {
             type='text'
             id='username'
             placeholder='ユーザー名を入力'
-            className='bg-[#F8F7F5] text-[#1D1B19] placeholder-[#B4A89F] block w-full p-2.5'
+            className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
           />
           {errors.username && (
-            <p className="text-red-500 text-sm">
+            <p className="text-caution text-sm font-bold">
               {errors.username.message}
             </p>
           )}
@@ -134,28 +134,19 @@ export default function Page() {
             id='agree'
             />
           <Label htmlFor="agree"
-            className='block text-sm font-medium text-[#544437]'>
-              <Link href="/terms" className='text-[#FF9F43]'>利用規約</Link>と<Link href="/privacy_policy" className='text-[#FF9F43]'>プライバシーポリシー</Link>に同意する
+            className='block text-sm font-medium text-primary'>
+              <Link href="/terms" className='text-secondary'>利用規約</Link>と<Link href="/privacy_policy" className='text-secondary'>プライバシーポリシー</Link>に同意する
           </Label>
         </div>
         {errors.agree && (
-          <p className="text-red-500 text-sm">
+          <p className="text-caution text-sm font-bold">
             {errors.agree.message}
           </p>
         )}
         <div>
-          <button
-            type='submit'
-            disabled={!isEnabled || isSubmitting}
-            className={`w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-[calc(48/16*1rem)] text-[calc(18/16*1rem)] leading-normal px-5 py-[calc(16/16*1rem)] text-center
-              ${isEnabled
-              ? "bg-[#FF9F43] hover:bg-[#FBB97B]"
-              : "bg-[#AAA9A8] cursor-not-allowed"
-              }
-            `}
-          >
+          <Button type="submit" disabled={!isEnabled || isSubmitting} variant={isEnabled ? "primary" : "disabled" }>
             送信
-          </button>
+          </Button>
         </div>
       </form>
     </div>

@@ -1,26 +1,57 @@
 @import "tailwindcss";
 
-/* :root {
-  --background: #ffffff;
-  --foreground: #171717;
+:root {
+  --background: #FEF8F3;
+  --foreground: #1D1B19;
+
+  --btn-primary: #FF9F43;
+  --btn-secondary: #FFFFFF;
+  --btn-disabled: #AAA9A8;
+  --btn-delete: #BA1A1A;
+
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8F7F5;
+  /* --bg-third: #FFFFFF; */
+
+  --bg-accent-color:#A3EED8;
+  --txt-accent-color:#1F6E5D;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-noto);
+  --font-mono: var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-} */
+  font-family: "Noto Sans JP", sans-serif;
+}
+
+@layer utilities{
+  .text-primary{
+    @apply text-[#544437];
+  }
+
+  .text-secondary{
+    @apply text-[#FF9F43];
+  }
+
+  .text-caution{
+    @apply text-red-500;
+  }
+
+  .input-bg-primary{
+    @apply bg-[#F8F7F5];
+  }
+
+}
