@@ -47,7 +47,7 @@ export default function Page() {
         });
 
       } else {
-        router.replace("/")
+        router.replace("/mypage/settingMenu")
         // console.log("送信データ", data);
         reset({
           email: "",

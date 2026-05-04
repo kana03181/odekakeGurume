@@ -11,10 +11,10 @@
 
   --bg-primary: #FFFFFF;
   --bg-secondary: #F8F7F5;
-  /* --bg-third: #FFFFFF; */
-
   --bg-accent-color:#A3EED8;
+
   --txt-accent-color:#1F6E5D;
+  --txt-secondary-color:#8F4E00;
 }
 
 @theme inline {
@@ -35,6 +35,13 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: "Noto Sans JP", sans-serif;
+}
+
+@layer components {
+  .rounded-menu {
+    @apply block overflow-hidden rounded-[calc(32/16*1rem)];
+    background-color: var(--bg-primary);
+  }
 }
 
 @layer utilities{
