@@ -82,7 +82,6 @@ export default function Page() {
       </form>
       <div className='mt-10 text-center'>
         <Link href={"/sign_in"} className='text-secondary font-medium'>ログインに戻る</Link>
-        <p className="font-sans">テストテストテスト</p>
       </div>
     </div>
   )
