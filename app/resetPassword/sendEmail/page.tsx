@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { resetPasswordSchema, type resetPasswordForm } from "@/app/_libs/schemas/resetPassword.schema";
 import { TextInput } from "@/app/_components/TextInput";
+import { Button } from "@/app/_components/button";
 
 
 export default function Page() {
@@ -39,7 +40,6 @@ export default function Page() {
       setError("root", {
         message: "パスワード再設定メールの送信に失敗しました"
       });
-      throw new Error(error.message);
 
     } else {
       // console.log("送信成功");
@@ -53,11 +53,11 @@ export default function Page() {
   return (
     <div className='flex items-center justify-center flex-col pt-60'>
       <div className='text-center mb-4'>
-        <p className='text-[#1D1B19] font-medium text-xl'>パスワードのリセット</p>
-        <p className='text-[#544437] font-medium '>パスワード再設定用のリンクを送信します。登録しているメールアドレスを入力してください。</p>
+        <p className='font-medium text-xl'>パスワードのリセット</p>
+        <p className='text-primary font-medium text-md'>パスワード再設定用のリンクを送信します。登録しているメールアドレスを入力してください。</p>
       </div>
       {errors.root && (
-        <p className="text-red-700 text-md pb-4">
+        <p className="text-caution text-md pb-4">
           {errors.root.message}
         </p>
       )}
@@ -68,26 +68,21 @@ export default function Page() {
             type='email'
             id='email'
             placeholder="メールアドレスを入力"
-            className='bg-[#F8F7F5] text-[#1D1B19] placeholder-[#B4A89F] block w-full p-2.5'
+            className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
           />
           {errors.email && (
-            <p className="text-red-500 text-sm">
+            <p className="text-caution text-sm">
               {errors.email.message}
             </p>
           )}
         </div>
         <div>
-          <button
-            type='submit'
-            disabled={isSubmitting}
-            className= "w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-[calc(48/16*1rem)] text-[calc(18/16*1rem)] leading-normal px-5 py-[calc(16/16*1rem)] text-center bg-[#FF9F43] hover:bg-[#FBB97B]"
-          >
-            送信
-          </button>
+          <Button type="submit" disabled={isSubmitting}>送信</Button>
         </div>
       </form>
       <div className='mt-10 text-center'>
-        <Link href={"/sign_in"} className='text-[#FF9F43] font-medium'>ログインに戻る</Link>
+        <Link href={"/sign_in"} className='text-secondary font-medium'>ログインに戻る</Link>
+        <p className="font-sans">テストテストテスト</p>
       </div>
     </div>
   )
