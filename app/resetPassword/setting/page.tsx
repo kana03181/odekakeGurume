@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { settingPasswordSchema, type settingPasswordForm } from "@/app/_libs/schemas/settingPassword.schema";
 import { TextInput } from "@/app/_components/TextInput";
 import Label from "@/app/_components/Label";
-import { Button } from "@/app/_components/button";
+import { Button } from "@/app/_components/Button";
 
 export default function Page() {
   const router = useRouter()

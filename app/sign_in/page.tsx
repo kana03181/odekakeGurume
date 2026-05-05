@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { signInSchema, type SignInForm } from "@/app/_libs/schemas/signIn.schema";
 import { TextInput } from "@/app/_components/TextInput";
 import Label from "@/app/_components/Label";
-import { Button } from "@/app/_components/button";
+import { Button } from "@/app/_components/Button";
 
 export default function Page() {
   const router = useRouter()
@@ -47,7 +47,7 @@ export default function Page() {
         });
 
       } else {
-        router.replace("/")
+        router.replace("/mypage/setting")
         // console.log("送信データ", data);
         reset({
           email: "",

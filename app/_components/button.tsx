@@ -1,6 +1,6 @@
 import { ComponentPropsWithRef } from "react";
 
-type Variant = "primary" | "secondary" | "outline" | "disabled";
+type Variant = "primary" | "delete" | "outline" | "disabled";
 
 interface Props extends ComponentPropsWithRef<"button">{
   variant?: Variant
@@ -11,7 +11,7 @@ export const Button = ({ variant = "primary", className, children, ref, ...props
 
   const variants = {
     primary: "bg-[#FF9F43] hover:bg-[#FBB97B] text-white",
-    secondary: "bg-[#BA1A1A] hover:bg-[#FBB97B] text-[#BA1A1A]", //仮で入れてます。後ほど色変更予定
+    delete: "bg-[#BA1A1A]/5 hover:bg-[#BA1A1A]/10 hover:border-[#BA1A1A] text-[#BA1A1A] border-2 border-[#BA1A1A]/10", //仮で入れてます。後ほど色変更予定
     disabled: "bg-[#AAA9A8] hover:bg-[#FBB97B] text-white",
     outline: "bg-[#FFFFFF] hover:bg-[#FF9F43] text-[#FF9F43] border-2 border-solid border-[#FF9F43]"
   }

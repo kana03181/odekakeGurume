@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { resetPasswordSchema, type resetPasswordForm } from "@/app/_libs/schemas/resetPassword.schema";
 import { TextInput } from "@/app/_components/TextInput";
-import { Button } from "@/app/_components/button";
+import { Button } from "@/app/_components/Button";
 
 
 export default function Page() {
