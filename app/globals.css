@@ -39,7 +39,7 @@ body {
 
 @layer components {
   .rounded-menu {
-    @apply block overflow-hidden rounded-[calc(32/16*1rem)];
+    @apply inline-block overflow-hidden rounded-[calc(32/16*1rem)] w-full;
     background-color: var(--bg-primary);
   }
 }
