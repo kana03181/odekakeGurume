@@ -37,13 +37,6 @@ body {
   font-family: "Noto Sans JP", sans-serif;
 }
 
-@layer components {
-  .rounded-menu {
-    @apply inline-block overflow-hidden rounded-[calc(32/16*1rem)] w-full;
-    background-color: var(--bg-primary);
-  }
-}
-
 @layer utilities{
   .text-primary{
     @apply text-[#544437];
