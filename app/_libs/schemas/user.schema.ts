@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const userSchema = z.object({
   email: z.string()
+    .trim()
     .email("無効なメールアドレス形式です"),
 
   password: z.string()
