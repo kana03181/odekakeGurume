@@ -33,7 +33,7 @@ export default function Page() {
   });
 
   const handleChangePassword = async (data:changePasswordForm) => {
-    console.log("submitされたよ");
+    // console.log("submitされたよ");
 
     const { newPassword } = data;
     const { error } = await supabase.auth.updateUser({
@@ -42,12 +42,12 @@ export default function Page() {
 
     if ( error ) {
       setError("root", {
-        message: "パスワードの再設定に失敗しました"
+        message: "パスワードの変更に失敗しました"
       });
 
     } else {
-      console.log("パスワード再設定成功");
-      alert("パスワードを再設定しました");
+      // console.log("パスワード再設定成功");
+      alert("パスワードを変更しました");
       router.replace("/mypage/setting")
     }
   }
