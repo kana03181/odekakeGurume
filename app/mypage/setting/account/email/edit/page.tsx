@@ -34,6 +34,7 @@ export default function Page() {
   } = useForm<changeEmailForm>({
     mode: "onChange",
     defaultValues: {
+      currentEmail:"",
       newEmail: "",
     },
     resolver: zodResolver(changeEmailSchema),
