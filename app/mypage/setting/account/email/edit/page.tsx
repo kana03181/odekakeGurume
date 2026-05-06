@@ -4,7 +4,7 @@ import { supabase } from '@/app/_libs/supabase'
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { changeEmailSchema, type changeEmailForm } from "@/app/_libs/schemas/changeEmail.schema";
 import { useSupabaseSession } from "@/app/_hook/useSupabaseSettion";
 import { TextInput } from "@/app/_components/TextInput";
@@ -14,31 +14,19 @@ import { error } from 'console';
 
 
 export default function Page() {
-  const router = useRouter()
+  // const router = useRouter()
+  // const [currentEmail, setCurrentEmail] = useState("");
+  // const [errorMessage, setErrorMessage] = useState("");
 
   const {session, isLoading} = useSupabaseSession();
-  const [currentEmail, setCurrentEmail] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
 
-  //メールアドレスの取得
-  useEffect(() => {
-    const fetchUserEmail = async () => {
-      const { data,error } = await supabase.auth.getUser();
-      setCurrentEmail(data.user?.email ?? "");
-
-      if (error) {
-        setErrorMessage("メールアドレスを取得できませんでした");
-        return;
-      }
-    }
-    fetchUserEmail();
-  }, []);
 
   //RFHとzodの設定
   const {
     register,
     handleSubmit,
     setError,
+    setValue,
     formState: {
       errors,
       isSubmitting,
@@ -52,14 +40,54 @@ export default function Page() {
   });
 
 
+  //メールアドレスの取得
+  useEffect(() => {
+    const fetchUserEmail = async () => {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error) {
+        setError("root", {
+          message: "メールの送信に失敗しました。メールアドレスをもう一度ご確認ください"
+        });
+        return;
+      }
+
+      if (!data.user?.email) {
+        setError("root", {
+          message: "メールアドレスを取得できませんでした"
+        });
+        return;
+      }
+      setValue("currentEmail", data.user.email);
+
+    };
+
+    fetchUserEmail();
+  }, [setValue]);
+
+
+
   //新しいメールアドレス宛にメールを送信
   const changeEmailSubmit = async(data:changeEmailForm) => {
     const { newEmail } = data;
+    const { data: getUser } = await supabase.auth.getUser();
+    const currentEmail = getUser.user?.email;
+
+    //現在のメールアドレスと新しいメールアドレスが同じかチェック
+    if (newEmail === currentEmail) {
+      setError("root", {
+        message: "同じメールアドレスに変更できません"
+      });
+      return;
+    }
+
+    //新しいメールアドレスに変更するメールを送信
     const { error } = await supabase.auth.updateUser({
       email: newEmail,
     });
 
-    if ( error ) {
+    if (error) {
+      //メール送信確認用のエラーメッセージ
       if (error.message.includes("rate limit")) {
         setError("root", {
           message: "メールの送信に失敗しました。少し時間をおいて送信してください"
@@ -78,46 +106,53 @@ export default function Page() {
   }
 
   return (
-    <div className='flex items-center justify-center flex-col pt-60'>
-      {errors.root && (
-        <p className="text-caution text-md pb-4">
-          {errors.root.message}
-        </p>
-      )}
-      <form onSubmit={handleSubmit(changeEmailSubmit)} className='space-y-4 w-full max-w-100'>
-        <div className='space-y-2'>
-          <Label htmlFor='newEmail'>
-              現在のメールアドレス
-          </Label>
-          <TextInput
-            value={currentEmail}
-            type='email'
-            className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
-          />
-          <div>
-            {errorMessage && <p>{errorMessage}</p>}
-          </div>
-        </div>
-        <div className='space-y-2'>
-          <Label htmlFor='newEmail'>
-              新しいメールアドレス
-          </Label>
-          <TextInput
-            {...register("newEmail")}
-            type='email'
-            id='newEmail'
-            className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
-          />
-          {errors.newEmail && (
-            <p className="text-caution text-sm">
-              {errors.newEmail.message}
-            </p>
-          )}
-        </div>
+    <div>
+      {!isLoading && (
         <div>
-          <Button type="submit" disabled={isSubmitting}>変更</Button>
-        </div>
-      </form>
+          {session && (
+            <div className='flex items-center justify-center flex-col pt-60'>
+              {errors.root && (
+                <p className="text-caution text-md pb-4">
+                  {errors.root.message}
+                </p>
+              )}
+              <form onSubmit={handleSubmit(changeEmailSubmit)} className='space-y-4 w-full max-w-100'>
+                <div className='space-y-2'>
+                  <Label htmlFor='currentEmail'>
+                      現在のメールアドレス
+                  </Label>
+                  <TextInput
+                    {...register("currentEmail")}
+                    type='email'
+                    id='currentEmail'
+                    readOnly
+                    className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='newEmail'>
+                      新しいメールアドレス
+                  </Label>
+                  <TextInput
+                    {...register("newEmail")}
+                    type='email'
+                    id='newEmail'
+                    className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
+                  />
+                  {errors.newEmail && (
+                    <p className="text-caution text-sm">
+                      {errors.newEmail.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <Button type="submit" disabled={isSubmitting}>変更</Button>
+                </div>
+              </form>
+            </div>
+          )}
+      </div>
+      )}
     </div>
   )
 }

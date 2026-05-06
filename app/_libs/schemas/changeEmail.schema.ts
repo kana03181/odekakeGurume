@@ -1,6 +1,10 @@
 import { z } from "zod";
 
 export const changeEmailSchema =  z.object({
+  currentEmail: z.string()
+    .trim()
+    .email("無効なメールアドレス形式です"),
+
   newEmail: z.string()
     .trim()
     .min(1, "新しいメールアドレスを入力してください")
