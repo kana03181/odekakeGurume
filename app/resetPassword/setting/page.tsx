@@ -45,7 +45,7 @@ export default function Page() {
 
     } else {
       // console.log("パスワード再設定成功");
-      alert("パスワードを再設定しました")
+      alert("パスワードを再設定しました");
       reset({
         newPassword: "",
         newPasswordConfirm: "",

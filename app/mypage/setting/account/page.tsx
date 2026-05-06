@@ -20,12 +20,12 @@ export default function Page() {
               <div className='space-y-4 w-full max-w-100 mb-10'>
                 <ul className='space-y-4'>
                   <li>
-                    <MenuItem href='/mypage/setting/email/edit' className='rounded-[calc(48/16*1rem)]'>
+                    <MenuItem href='/mypage/setting/account/email/edit' className='rounded-[calc(48/16*1rem)]'>
                       メールアドレスの変更
                     </MenuItem>
                   </li>
                   <li>
-                    <MenuItem href='/mypage/setting/account' className='rounded-[calc(48/16*1rem)]'>
+                    <MenuItem href='/mypage/setting/account/password/edit' className='rounded-[calc(48/16*1rem)]'>
                       パスワードの変更
                     </MenuItem>
                   </li>
