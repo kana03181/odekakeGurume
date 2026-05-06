@@ -3,23 +3,17 @@
 import { supabase } from '@/app/_libs/supabase'
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useEffect } from "react";
-// import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { changeEmailSchema, type changeEmailForm } from "@/app/_libs/schemas/changeEmail.schema";
 import { useSupabaseSession } from "@/app/_hook/useSupabaseSettion";
 import { TextInput } from "@/app/_components/TextInput";
 import Label from "@/app/_components/Label";
 import { Button } from "@/app/_components/Button";
-import { error } from 'console';
 
 
 export default function Page() {
-  // const router = useRouter()
-  // const [currentEmail, setCurrentEmail] = useState("");
-  // const [errorMessage, setErrorMessage] = useState("");
 
   const {session, isLoading} = useSupabaseSession();
-
 
   //RFHとzodの設定
   const {
@@ -48,7 +42,7 @@ export default function Page() {
 
       if (error) {
         setError("root", {
-          message: "メールの送信に失敗しました。メールアドレスをもう一度ご確認ください"
+          message: "エラーが発生しました。"
         });
         return;
       }
