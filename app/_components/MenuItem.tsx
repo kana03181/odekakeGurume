@@ -9,6 +9,7 @@ type Props = {
 
 export const MenuItem = ({ className, href, children }: Props) => {
   return (
+    //後ほどここにアイコン追加
     <Link
       href={href}
       className={cn(

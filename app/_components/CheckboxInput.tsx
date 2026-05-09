@@ -6,8 +6,9 @@ export const CheckboxInput = ({ className, type="checkbox", ref, ...props}: Prop
   return (
     <input
       {...props}
+      type={type}
       ref={ref}
-      className={`rounded-[calc(32/16*1rem)] ${className ?? ""}`}
+      className={`appearance-none ${className ?? ""}`}
     />
   )
 };

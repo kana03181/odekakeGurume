@@ -46,6 +46,10 @@ body {
     @apply text-[#FF9F43];
   }
 
+  .text-privacyPolicy{
+    @apply text-[#1F6E5D];
+  }
+
   .text-caution{
     @apply text-red-500;
   }
@@ -57,5 +61,18 @@ body {
   .input-bg-primary{
     @apply bg-[#F8F7F5];
   }
+
+  .input-bg-secondary{
+    @apply bg-[#FFFFFF];
+  }
+
+  .checkbox-border-primary{
+    @apply border-[#DAC2B1]
+  }
+
+  .textarea-bg-primary{
+    @apply bg-[#F3EDE8];
+  }
+
 
 }
