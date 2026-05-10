@@ -1,5 +1,6 @@
 import { prisma } from "@/app/_libs/prisma";
 import { createClient } from '@/app/_libs/supabase/server'
+import { supabase } from "@/app/_libs/supabase";
 import { NextResponse } from "next/server";
 import { Rating } from "@/app/generated/prisma/client"
 import { AgeGroup } from "@/app/generated/prisma/client"
@@ -33,6 +34,19 @@ export type CreatePostResponse = {
 }
 
 export const POST = async (request: Request) => {
+
+  // GET関数の引数からrequestを受け取り、その中のAuthorizationヘッダーを取り出す
+  const token = request.headers.get('Authorization') ?? ''
+  const { error } = await supabase.auth.getUser(token)
+
+  if (error) {
+      return NextResponse.json(
+        { message: error.message },
+        { status: 400 }
+      )
+  }
+
+
   try {
     // リクエストのbodyを取得
     const body: CreatePostRequestBody = await request.json()
@@ -41,7 +55,7 @@ export const POST = async (request: Request) => {
 
     // ログインユーザー取得
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser(token);
     console.log(user);
 
     if (!user) {

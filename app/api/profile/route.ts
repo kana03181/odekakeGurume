@@ -1,6 +1,7 @@
 import { prisma } from "@/app/_libs/prisma";
 import { NextResponse } from "next/server";
 import { Gender } from "@/app/generated/prisma/client"
+import { supabase } from "@/app/_libs/supabase";
 
 //プロフィール作成時に送られてくるリクエストのbodyの型
 export type CreateProfileRequestBody = {
@@ -22,6 +23,18 @@ export type CreateProfileResponse = {
 }
 
 export const POST = async (request: Request) => {
+
+  // GET関数の引数からrequestを受け取り、その中のAuthorizationヘッダーを取り出す
+  const token = request.headers.get('Authorization') ?? ''
+  const { error } = await supabase.auth.getUser(token)
+
+  if (error) {
+      return NextResponse.json(
+        { message: error.message },
+        { status: 400 }
+      )
+  }
+
   try {
     //リクエストbodyを取得
     const body: CreateProfileRequestBody = await request.json()
