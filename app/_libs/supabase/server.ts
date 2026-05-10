@@ -20,12 +20,4 @@ export const createClient = async () => {
       }
     }
   )
-
-
-
-
-
-
-
-
 }

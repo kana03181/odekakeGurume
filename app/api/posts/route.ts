@@ -2,12 +2,26 @@ import { prisma } from "@/app/_libs/prisma";
 import { createClient } from '@/app/_libs/supabase/server'
 import { NextResponse } from "next/server";
 import { Rating } from "@/app/generated/prisma/client"
+import { AgeGroup } from "@/app/generated/prisma/client"
 
 
 // 投稿作成時に送られてくるリクエストのbodyの型
 export type CreatePostRequestBody = {
   shopId: number
   visitedDate: Date
+
+  postImages: {
+    imageUrl: string
+  }[]
+
+  postFeatures: {
+    featureId: number
+  }[]
+
+  postChildren: {
+    ageGroup: AgeGroup
+  }[]
+
   rating: Rating
   comment: string
   childFriendlyVote: boolean
@@ -23,11 +37,12 @@ export const POST = async (request: Request) => {
     // リクエストのbodyを取得
     const body: CreatePostRequestBody = await request.json()
 
-    const { shopId, visitedDate, rating, comment, childFriendlyVote } = body
+    const { shopId, visitedDate, postImages, postFeatures, postChildren, rating, comment, childFriendlyVote } = body
 
     // ログインユーザー取得
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
+    console.log(user);
 
     if (!user) {
       return NextResponse.json(
@@ -58,7 +73,26 @@ export const POST = async (request: Request) => {
         visitedDate,
         rating,
         comment,
-        childFriendlyVote
+        childFriendlyVote,
+
+        postImages: {
+          create: postImages.map((image) => ({
+            imageUrl: image.imageUrl
+          }))
+        },
+
+        PostFeature: {
+          create: postFeatures.map((feature) => ({
+            featureId: feature.featureId
+          }))
+        },
+
+        postChildren: {
+          create: postChildren.map((child) => ({
+            ageGroup: child.ageGroup
+          }))
+        },
+
       }
     })
 
