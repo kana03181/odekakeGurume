@@ -1,5 +1,5 @@
 import { prisma } from "@/app/_libs/prisma";
-import { createClient } from '@/app/_libs/supabase/server'
+// import { createClient } from '@/app/_libs/supabase/server'
 import { supabase } from "@/app/_libs/supabase";
 import { NextResponse } from "next/server";
 import { Rating } from "@/app/generated/prisma/client"
@@ -36,8 +36,14 @@ export type CreatePostResponse = {
 export const POST = async (request: Request) => {
 
   // GET関数の引数からrequestを受け取り、その中のAuthorizationヘッダーを取り出す
-  const token = request.headers.get('Authorization') ?? ''
+  const authHeader = request.headers.get('Authorization') ?? ''
+  const token = authHeader.replace('Bearer ', '')
+  // console.log(token);
+
+
   const { error } = await supabase.auth.getUser(token)
+
+  console.log(error);
 
   if (error) {
       return NextResponse.json(
@@ -54,9 +60,9 @@ export const POST = async (request: Request) => {
     const { shopId, visitedDate, postImages, postFeatures, postChildren, rating, comment, childFriendlyVote } = body
 
     // ログインユーザー取得
-    const supabase = await createClient();
+    // const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser(token);
-    console.log(user);
+    // console.log(user);
 
     if (!user) {
       return NextResponse.json(
@@ -65,12 +71,18 @@ export const POST = async (request: Request) => {
       )
     }
 
+    const users = await prisma.user.findMany()
+    console.log(users);
+
+
     // DBのユーザーを取得
     const dbUser = await prisma.user.findUnique({
       where: {
         supabaseUserId: user.id
       }
     })
+    // console.log(dbUser);
+
 
     if (!dbUser) {
       return NextResponse.json(
