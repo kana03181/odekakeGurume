@@ -15,10 +15,10 @@ datasource db {
 model User{
   id                Int       @id @default(autoincrement())
   supabaseUserId    String    @unique @map("supabase_user_id")
-  name              String
-  userName          String    @map("user_name")
-  thumbnailUrl      String    @map("thumbnail_url")
-  yearOfBirth       Int       @map("year_of_birth")
+  name              String?
+  userName          String?    @map("user_name")
+  thumbnailUrl      String?   @map("thumbnail_url")
+  yearOfBirth       Int?      @map("year_of_birth")
   createdAt         DateTime  @default(now()) @map("created_at")
   updatedAt         DateTime  @updatedAt @map("updated_at")
 

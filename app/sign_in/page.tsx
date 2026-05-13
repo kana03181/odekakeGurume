@@ -4,6 +4,8 @@ import { supabase } from '@/app/_libs/supabase'
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useSupabaseSession } from "@/app/_hook/useSupabaseSettion";
+// import { CreateUserRequestBody } from "@/app/api/sign_up/route";
 import { useRouter } from "next/navigation";
 import { signInSchema, type SignInForm } from "@/app/_libs/schemas/signIn.schema";
 import { TextInput } from "@/app/_components/TextInput";
@@ -32,28 +34,62 @@ export default function Page() {
   });
 
 
-
   const signUpSubmit = async (data:SignInForm) => {
+    const { email, password } = data
 
-      const {email, password} = data
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+    const { data:authData, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
 
-      if ( error ) {
-        setError("root", {
-          message: "メールアドレスまたはパスワードが正しくありません"
-        });
+    if ( error || !authData.session ) {
+      setError("root", {
+        message: "メールアドレスまたはパスワードが正しくありません"
+      });
+      return;
+    }
 
-      } else {
-        router.replace("/mypage/setting")
-        // console.log("送信データ", data);
-        reset({
-          email: "",
-          password: "",
-        });
-      }
+    const token = authData.session.access_token;
+    const authHeader = `Bearer ${token}`;
+
+    console.log("session:", authData.session)
+    console.log("user:", authData.user)
+    console.log("token:", authData.session.access_token)
+    console.log("Authorization header:", authHeader);
+
+    const userId = {
+      supabaseUserId: authData.user.id,
+    };
+
+    console.log("送信データ:", userId);
+    console.log("JSON:", JSON.stringify(userId));
+
+
+
+    const res = await fetch("/api/sign_up", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authHeader,
+        },
+      body: JSON.stringify(userId),
+    })
+
+    console.log(res);
+
+
+    if (!res.ok) {
+      console.error(error)
+      // return
+    }
+
+    router.replace("/mypage/setting")
+    reset({
+      email: "",
+      password: "",
+    });
+
+
   }
 
   return (
