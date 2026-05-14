@@ -80,7 +80,7 @@ export default function Page() {
 
     if (!res.ok) {
       console.error(error)
-      // return
+      return
     }
 
     router.replace("/mypage/setting")
