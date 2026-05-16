@@ -32,28 +32,43 @@ export default function Page() {
   });
 
 
-
   const signUpSubmit = async (data:SignInForm) => {
+    const { email, password } = data
 
-      const {email, password} = data
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+    const { data:authData, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
 
-      if ( error ) {
-        setError("root", {
-          message: "メールアドレスまたはパスワードが正しくありません"
-        });
+    if ( error || !authData.session ) {
+      setError("root", {
+        message: "メールアドレスまたはパスワードが正しくありません"
+      });
+      return;
+    }
 
-      } else {
-        router.replace("/mypage/setting")
-        // console.log("送信データ", data);
-        reset({
-          email: "",
-          password: "",
-        });
-      }
+    const token = authData.session.access_token;
+    const authHeader = `Bearer ${token}`;
+
+    const res = await fetch("/api/sign_in", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authHeader,
+        },
+    })
+
+    if (!res.ok) {
+      console.error("エラーが発生しました")
+      return;
+    }
+
+    router.replace("/mypage/setting")
+    reset({
+      email: "",
+      password: "",
+    });
+
   }
 
   return (
