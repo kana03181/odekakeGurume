@@ -27,11 +27,6 @@ export type CreatePostRequestBody = {
   childFriendlyVote: boolean
 }
 
-// 投稿作成APIのレスポンスの型
-// export type CreatePostResponse = {
-//   id: number
-// }
-
 export const POST = async (request: Request) => {
   //tokenの確認
   const authHeader = request.headers.get('Authorization') ?? ''
@@ -43,7 +38,7 @@ export const POST = async (request: Request) => {
   const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
 
   if ( error ){
-    return NextResponse.json({ message: error.message }, { status: 400 });
+    return NextResponse.json({ message: error.message }, { status: 401 });
   }
 
   if ( !user ) {
@@ -51,26 +46,22 @@ export const POST = async (request: Request) => {
   }
 
   try {
-
-    // リクエストのbodyを取得
-    const body: CreatePostRequestBody = await request.json()
-    // console.log(body)
-    const { shopId, visitedDate, postImages, postFeatures, postChildren, rating, comment, childFriendlyVote } = body
-
-    // DBのユーザーを取得
+    // DBのユーザー情報を取得
     const dbUser = await prisma.user.findUnique({
       where: {
         supabaseUserId: user.id
       }
     })
-    // console.log(dbUser);
 
+    // DBにユーザー情報がなかったらエラー
     if (!dbUser) {
       return NextResponse.json( { message: "ユーザーが存在しません" }, { status: 404 })
     }
 
-      // const features = await prisma.feature.findMany()
-      // console.log(features)
+    // リクエストのbodyを取得
+    const body: CreatePostRequestBody = await request.json()
+    const { shopId, visitedDate, postImages, postFeatures, postChildren, rating, comment, childFriendlyVote } = body
+
 
     // 投稿をDBに生成
     await prisma.post.create({

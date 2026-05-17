@@ -15,7 +15,7 @@ export type UpdateProfileRequestBody = {
   }[]
 }
 
-export const PATCH = async (request: Request) => {
+export const PUT = async (request: Request) => {
 
   //tokenの確認
   const token = request.headers.get("authorization") ?? '';
@@ -25,7 +25,7 @@ export const PATCH = async (request: Request) => {
   const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
 
   if ( error ){
-    return NextResponse.json({ message: error.message }, { status: 400 });
+    return NextResponse.json({ message: error.message }, { status: 401 });
   }
 
   if ( !user ) {
@@ -48,13 +48,18 @@ export const PATCH = async (request: Request) => {
         thumbnailUrl,
         yearOfBirth,
 
-        children: {
-          deleteMany:{},
-          create: children?.map((item) => ({
-            birthYear: item.birthYear,
-            birthMonth: item.birthMonth,
-          })) ?? [],
-        },
+        // childrenが送られてきた場合のみchildrenを更新
+        // 既存childrenを一度削除して再生成する
+        // childrenがundefinedの場合はchildrenを更新しない
+        ...(children !== undefined && {
+          children: {
+            deleteMany: {},
+            create: children.map((item) => ({
+              birthYear: item.birthYear,
+              birthMonth: item.birthMonth,
+            })),
+          }
+        })
       }
     })
 
