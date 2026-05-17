@@ -4,79 +4,67 @@ import { Gender } from "@/app/generated/prisma/client"
 import { supabase } from "@/app/_libs/supabase";
 
 //プロフィール作成時に送られてくるリクエストのbodyの型
-export type CreateProfileRequestBody = {
-  supabaseUserId: string
+export type UpdateProfileRequestBody = {
   name: string
-  userName: string
   thumbnailUrl?: string
   gender: Gender
   yearOfBirth: number
-  children: {
+  children?: {
     birthYear: number
     birthMonth: number
   }[]
 }
 
-//プロフィール作成APIのレスポンスの型
-export type CreateProfileResponse = {
-  id: number
-}
+export const PATCH = async (request: Request) => {
 
-export const POST = async (request: Request) => {
+  //tokenの確認
+  const token = request.headers.get("authorization") ?? '';
+  const accessToken = token.replace("Bearer ", "");
+  // console.log(accessToken);
 
-  // GET関数の引数からrequestを受け取り、その中のAuthorizationヘッダーを取り出す
-  const token = request.headers.get('Authorization') ?? ''
-  const { error } = await supabase.auth.getUser(token)
+  const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
 
-  if (error) {
-      return NextResponse.json(
-        { message: error.message },
-        { status: 400 }
-      )
+  if ( error ){
+    return NextResponse.json({ message: error.message }, { status: 400 });
+  }
+
+  if ( !user ) {
+    return NextResponse.json({ message: "unauthorized" }, { status: 401 });
   }
 
   try {
-    //リクエストbodyを取得
-    const body: CreateProfileRequestBody = await request.json()
 
     //bodyの中から取り出す
-    const { supabaseUserId, name, userName, thumbnailUrl, gender, yearOfBirth, children } = body
+    const { name, thumbnailUrl, gender, yearOfBirth, children }: UpdateProfileRequestBody = await request.json()
 
-    //プロフィールをDBに生成
-    const data = await prisma.user.create({
+    //プロフィールを更新
+    await prisma.user.update({
+      where: {
+        supabaseUserId: user.id,
+      },
       data: {
-        supabaseUserId,
         name,
-        userName,
         gender,
         thumbnailUrl,
         yearOfBirth,
 
         children: {
-          create: children.map((item) => ({
+          deleteMany:{},
+          create: children?.map((item) => ({
             birthYear: item.birthYear,
             birthMonth: item.birthMonth,
-          }))
+          })) ?? [],
         },
       }
     })
 
-    return NextResponse.json<CreateProfileResponse>(
-      { id: data.id, },
-      { status: 201 }
-    )
+    return NextResponse.json( { message: "profile updated" }, { status: 200 } )
 
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json(
-        { message: error.message },
-        { status: 400 }
-      )
+    if ( error instanceof Error ) {
+      return NextResponse.json( { message: error.message }, { status: 400 })
     }
 
-    return NextResponse.json(
-      { message: "予期しないエラーが発生しました" },
-      { status: 500 }
-    )
+    return NextResponse.json( { message: "予期しないエラーが発生しました" }, { status: 500 } )
   }
 }

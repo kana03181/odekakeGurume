@@ -1,5 +1,4 @@
 import { prisma } from "@/app/_libs/prisma";
-// import { createClient } from '@/app/_libs/supabase/server'
 import { supabase } from "@/app/_libs/supabase";
 import { NextResponse } from "next/server";
 import { Rating } from "@/app/generated/prisma/client"
@@ -29,51 +28,34 @@ export type CreatePostRequestBody = {
 }
 
 // 投稿作成APIのレスポンスの型
-export type CreatePostResponse = {
-  id: number
-}
+// export type CreatePostResponse = {
+//   id: number
+// }
 
 export const POST = async (request: Request) => {
-
-  // GET関数の引数からrequestを受け取り、その中のAuthorizationヘッダーを取り出す
+  //tokenの確認
   const authHeader = request.headers.get('Authorization') ?? ''
-  const token = authHeader.replace('Bearer ', '')
-  // console.log(token);
+  const accessToken = authHeader.replace('Bearer ', '')
 
+  // console.log("authHeader:", authHeader);
+  // console.log("accessToken:", accessToken);
 
-  const { error } = await supabase.auth.getUser(token)
+  const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
 
-  console.log(error);
-
-  if (error) {
-      return NextResponse.json(
-        { message: error.message },
-        { status: 400 }
-      )
+  if ( error ){
+    return NextResponse.json({ message: error.message }, { status: 400 });
   }
 
+  if ( !user ) {
+    return NextResponse.json( { message: "ログインが必要です" }, { status: 401 })
+  }
 
   try {
+
     // リクエストのbodyを取得
     const body: CreatePostRequestBody = await request.json()
-
+    // console.log(body)
     const { shopId, visitedDate, postImages, postFeatures, postChildren, rating, comment, childFriendlyVote } = body
-
-    // ログインユーザー取得
-    // const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser(token);
-    // console.log(user);
-
-    if (!user) {
-      return NextResponse.json(
-        { message: "ログインが必要です" },
-        { status: 401 }
-      )
-    }
-
-    const users = await prisma.user.findMany()
-    console.log(users);
-
 
     // DBのユーザーを取得
     const dbUser = await prisma.user.findUnique({
@@ -83,20 +65,19 @@ export const POST = async (request: Request) => {
     })
     // console.log(dbUser);
 
-
     if (!dbUser) {
-      return NextResponse.json(
-        { message: "ユーザーが存在しません" },
-        { status: 404 }
-      )
+      return NextResponse.json( { message: "ユーザーが存在しません" }, { status: 404 })
     }
 
+      // const features = await prisma.feature.findMany()
+      // console.log(features)
+
     // 投稿をDBに生成
-    const data = await prisma.post.create({
+    await prisma.post.create({
       data: {
         userId: dbUser.id,
         shopId,
-        visitedDate,
+        visitedDate: new Date(visitedDate),
         rating,
         comment,
         childFriendlyVote,
@@ -107,7 +88,7 @@ export const POST = async (request: Request) => {
           }))
         },
 
-        PostFeature: {
+        postFeatures: {
           create: postFeatures.map((feature) => ({
             featureId: feature.featureId
           }))
@@ -122,9 +103,7 @@ export const POST = async (request: Request) => {
       }
     })
 
-    return NextResponse.json<CreatePostResponse>(
-      { id: data.id, },
-      { status: 201 }
+    return NextResponse.json( { message: "post created" }, { status: 200 }
     )
 
   } catch (error) {
