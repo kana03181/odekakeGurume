@@ -1,7 +1,82 @@
 import { prisma } from "@/app/_libs/prisma";
 import { NextResponse } from "next/server";
+import { NextRequest } from 'next/server'
 import { Gender } from "@/app/generated/prisma/client"
 import { supabase } from "@/app/_libs/supabase";
+
+
+//プロフィール取得時に送られてくるリクエストのbodyの型
+export type ProfileIndexResponse = {
+  name: string
+  thumbnailUrl?: string
+  gender: Gender
+  yearOfBirth: number
+  children?: {
+    birthYear: number
+    birthMonth: number
+  }[]
+}
+
+//プロフィール取得
+export const GET = async (request: NextRequest) => {
+
+  const token = request.headers.get("authorization") ?? '';
+  const accessToken = token.replace("Bearer ", "");
+  // console.log(accessToken);
+
+  //誰のtokenかを確認
+  const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
+
+  if ( error ){
+    return NextResponse.json({ message: error.message }, { status: 401 });
+  }
+
+  // const user = data.user;
+
+  if ( !user ) {
+    return NextResponse.json({ message: "unauthorized" }, { status: 401 });
+  }
+
+
+
+  const username = await prisma.user.findMany({
+    where: {
+      userName: user.user_metadata.user_name,
+    }
+  })
+
+  try {
+
+  } catch (error) {
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //プロフィール作成時に送られてくるリクエストのbodyの型
 export type UpdateProfileRequestBody = {
@@ -15,6 +90,7 @@ export type UpdateProfileRequestBody = {
   }[]
 }
 
+//プロフィール更新
 export const PUT = async (request: Request) => {
 
   //tokenの確認
