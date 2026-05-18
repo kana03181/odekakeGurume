@@ -37,41 +37,32 @@ export const GET = async (request: NextRequest) => {
     return NextResponse.json({ message: "unauthorized" }, { status: 401 });
   }
 
-
-
-  const username = await prisma.user.findMany({
-    where: {
-      userName: user.user_metadata.user_name,
-    }
-  })
-
   try {
+    const username = await prisma.user.findMany({
+      where: {
+        userName: user.user_metadata.user_name,
+      },
+
+      select: {
+        userName: true,
+      }
+    })
+
+    console.log(username);
+
+
+    if (!username) {
+      return NextResponse.json( { message: "undefined username" }, { status: 404 } )
+    }
+
+    return NextResponse.json( { message: "profile updated" }, { status: 200 } )
 
   } catch (error) {
-
+    if ( error instanceof Error ) {
+      return NextResponse.json( { message: error.message }, { status: 400 })
+    }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

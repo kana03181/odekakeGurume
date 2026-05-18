@@ -32,12 +32,11 @@ export default function Page() {
 
 
   const signUpSubmit = async (data:ProfileForm) => {
-    // const { name, username } = data
+    const { username } = data
 
-    // const { data:authData, error } = await supabase.auth.signInWithPassword({
-    //   email,
-    //   password,
-    // })
+    const { data: authData, error } = await supabase.auth.getUser();
+    console.log(authData);
+
 
     // if ( error || !authData.session ) {
     //   setError("root", {
@@ -45,6 +44,23 @@ export default function Page() {
     //   });
     //   return;
     // }
+
+    // const token = authData.session.access_token;
+    // const authHeader = `Bearer ${token}`;
+
+    // const res = await fetch("/api/sign_in", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: authHeader,
+    //     },
+    // })
+
+    // if (!res.ok) {
+    //   console.error("エラーが発生しました")
+    //   return;
+    // }
+
   }
 
   return (
