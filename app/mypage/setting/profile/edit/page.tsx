@@ -1,7 +1,7 @@
 'use client'
 
 import { supabase } from '@/app/_libs/supabase'
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray  } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -22,6 +22,7 @@ export default function Page() {
     handleSubmit,
     reset,
     setError,
+    control,
     formState: {
       errors,
       isSubmitting,
@@ -31,23 +32,35 @@ export default function Page() {
     defaultValues: {
       name: "",
       username: "",
+      children: [{
+        birthYear: undefined,
+        birthMonth: undefined,
+      }],
     },
     resolver: zodResolver(profileSchema),
   });
+  const{
+    fields,
+    append,
+    remove,
+  } = useFieldArray({
+    control,
+    name:"children"
+  })
 
   const profileSubmit = async (data: ProfileForm) => {
     if (!token) return;
 
 
-      // const { data: authData, error } = await supabase.auth.getSession();
-      // // console.log(authData);
+      const { data: authData, error } = await supabase.auth.getSession();
+      console.log(authData);
 
-      // if ( error || !authData.session ) {
-      //   setError("root", {
-      //     message: "ユーザー情報が見つかりませんでした"
-      //   });
-      //   return;
-      // }
+      if ( error || !authData.session ) {
+        setError("root", {
+          message: "ユーザー情報が見つかりませんでした"
+        });
+        return;
+      }
 
       // const token = authData.session.access_token;
     // const authHeader = `Bearer ${token}`;
@@ -89,9 +102,9 @@ export default function Page() {
         <p className="text-caution text-md pb-4">
           {errors.root.message}</p>
       )}
-      <form onSubmit={handleSubmit(profileSubmit)} className='space-y-4 w-full max-w-100'>
+      <form onSubmit={handleSubmit(profileSubmit)} className='space-y-8 w-full max-w-100'>
         <div className='space-y-2'>
-          <Label htmlFor='email'>
+          <Label htmlFor='name'>
               お名前
           </Label>
           <TextInput
@@ -122,7 +135,7 @@ export default function Page() {
           )}
         </div>
         <div className='space-y-2'>
-          <Label htmlFor='email'>
+          <Label htmlFor='gender'>
               性別
           </Label>
           <SelectBox
@@ -138,39 +151,62 @@ export default function Page() {
           />
         </div>
         <div className='space-y-2'>
-          <Label htmlFor='email'>
+          <Label htmlFor='year'>
               生まれた年
           </Label>
           <SelectBox
             {...register("yearOfBirth")}
             generator={{
               type: "year",
-              reverse: true
+              reverse: true,
+              end: 2011
             }}
+            placeholder="--"
             className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
           />
         </div>
         <div className='space-y-2'>
-          <Label htmlFor='email'>
+          <Label htmlFor='children'>
               子供の年月日
           </Label>
-          <div className='flex'>
-            <SelectBox
-              {...register("birthYear")}
-              generator={{
-                type: "year",
-                reverse: true
-              }}
-              className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
-            />
-            <SelectBox
-              {...register("birthMonth")}
-              generator={{
-                type: "month",
-              }}
-              className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
-            />
+          <div className='flex flex-col gap-4'>
+            {fields.map((field, index) => (
+              <div className='flex gap-2'>
+                <SelectBox
+                  {...register(
+                    `children.${index}.birthYear`)}
+                  generator={{
+                    type: "year",
+                    reverse: true,
+                  }}
+                  placeholder="--"
+                  className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
+                />
+                <SelectBox
+                  {...register(
+                    `children.${index}.birthMonth`)}
+                  generator={{
+                    type: "month",
+                  }}
+                  placeholder="--"
+                  className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
+                />
+                <Button
+                  type="button"
+                  onClick={() => remove(index)}
+                  className='!px-2 !py-[calc(5/16*1rem)] !text-sm'
+                >
+                  削除
+                </Button>
+              </div>
+            ))}
           </div>
+          <button
+            type="button"
+            onClick={() => append({
+              birthYear: undefined,
+              birthMonth: undefined,
+            })}>＋追加する</button>
         </div>
         <div>
           <Button type="submit" disabled={isSubmitting}>保存</Button>

@@ -50,7 +50,14 @@ const generateOptions = (config: GeneratorConfig): Option[] => {
 
   return arr.map((n) => ({
     value: String(n),
-    label: String(n),
+    label:
+      type === "year"
+        ? `${n}年`
+        : type === "month"
+        ? `${n}月`
+        : type === "day"
+        ? `${n}日`
+        : String(n),
   }))
 }
 

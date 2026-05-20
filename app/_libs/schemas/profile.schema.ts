@@ -14,11 +14,12 @@ export const profileSchema = z.object({
   yearOfBirth: z.coerce
   .number().min(1960).max(2011),
 
-  birthYear: z.coerce
-    .number().min(1960).max(new Date().getFullYear()),
-
-  birthMonth: z.coerce
-    .number().min(1).max(12)
+  children: z.array(
+    z.object({
+      birthYear: z.coerce.number(),
+      birthMonth: z.coerce.number(),
+    })
+  ).optional(),
 
 })
 
