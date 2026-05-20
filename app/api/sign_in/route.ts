@@ -39,7 +39,7 @@ export const POST = async (request: NextRequest) => {
     await prisma.user.create({
       data: {
         supabaseUserId: user.id,
-        userName: user.user_metadata.user_name,
+        // userName: user.user_metadata.user_name,
       }
     })
 

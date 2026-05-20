@@ -3,14 +3,18 @@
 import { supabase } from '@/app/_libs/supabase'
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { UpdateProfileRequestBody } from "@/app/api/profile/route";
+import { SelectBox } from "@/app/_components/SelectBox";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSettion";
 import { profileSchema, type ProfileForm } from "@/app/_libs/schemas/profile.schema";
 import { TextInput } from "@/app/_components/TextInput";
 import Label from "@/app/_components/Label";
 import { Button } from "@/app/_components/Button";
 
 export default function Page() {
+  const { token } = useSupabaseSession()
   const router = useRouter()
 
   const {
@@ -26,40 +30,56 @@ export default function Page() {
     mode: "onChange",
     defaultValues: {
       name: "",
+      username: "",
     },
     resolver: zodResolver(profileSchema),
   });
 
-
-  const signUpSubmit = async (data:ProfileForm) => {
-    const { username } = data
-
-    const { data: authData, error } = await supabase.auth.getUser();
-    console.log(authData);
+  const profileSubmit = async (data: ProfileForm) => {
+    if (!token) return;
 
 
-    // if ( error || !authData.session ) {
-    //   setError("root", {
-    //     message: "メールアドレスまたはパスワードが正しくありません"
-    //   });
-    //   return;
-    // }
+      // const { data: authData, error } = await supabase.auth.getSession();
+      // // console.log(authData);
 
-    // const token = authData.session.access_token;
+      // if ( error || !authData.session ) {
+      //   setError("root", {
+      //     message: "ユーザー情報が見つかりませんでした"
+      //   });
+      //   return;
+      // }
+
+      // const token = authData.session.access_token;
     // const authHeader = `Bearer ${token}`;
 
-    // const res = await fetch("/api/sign_in", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: authHeader,
-    //     },
-    // })
-
-    // if (!res.ok) {
-    //   console.error("エラーが発生しました")
-    //   return;
+    // const body: UpdateProfileRequestBody = {
+    //     name: data.name,
+    //     userName: data.username,
+    //     thumbnailUrl: data.thumbnailUrl,
+    //     gender: data.gender,
+    //     yearOfBirth: data.yearOfBirth,
+    //     children?: {
+    //       birthYear: data.birthYear,
+    //       birthMonth: data.birthMonth,
+    //     }[]
     // }
+
+      const res = await fetch("/api/profile", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+      })
+
+      if (!res.ok) {
+        console.error("エラーが発生しました")
+        return;
+      }
+
+      const userData = await res.json()
+      const id = userData.supabaseUserId
+
 
   }
 
@@ -69,7 +89,7 @@ export default function Page() {
         <p className="text-caution text-md pb-4">
           {errors.root.message}</p>
       )}
-      <form onSubmit={handleSubmit(signUpSubmit)} className='space-y-4 w-full max-w-100'>
+      <form onSubmit={handleSubmit(profileSubmit)} className='space-y-4 w-full max-w-100'>
         <div className='space-y-2'>
           <Label htmlFor='email'>
               お名前
@@ -100,6 +120,57 @@ export default function Page() {
               {errors.username.message}
             </p>
           )}
+        </div>
+        <div className='space-y-2'>
+          <Label htmlFor='email'>
+              性別
+          </Label>
+          <SelectBox
+            {...register("gender")}
+            name='gender'
+            id='gender'
+            options={[
+              {value: "MALE", label:"男性"},
+              {value: "FEMALE", label:"女性"},
+              {value: "NOT_TO_SAY", label:"回答しない"}
+            ]}
+            className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
+          />
+        </div>
+        <div className='space-y-2'>
+          <Label htmlFor='email'>
+              生まれた年
+          </Label>
+          <SelectBox
+            {...register("yearOfBirth")}
+            generator={{
+              type: "year",
+              reverse: true
+            }}
+            className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
+          />
+        </div>
+        <div className='space-y-2'>
+          <Label htmlFor='email'>
+              子供の年月日
+          </Label>
+          <div className='flex'>
+            <SelectBox
+              {...register("birthYear")}
+              generator={{
+                type: "year",
+                reverse: true
+              }}
+              className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
+            />
+            <SelectBox
+              {...register("birthMonth")}
+              generator={{
+                type: "month",
+              }}
+              className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
+            />
+          </div>
         </div>
         <div>
           <Button type="submit" disabled={isSubmitting}>保存</Button>
