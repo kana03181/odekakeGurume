@@ -1,4 +1,6 @@
 import { ComponentPropsWithRef } from "react";
+import { cn } from "@/app/_libs/cn";
+
 
 type Variant = "primary" | "delete" | "outline" | "disabled";
 
@@ -17,12 +19,8 @@ export const Button = ({ variant = "primary", className, children, ref, ...props
   }
 
   return (
-    <button
-      ref={ref}
-      {...props}
-      className={`${base} ${variants[variant]} ${className ?? ""}`}
-    >
-      {children}
-    </button>
+  <button ref={ref} {...props} className={cn( base, variants[variant], className )}>
+    {children}
+  </button>
   )
 }

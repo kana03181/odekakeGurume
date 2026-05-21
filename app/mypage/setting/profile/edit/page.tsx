@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { UpdateProfileRequestBody } from "@/app/api/profile/route";
 import { SelectBox } from "@/app/_components/SelectBox";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSettion";
-import { profileSchema, type ProfileForm } from "@/app/_libs/schemas/profile.schema";
+import { profileSchema, type ProfileForm, type ProfileFormOutput } from "@/app/_libs/schemas/profile.schema";
 import { TextInput } from "@/app/_components/TextInput";
 import Label from "@/app/_components/Label";
 import { Button } from "@/app/_components/Button";
@@ -48,50 +48,62 @@ export default function Page() {
     name:"children"
   })
 
-  const profileSubmit = async (data: ProfileForm) => {
-    if (!token) return;
+    // const authHeader = `Bearer ${token}`;
 
-
+    try {
       const { data: authData, error } = await supabase.auth.getSession();
       console.log(authData);
 
-      if ( error || !authData.session ) {
+    const profileSubmit = async (data: ProfileForm) => {
+    if (!token) return;
+
+    // const token = authData.session.access_token;
+    if ( error || !authData.session ) {
         setError("root", {
           message: "ユーザー情報が見つかりませんでした"
         });
-        return;
-      }
 
-      // const token = authData.session.access_token;
-    // const authHeader = `Bearer ${token}`;
+        const body: UpdateProfileRequestBody = {
+          name: data.name,
+          userName: data.username,
+          thumbnailUrl: data.thumbnailUrl,
+          gender: data.gender,
+          yearOfBirth: Number(data.yearOfBirth),
+          children: data.children?.map((item) => ({
+            birthYear: Number(item.birthYear),
+            birthMonth: Number(item.birthMonth),
+          }))
+        }
 
-    // const body: UpdateProfileRequestBody = {
-    //     name: data.name,
-    //     userName: data.username,
-    //     thumbnailUrl: data.thumbnailUrl,
-    //     gender: data.gender,
-    //     yearOfBirth: data.yearOfBirth,
-    //     children?: {
-    //       birthYear: data.birthYear,
-    //       birthMonth: data.birthMonth,
-    //     }[]
-    // }
-
-      const res = await fetch("/api/profile", {
-          method: "GET",
+        const res = await fetch("/api/profile", {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
             Authorization: token,
           },
-      })
+          body: JSON.stringify(body)
+        })
+        console.log(res);
 
-      if (!res.ok) {
-        console.error("エラーが発生しました")
-        return;
+
+        if (!res.ok) {
+          throw new Error("プロフィールの設定に失敗しました");
+        }
+        alert("プロフィールを設定しました")
       }
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("エラーが発生しました");
+      }
+    }
 
-      const userData = await res.json()
-      const id = userData.supabaseUserId
+
+
+
+
+
 
 
   }
@@ -102,7 +114,7 @@ export default function Page() {
         <p className="text-caution text-md pb-4">
           {errors.root.message}</p>
       )}
-      <form onSubmit={handleSubmit(profileSubmit)} className='space-y-8 w-full max-w-100'>
+      <form onSubmit={handleSubmit(ProfileFormOutput)} className='space-y-8 w-full max-w-100'>
         <div className='space-y-2'>
           <Label htmlFor='name'>
               お名前
@@ -194,7 +206,7 @@ export default function Page() {
                 <Button
                   type="button"
                   onClick={() => remove(index)}
-                  className='!px-2 !py-[calc(5/16*1rem)] !text-sm'
+                  className='px-2 py-[calc(5/16*1rem)] text-sm'
                 >
                   削除
                 </Button>

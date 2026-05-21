@@ -9,6 +9,8 @@ export const profileSchema = z.object({
     .min(4, "4文字以上で入力してください")
     .max(20, "ユーザー名は20文字以内で入力してください"),
 
+  thumbnailUrl: z.string().optional(),
+
   gender: z.enum(["MALE", "FEMALE", "NOT_TO_SAY"]).optional(),
 
   yearOfBirth: z.coerce
@@ -25,4 +27,4 @@ export const profileSchema = z.object({
 
 // 型を自動生成
 export type ProfileForm = z.input<typeof profileSchema>;
-// export type ProfileFormOutput = z.output<typeof profileSchema>;
+export type ProfileFormOutput = z.output<typeof profileSchema>;
