@@ -63,7 +63,7 @@ export type UpdateProfileRequestBody = {
   name: string
   userName: string
   thumbnailUrl?: string
-  gender: Gender
+  gender?: Gender
   yearOfBirth: number
   children?: {
     birthYear: number

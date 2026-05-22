@@ -27,4 +27,4 @@ export const profileSchema = z.object({
 
 // 型を自動生成
 export type ProfileForm = z.input<typeof profileSchema>;
-export type ProfileFormOutput = z.output<typeof profileSchema>;
+// export type ProfileFormOutput = z.output<typeof profileSchema>;
