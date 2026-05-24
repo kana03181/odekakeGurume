@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { UpdateProfileRequestBody } from "@/app/api/profile/route";
+import { GetProfileResponse } from "@/app/api/profile/route";
 import { SelectBox } from "@/app/_components/SelectBox";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSettion";
 import { profileSchema, type ProfileForm } from "@/app/_libs/schemas/profile.schema";
@@ -52,7 +53,7 @@ export default function Page() {
 
     try {
       const { data: authData, error } = await supabase.auth.getSession();
-      console.log(authData);
+      // console.log(authData);
 
       if (!token) return;
 
@@ -68,8 +69,8 @@ export default function Page() {
       const body: UpdateProfileRequestBody = {
         name: data.name,
         userName: data.username,
-        thumbnailUrl: data.thumbnailUrl,
-        gender: data.gender,
+        thumbnailUrl: data.thumbnailUrl ?? null,
+        gender: data.gender ?? null,
         yearOfBirth: Number(data.yearOfBirth),
         children: data.children?.map((item) => ({
           birthYear: Number(item.birthYear),
@@ -85,8 +86,7 @@ export default function Page() {
         },
         body: JSON.stringify(body)
       })
-      console.log(res);
-
+      // console.log(res);
 
       if (!res.ok) {
         console.error("エラーが発生しました")
@@ -108,7 +108,7 @@ export default function Page() {
     const fetcher = async () => {
       try {
         const { data: authData, error } = await supabase.auth.getSession();
-        console.log(authData);
+        // console.log(authData);
 
         if (!token) return;
 
@@ -126,28 +126,28 @@ export default function Page() {
             Authorization: token,
           },
         })
-        console.log(res);
+
 
         if (!res.ok) {
           console.error("エラーが発生しました")
           return;
         }
 
-        const data:UpdateProfileRequestBody = await res.json();
+        const data: GetProfileResponse = await res.json();
+        // console.log(data);
 
         reset({
-          name: data.name,
-          username: data.userName,
-          thumbnailUrl: data.thumbnailUrl,
-          gender: data.gender,
-          yearOfBirth: Number(data.yearOfBirth),
+          name: data.name ?? undefined,
+          username: data.userName ?? undefined,
+          thumbnailUrl: data.thumbnailUrl ?? undefined,
+          gender: data.gender ?? undefined,
+          yearOfBirth: data.yearOfBirth ?? undefined,
 
           children: data.children?.map((item) => ({
-            birthYear: Number(item.birthYear),
-            birthMonth: Number(item.birthMonth),
+            birthYear: item.birthYear,
+            birthMonth: item.birthMonth,
           }))
         })
-
 
       } catch (error) {
         console.error("エラーが発生しました")

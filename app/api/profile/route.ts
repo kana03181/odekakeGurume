@@ -1,22 +1,41 @@
 import { prisma } from "@/app/_libs/prisma";
 import { NextResponse } from "next/server";
 import { NextRequest } from 'next/server'
-import { Gender } from "@/app/generated/prisma/client"
+import { Child, Gender } from "@/app/generated/prisma/client"
 import { supabase } from "@/app/_libs/supabase";
+import { getAuthUser } from "@/app/_hooks/getAuthUser";
 
 
 /* ======================
   supabaseUserIdの取得
 ======================= */
 
+//プロフィールのレスポンスの型
+export type GetProfileResponse = {
+  supabaseUserId: string
+  name: string | null
+  userName: string | null
+  thumbnailUrl: string | null
+  gender: Gender | null
+  yearOfBirth: number | null
+  children: {
+    birthYear: number
+    birthMonth: number
+  }[]
+  createdAt: Date
+  updatedAt: Date
+}
+
 export const GET = async (request: NextRequest) => {
 
-  const token = request.headers.get("authorization") ?? '';
-  const accessToken = token.replace("Bearer ", "");
+  const { user, error } = await getAuthUser(request);
+
+  // const token = request.headers.get("authorization") ?? '';
+  // const accessToken = token.replace("Bearer ", "");
   // console.log(accessToken);
 
   //誰のtokenかを確認
-  const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
+  // const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
 
   if ( error ){
     return NextResponse.json({ message: error.message }, { status: 401 });
@@ -29,20 +48,29 @@ export const GET = async (request: NextRequest) => {
   }
 
   try {
-    const username = await prisma.user.findUnique({
+    const profile = await prisma.user.findUnique({
       where: {
         supabaseUserId: user.id,
       },
 
+      include: {
+        children: {
+          select: {
+            birthYear: true,
+            birthMonth: true,
+          }
+        },
+      },
+
     })
 
-    console.log(username);
+    // console.log(profile);
 
-    if (!username) {
-      return NextResponse.json( { message: "undefined username" }, { status: 404 } )
+    if (!profile) {
+      return NextResponse.json( { message: "undefined profile" }, { status: 404 } )
     }
 
-    return NextResponse.json( username, { status: 200 } )
+    return NextResponse.json<GetProfileResponse>( profile, { status: 200 } )
 
   } catch (error) {
     if ( error instanceof Error ) {
@@ -52,19 +80,17 @@ export const GET = async (request: NextRequest) => {
 }
 
 
-
-
 /* ======================
   ↓ プロフィールを更新 ↓
 ======================= */
 
-//プロフィール作成時に送られてくるリクエストのbodyの型
+//プロフィール更新時に送られてくるリクエストのbodyの型
 export type UpdateProfileRequestBody = {
-  name: string
-  userName: string
-  thumbnailUrl?: string
-  gender?: Gender
-  yearOfBirth: number
+  name: string | null
+  userName: string | null
+  thumbnailUrl: string | null
+  gender: Gender | null
+  yearOfBirth: number | null
   children?: {
     birthYear: number
     birthMonth: number
@@ -94,7 +120,7 @@ export const PUT = async (request: Request) => {
     const { name, userName, thumbnailUrl, gender, yearOfBirth, children }: UpdateProfileRequestBody = await request.json()
 
     //プロフィールを更新
-    await prisma.user.update({
+    const updateProfile = await prisma.user.update({
       where: {
         supabaseUserId: user.id,
       },
@@ -120,7 +146,7 @@ export const PUT = async (request: Request) => {
       }
     })
 
-    return NextResponse.json( { message: "profile updated" }, { status: 200 } )
+    return NextResponse.json<UpdateProfileRequestBody>( updateProfile , { status: 200 } )
 
   } catch (error) {
     if ( error instanceof Error ) {
