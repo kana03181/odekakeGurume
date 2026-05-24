@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { NextRequest } from 'next/server'
 import { Rating } from "@/app/generated/prisma/client"
 import { AgeGroup } from "@/app/generated/prisma/client"
-import { getAuthUser } from "@/app/_hooks/getAuthUser";
+import { useAuthUser } from "@/app/_hooks/useAuthUser";
 
 
 // 投稿作成時に送られてくるリクエストのbodyの型
@@ -31,7 +31,7 @@ export type CreatePostRequestBody = {
 
 export const POST = async (request: NextRequest) => {
   //tokenの確認
-    const { user, error } = await getAuthUser(request);
+    const { user, error } = await useAuthUser(request);
 
   // const authHeader = request.headers.get('Authorization') ?? ''
   // const accessToken = authHeader.replace('Bearer ', '')

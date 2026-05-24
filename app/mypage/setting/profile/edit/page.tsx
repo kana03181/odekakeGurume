@@ -8,7 +8,8 @@ import { useEffect } from "react";
 import { UpdateProfileRequestBody } from "@/app/api/profile/route";
 import { GetProfileResponse } from "@/app/api/profile/route";
 import { SelectBox } from "@/app/_components/SelectBox";
-import { useSupabaseSession } from "@/app/_hooks/useSupabaseSettion";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
+import { useFetch } from "@/app/_hooks/useFetch";
 import { profileSchema, type ProfileForm } from "@/app/_libs/schemas/profile.schema";
 import { TextInput } from "@/app/_components/TextInput";
 import Label from "@/app/_components/Label";
@@ -104,58 +105,41 @@ export default function Page() {
     }
   }
 
+  //プロフィールを取得
+  const { data, error, isLoading } = useFetch<GetProfileResponse>("/api/profile")
+
   useEffect(() => {
-    const fetcher = async () => {
-      try {
-        const { data: authData, error } = await supabase.auth.getSession();
-        // console.log(authData);
+    if (!error) return;
 
-        if (!token) return;
+    setError("root", {
+      message:
+        error instanceof Error
+          ? error.message
+          : "プロフィール取得に失敗しました"
+    })
 
-        if (error || !authData.session) {
-          setError("root", {
-            message: "ユーザー情報が見つかりませんでした"
-          });
-          return;
-        }
+  }, [error, setError])
 
-        const res = await fetch("/api/profile", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-        })
+  useEffect(() => {
+    if (!data) return;
 
+    reset({
+      name: data.name ?? undefined,
+      username: data.userName ?? undefined,
+      thumbnailUrl: data.thumbnailUrl ?? undefined,
+      gender: data.gender ?? undefined,
+      yearOfBirth: data.yearOfBirth ?? undefined,
 
-        if (!res.ok) {
-          console.error("エラーが発生しました")
-          return;
-        }
+      children: data.children?.map((item) => ({
+        birthYear: item.birthYear,
+        birthMonth: item.birthMonth,
+      }))
+    })
+  }, [data, reset])
 
-        const data: GetProfileResponse = await res.json();
-        // console.log(data);
-
-        reset({
-          name: data.name ?? undefined,
-          username: data.userName ?? undefined,
-          thumbnailUrl: data.thumbnailUrl ?? undefined,
-          gender: data.gender ?? undefined,
-          yearOfBirth: data.yearOfBirth ?? undefined,
-
-          children: data.children?.map((item) => ({
-            birthYear: item.birthYear,
-            birthMonth: item.birthMonth,
-          }))
-        })
-
-      } catch (error) {
-        console.error("エラーが発生しました")
-      }
-    }
-    fetcher();
-
-  }, [reset, token]);
+  if (isLoading) {
+    return <div><p>読み込み中...</p></div>
+  }
 
   return (
     <div className='flex items-center justify-center flex-col pt-60'>
