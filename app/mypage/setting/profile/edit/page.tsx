@@ -7,13 +7,18 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { UpdateProfileRequestBody } from "@/app/api/profile/route";
 import { GetProfileResponse } from "@/app/api/profile/route";
-import { SelectBox } from "@/app/_components/SelectBox";
+// import { SelectBox } from "@/app/_components/SelectBox";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { useFetch } from "@/app/_hooks/useFetch";
 import { profileSchema, type ProfileForm } from "@/app/_libs/schemas/profile.schema";
 import { TextInput } from "@/app/_components/TextInput";
 import Label from "@/app/_components/Label";
 import { Button } from "@/app/_components/Button";
+import { BaseSelect } from "@/app/_components/BaseSelect";
+import { BirthYearSelect } from "@/app/_components/BirthYearSelect";
+import { BirthMonthSelect } from "@/app/_components/BirthMonthSelect";
+import { createNumberOptions } from "@/app/_libs/selectOptions";
+
 
 export default function Page() {
   const { token } = useSupabaseSession()
@@ -183,7 +188,7 @@ export default function Page() {
           <Label htmlFor='gender'>
               性別
           </Label>
-          <SelectBox
+          <BaseSelect
             {...register("gender")}
             name='gender'
             id='gender'
@@ -199,14 +204,8 @@ export default function Page() {
           <Label htmlFor='year'>
               生まれた年
           </Label>
-          <SelectBox
-            {...register("yearOfBirth")}
-            generator={{
-              type: "year",
-              reverse: true,
-              end: 2011
-            }}
-            placeholder="--"
+          <BirthYearSelect
+            {...register}
             className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
           />
         </div>
@@ -217,23 +216,15 @@ export default function Page() {
           <div className='flex flex-col gap-4'>
             {fields.map((field, index) => (
               <div className='flex gap-2'>
-                <SelectBox
+                <BirthYearSelect
                   {...register(
-                    `children.${index}.birthYear`)}
-                  generator={{
-                    type: "year",
-                    reverse: true,
-                  }}
-                  placeholder="--"
+                    `children.${index}.birthYear`
+                  )}
                   className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
                 />
-                <SelectBox
+                <BirthMonthSelect
                   {...register(
                     `children.${index}.birthMonth`)}
-                  generator={{
-                    type: "month",
-                  }}
-                  placeholder="--"
                   className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
                 />
                 <Button
