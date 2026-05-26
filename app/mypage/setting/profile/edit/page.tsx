@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { UpdateProfileRequestBody } from "@/app/api/profile/route";
 import { GetProfileResponse } from "@/app/api/profile/route";
-// import { SelectBox } from "@/app/_components/SelectBox";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { useFetch } from "@/app/_hooks/useFetch";
 import { profileSchema, type ProfileForm } from "@/app/_libs/schemas/profile.schema";
@@ -135,15 +134,27 @@ export default function Page() {
       gender: data.gender ?? undefined,
       yearOfBirth: data.yearOfBirth ?? undefined,
 
-      children: data.children?.map((item) => ({
-        birthYear: item.birthYear,
-        birthMonth: item.birthMonth,
-      }))
+      children:
+        data.children?.length
+          ? data.children.map((item) => ({
+            birthYear:
+              item.birthYear
+                ? item.birthYear
+                : null,
+            birthMonth:
+              item.birthMonth
+                ? item.birthMonth
+                : null,
+          }))
+          : [{
+            birthYear: "",
+            birthMonth: "",
+          }]
     })
   }, [data, reset])
 
   if (isLoading) {
-    return <div><p>読み込み中...</p></div>
+    return <div className='grid place-content-center'><p className='text-sm'>読み込み中...</p></div>
   }
 
   return (
@@ -205,7 +216,7 @@ export default function Page() {
               生まれた年
           </Label>
           <BirthYearSelect
-            {...register}
+            {...register("yearOfBirth")}
             className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
           />
         </div>
@@ -215,8 +226,9 @@ export default function Page() {
           </Label>
           <div className='flex flex-col gap-4'>
             {fields.map((field, index) => (
-              <div className='flex gap-2'>
+              <div className='flex gap-2' key={field.id}>
                 <BirthYearSelect
+                  reverse
                   {...register(
                     `children.${index}.birthYear`
                   )}
