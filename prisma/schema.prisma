@@ -22,7 +22,7 @@ model User{
   id                Int       @id @default(autoincrement())
   supabaseUserId    String    @unique @map("supabase_user_id")
   name              String?
-  userName          String?    @map("user_name")
+  userName          String?   @unique @map("user_name")
   gender            Gender?
   thumbnailUrl      String?   @map("thumbnail_url")
   yearOfBirth       Int?      @map("year_of_birth")

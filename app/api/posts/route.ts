@@ -1,8 +1,10 @@
 import { prisma } from "@/app/_libs/prisma";
 import { supabase } from "@/app/_libs/supabase";
 import { NextResponse } from "next/server";
+import { NextRequest } from 'next/server'
 import { Rating } from "@/app/generated/prisma/client"
 import { AgeGroup } from "@/app/generated/prisma/client"
+import { useAuthUser } from "@/app/_hooks/useAuthUser";
 
 
 // 投稿作成時に送られてくるリクエストのbodyの型
@@ -27,15 +29,17 @@ export type CreatePostRequestBody = {
   childFriendlyVote: boolean
 }
 
-export const POST = async (request: Request) => {
+export const POST = async (request: NextRequest) => {
   //tokenの確認
-  const authHeader = request.headers.get('Authorization') ?? ''
-  const accessToken = authHeader.replace('Bearer ', '')
+    const { user, error } = await useAuthUser(request);
+
+  // const authHeader = request.headers.get('Authorization') ?? ''
+  // const accessToken = authHeader.replace('Bearer ', '')
 
   // console.log("authHeader:", authHeader);
   // console.log("accessToken:", accessToken);
 
-  const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
+  // const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
 
   if ( error ){
     return NextResponse.json({ message: error.message }, { status: 401 });
@@ -64,7 +68,7 @@ export const POST = async (request: Request) => {
 
 
     // 投稿をDBに生成
-    await prisma.post.create({
+    const newPost =  await prisma.post.create({
       data: {
         userId: dbUser.id,
         shopId,
@@ -90,11 +94,16 @@ export const POST = async (request: Request) => {
             ageGroup: child.ageGroup
           }))
         },
+      },
 
+      include: {
+        postImages: true,
+        postFeatures: true,
+        postChildren: true,
       }
     })
 
-    return NextResponse.json( { message: "post created" }, { status: 200 }
+    return NextResponse.json<CreatePostRequestBody>( newPost, { status: 200 }
     )
 
   } catch (error) {

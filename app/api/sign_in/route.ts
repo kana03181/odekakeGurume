@@ -3,14 +3,21 @@
 import { prisma } from "@/app/_libs/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/app/_libs/supabase";
+import { useAuthUser } from "@/app/_hooks/useAuthUser";
+
+export type PostProfileRequest = {
+  supabaseUserId: string;
+}
 
 export const POST = async (request: NextRequest) => {
-  const token = request.headers.get("authorization") ?? '';
-  const accessToken = token.replace("Bearer ", "");
+    const { user, error } = await useAuthUser(request);
+
+  // const token = request.headers.get("authorization") ?? '';
+  // const accessToken = token.replace("Bearer ", "");
   // console.log(accessToken);
 
   //誰のtokenかを確認
-  const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
+  // const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
 
   if ( error ){
     return NextResponse.json({ message: error.message }, { status: 401 });
@@ -23,7 +30,6 @@ export const POST = async (request: NextRequest) => {
   }
 
   try {
-
     //DBにユーザーが存在するかを確認
     const existingUser = await prisma.user.findUnique({
       where: {
@@ -39,7 +45,7 @@ export const POST = async (request: NextRequest) => {
     await prisma.user.create({
       data: {
         supabaseUserId: user.id,
-        userName: user.user_metadata.user_name,
+        // userName: user.user_metadata.user_name,
       }
     })
 

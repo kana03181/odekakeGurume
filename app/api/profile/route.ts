@@ -1,14 +1,89 @@
 import { prisma } from "@/app/_libs/prisma";
 import { NextResponse } from "next/server";
-import { Gender } from "@/app/generated/prisma/client"
+import { NextRequest } from 'next/server'
+import { Child, Gender } from "@/app/generated/prisma/client"
 import { supabase } from "@/app/_libs/supabase";
+import { useAuthUser } from "@/app/_hooks/useAuthUser";
 
-//プロフィール作成時に送られてくるリクエストのbodyの型
+
+/* ======================
+  supabaseUserIdの取得
+======================= */
+
+//プロフィールのレスポンスの型
+export type GetProfileResponse = {
+  supabaseUserId: string
+  name: string | null
+  userName: string | null
+  thumbnailUrl: string | null
+  gender: Gender | null
+  yearOfBirth: number | null
+  children: {
+    birthYear: number
+    birthMonth: number
+  }[]
+  createdAt: Date
+  updatedAt: Date
+}
+
+export const GET = async (request: NextRequest) => {
+
+  const { user, error } = await useAuthUser(request);
+
+  if ( error ){
+    return NextResponse.json({ message: error.message }, { status: 401 });
+  }
+
+  // const user = data.user;
+
+  if ( !user ) {
+    return NextResponse.json({ message: "unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const profile = await prisma.user.findUnique({
+      where: {
+        supabaseUserId: user.id,
+      },
+
+      include: {
+        children: {
+          select: {
+            birthYear: true,
+            birthMonth: true,
+          }
+        },
+      },
+
+    })
+
+    // console.log(profile);
+
+    if (!profile) {
+      return NextResponse.json( { message: "undefined profile" }, { status: 404 } )
+    }
+
+    return NextResponse.json<GetProfileResponse>( profile, { status: 200 } )
+
+  } catch (error) {
+    if ( error instanceof Error ) {
+      return NextResponse.json( { message: error.message }, { status: 400 })
+    }
+  }
+}
+
+
+/* ======================
+  ↓ プロフィールを更新 ↓
+======================= */
+
+//プロフィール更新時に送られてくるリクエストのbodyの型
 export type UpdateProfileRequestBody = {
-  name: string
-  thumbnailUrl?: string
-  gender: Gender
-  yearOfBirth: number
+  name: string | null
+  userName: string | null
+  thumbnailUrl: string | null
+  gender: Gender | null
+  yearOfBirth: number | null
   children?: {
     birthYear: number
     birthMonth: number
@@ -35,15 +110,16 @@ export const PUT = async (request: Request) => {
   try {
 
     //bodyの中から取り出す
-    const { name, thumbnailUrl, gender, yearOfBirth, children }: UpdateProfileRequestBody = await request.json()
+    const { name, userName, thumbnailUrl, gender, yearOfBirth, children }: UpdateProfileRequestBody = await request.json()
 
     //プロフィールを更新
-    await prisma.user.update({
+    const updateProfile = await prisma.user.update({
       where: {
         supabaseUserId: user.id,
       },
       data: {
         name,
+        userName,
         gender,
         thumbnailUrl,
         yearOfBirth,
@@ -63,7 +139,7 @@ export const PUT = async (request: Request) => {
       }
     })
 
-    return NextResponse.json( { message: "profile updated" }, { status: 200 } )
+    return NextResponse.json<UpdateProfileRequestBody>( updateProfile , { status: 200 } )
 
   } catch (error) {
     if ( error instanceof Error ) {
