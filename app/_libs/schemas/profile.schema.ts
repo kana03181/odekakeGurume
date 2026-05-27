@@ -11,6 +11,8 @@ export const profileSchema = z.object({
 
   thumbnailUrl: z.string().optional(),
 
+  thumbnailImageKey: z.string().optional(),
+
   gender: z.enum(["MALE", "FEMALE", "NOT_TO_SAY"]).optional(),
 
   yearOfBirth: z.coerce
