@@ -64,12 +64,24 @@ export default function Page() {
 
 
   // 画像URL取得
-  const profileThumbnailKey = watch("thumbnailImageKey");
+  const profileThumbnailKey = watch("thumbnailUrl");
+
+  // console.log(profileThumbnailKey);
 
   const profileThumbnailUrl = useStorageImage({
     bucket: "profile_thumbnail",
     imageKey: profileThumbnailKey
   });
+
+console.log(
+  "url:",
+  JSON.stringify(profileThumbnailUrl)
+);
+
+console.log(
+  "length:",
+  profileThumbnailUrl?.length
+);
 
   // 画像アップロード
   const handleImageChange = async (
@@ -88,7 +100,7 @@ export default function Page() {
       })
 
     // RHFに値をセット
-    setValue("thumbnailImageKey", imagePath, {
+    setValue("thumbnailUrl", imagePath, {
       shouldDirty: true,
       shouldValidate: true,
     })
@@ -175,12 +187,18 @@ export default function Page() {
   }, [error, setError])
 
   useEffect(() => {
+    console.log(
+      "defaultValues",
+      data
+    );
+
     if (!data) return;
 
     reset({
       name: data.name ?? undefined,
       username: data.userName ?? undefined,
       thumbnailUrl: data.thumbnailUrl ?? undefined,
+      // thumbnailImageKey: data.thumbnailImageKey ?? undefined,
       gender: data.gender ?? undefined,
       yearOfBirth: data.yearOfBirth ?? undefined,
 
@@ -218,17 +236,17 @@ export default function Page() {
         <div className='space-y-2'>
           <Label htmlFor='profileThumbnailKey'>
             <FileInput
-              {...register("thumbnailImageKey")}
               id="profileThumbnailKey"
               onChange={handleImageChange}
             />
             <div className='relative w-[clamp(44px,calc(88/768*100vw),88px)] mx-auto'>
               <div className='w-fit rounded-full border-5 border-white'>
                 <Image
-                  src={profileThumbnailUrl ?? "/profile/default_avatar.svg"}
+                  src={profileThumbnailUrl || "/profile/default_avatar.svg"}
                   alt="プロフィール デフォルトサムネイル"
                   width={88}
                   height={110}
+                  loading='eager'
                 />
               </div>
               <div className='w-fit rounded-full border-5 border-white bg-accent-primary p-2 absolute bottom-0 right-0'>
@@ -237,6 +255,7 @@ export default function Page() {
                   alt="カメラアイコン"
                   width={15}
                   height={15}
+                  loading='eager'
                 />
               </div>
             </div>
