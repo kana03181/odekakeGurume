@@ -45,7 +45,7 @@ export default function Page() {
     defaultValues: {
       name: "",
       username: "",
-      thumbnailImageKey:"",
+      thumbnailUrl:"",
       children: [{
         birthYear: undefined,
         birthMonth: undefined,
@@ -66,22 +66,11 @@ export default function Page() {
   // 画像URL取得
   const profileThumbnailKey = watch("thumbnailUrl");
 
-  // console.log(profileThumbnailKey);
-
   const profileThumbnailUrl = useStorageImage({
     bucket: "profile_thumbnail",
     imageKey: profileThumbnailKey
   });
 
-console.log(
-  "url:",
-  JSON.stringify(profileThumbnailUrl)
-);
-
-console.log(
-  "length:",
-  profileThumbnailUrl?.length
-);
 
   // 画像アップロード
   const handleImageChange = async (
@@ -118,7 +107,6 @@ console.log(
 
   //データの送信
   const profileSubmit = async (data: ProfileForm) => {
-    console.log(data)
 
     try {
       const { data: authData, error } = await supabase.auth.getSession();
@@ -187,10 +175,6 @@ console.log(
   }, [error, setError])
 
   useEffect(() => {
-    console.log(
-      "defaultValues",
-      data
-    );
 
     if (!data) return;
 
@@ -198,7 +182,6 @@ console.log(
       name: data.name ?? undefined,
       username: data.userName ?? undefined,
       thumbnailUrl: data.thumbnailUrl ?? undefined,
-      // thumbnailImageKey: data.thumbnailImageKey ?? undefined,
       gender: data.gender ?? undefined,
       yearOfBirth: data.yearOfBirth ?? undefined,
 
@@ -240,13 +223,14 @@ console.log(
               onChange={handleImageChange}
             />
             <div className='relative w-[clamp(44px,calc(88/768*100vw),88px)] mx-auto'>
-              <div className='w-fit rounded-full border-5 border-white'>
+              <div className='w-fit rounded-full border-5 border-white overflow-hidden bg-profileThumbnail'>
                 <Image
                   src={profileThumbnailUrl || "/profile/default_avatar.svg"}
-                  alt="プロフィール デフォルトサムネイル"
+                  alt="プロフィール画像"
                   width={88}
                   height={110}
                   loading='eager'
+                  className='aspect-square object-cover'
                 />
               </div>
               <div className='w-fit rounded-full border-5 border-white bg-accent-primary p-2 absolute bottom-0 right-0'>
