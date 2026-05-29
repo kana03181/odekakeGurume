@@ -27,7 +27,7 @@ export default function Page() {
     defaultValues: {
       email: "",
       password: "",
-      username: "",
+      // username: "",
       agree: false,
     },
     resolver: zodResolver(userSchema),
@@ -39,15 +39,15 @@ export default function Page() {
 
   const signUpSubmit = async (data:UserForm) => {
 
-      const {email, password, username} = data
+      const {email, password} = data
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/login`,
-          data: {
-            user_name: username,
-          },
+          // data: {
+          //   user_name: username,
+          // },
         },
       })
 
@@ -69,7 +69,7 @@ export default function Page() {
         reset({
           email: "",
           password: "",
-          username: "",
+          // username: "",
           agree: false,
         });
       }
@@ -111,7 +111,7 @@ export default function Page() {
             </p>
           )}
         </div>
-        <div className='space-y-2'>
+        {/* <div className='space-y-2'>
           <Label htmlFor='username'>
               ユーザー名（4文字以上）
           </Label>
@@ -127,7 +127,7 @@ export default function Page() {
               {errors.username.message}
             </p>
           )}
-        </div>
+        </div> */}
         <div className='flex items-center justify-start gap-x-1'>
           <Label htmlFor="agree"
             className='block text-sm font-medium text-primary'>

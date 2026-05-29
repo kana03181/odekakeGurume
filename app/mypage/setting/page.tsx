@@ -1,7 +1,7 @@
 "use client";
 
 import { supabase } from '@/app/_libs/supabase'
-import { useSupabaseSession } from "@/app/_hook/useSupabaseSettion";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { useRouter } from "next/navigation";
 import { Button } from "@/app/_components/Button";
 import { MenuItem } from "@/app/_components/MenuItem";

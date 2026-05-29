@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { changePasswordSchema, type changePasswordForm } from "@/app/_libs/schemas/changePassword.schema";
-import { useSupabaseSession } from "@/app/_hook/useSupabaseSettion";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { TextInput } from "@/app/_components/TextInput";
 import Label from "@/app/_components/Label";
 import { Button } from "@/app/_components/Button";
