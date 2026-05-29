@@ -38,6 +38,14 @@ body {
 }
 
 @layer utilities{
+  .bg-accent-primary{
+    @apply bg-[#FF9F43];
+  }
+
+  .bg-profileThumbnail{
+    @apply bg-[#FFFFFF];
+  }
+
   .text-primary{
     @apply text-[#544437];
   }

@@ -4,30 +4,37 @@ import { supabase } from '@/app/_libs/supabase'
 import { useForm, useFieldArray  } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { UpdateProfileRequestBody } from "@/app/api/profile/route";
 import { GetProfileResponse } from "@/app/api/profile/route";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { useFetch } from "@/app/_hooks/useFetch";
+import { uploadImage } from "@/app/_libs/uploadImage";
+import { useStorageImage } from "@/app/_hooks/useStorageImage";
 import { profileSchema, type ProfileForm } from "@/app/_libs/schemas/profile.schema";
 import { TextInput } from "@/app/_components/TextInput";
+import { FileInput } from "@/app/_components/ImageInput";
 import Label from "@/app/_components/Label";
 import { Button } from "@/app/_components/Button";
 import { BaseSelect } from "@/app/_components/BaseSelect";
 import { BirthYearSelect } from "@/app/_components/BirthYearSelect";
 import { BirthMonthSelect } from "@/app/_components/BirthMonthSelect";
 import { createNumberOptions } from "@/app/_libs/selectOptions";
+import Image from "next/image";
 
 
 export default function Page() {
   const { token } = useSupabaseSession()
   const router = useRouter()
 
+  //RFHの設定
   const {
     register,
     handleSubmit,
     reset,
     setError,
+    setValue,
+    watch,
     control,
     formState: {
       errors,
@@ -38,6 +45,7 @@ export default function Page() {
     defaultValues: {
       name: "",
       username: "",
+      thumbnailUrl:"",
       children: [{
         birthYear: undefined,
         birthMonth: undefined,
@@ -54,6 +62,50 @@ export default function Page() {
     name:"children"
   })
 
+
+  // 画像URL取得
+  const profileThumbnailKey = watch("thumbnailUrl");
+
+  const profileThumbnailUrl = useStorageImage({
+    bucket: "profile_thumbnail",
+    imageKey: profileThumbnailKey
+  });
+
+
+  // 画像アップロード
+  const handleImageChange = async (
+    event:ChangeEvent<HTMLInputElement>
+  ):Promise<void> => {
+    if (!event.target.files?.length) {
+      return
+    }
+
+    try {
+      const file = event.target.files[0];
+
+      const imagePath = await uploadImage({
+        file,
+        bucket:"profile_thumbnail"
+      })
+
+    // RHFに値をセット
+    setValue("thumbnailUrl", imagePath, {
+      shouldDirty: true,
+      shouldValidate: true,
+    })
+
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("エラーが発生しました");
+      }
+    }
+
+  }
+
+
+  //データの送信
   const profileSubmit = async (data: ProfileForm) => {
 
     try {
@@ -62,8 +114,6 @@ export default function Page() {
 
       if (!token) return;
 
-      // const token = authData.session.access_token;
-      // const authHeader = `Bearer ${token}`;
       if ( error || !authData.session ) {
         setError("root", {
           message: "ユーザー情報が見つかりませんでした"
@@ -125,6 +175,7 @@ export default function Page() {
   }, [error, setError])
 
   useEffect(() => {
+
     if (!data) return;
 
     reset({
@@ -157,6 +208,7 @@ export default function Page() {
     return <div className='grid place-content-center'><p className='text-sm'>読み込み中...</p></div>
   }
 
+
   return (
     <div className='flex items-center justify-center flex-col pt-60'>
       {errors.root && (
@@ -165,6 +217,33 @@ export default function Page() {
       )}
       <form onSubmit={handleSubmit(profileSubmit)} className='space-y-8 w-full max-w-100'>
         <div className='space-y-2'>
+          <Label htmlFor='profileThumbnailKey'>
+            <FileInput
+              id="profileThumbnailKey"
+              onChange={handleImageChange}
+            />
+            <div className='relative w-[clamp(44px,calc(88/768*100vw),88px)] mx-auto'>
+              <div className='w-fit rounded-full border-5 border-white overflow-hidden bg-profileThumbnail'>
+                <Image
+                  src={profileThumbnailUrl || "/profile/default_avatar.svg"}
+                  alt="プロフィール画像"
+                  width={88}
+                  height={110}
+                  loading='eager'
+                  className='aspect-square object-cover'
+                />
+              </div>
+              <div className='w-fit rounded-full border-5 border-white bg-accent-primary p-2 absolute bottom-0 right-0'>
+                <Image
+                  src={"/profile/camera.svg"}
+                  alt="カメラアイコン"
+                  width={15}
+                  height={15}
+                  loading='eager'
+                />
+              </div>
+            </div>
+          </Label>
           <Label htmlFor='name'>
               お名前
           </Label>
