@@ -1,4 +1,6 @@
 import { ComponentPropsWithRef } from "react";
+import { cn } from "@/app/_libs/cn";
+
 
 type Props = ComponentPropsWithRef<'input'>;
 
@@ -8,7 +10,7 @@ export const CheckboxInput = ({ className, type="checkbox", ref, ...props}: Prop
       {...props}
       type={type}
       ref={ref}
-      className={`appearance-none ${className ?? ""}`}
+      className={cn(className)}
     />
   )
 };

@@ -14,7 +14,7 @@ export const Button = ({ variant = "primary", className, children, ref, ...props
   const variants = {
     primary: "bg-[#FF9F43] hover:bg-[#FBB97B] text-white",
     delete: "bg-[#BA1A1A]/5 hover:bg-[#BA1A1A]/10 hover:border-[#BA1A1A] text-[#BA1A1A] border-2 border-[#BA1A1A]/10",
-    disabled: "bg-[#AAA9A8] hover:bg-[#FBB97B] text-white",
+    disabled: "bg-[#AAA9A8] enabled:hover:bg-[#FBB97B] text-white",
   }
 
   return (

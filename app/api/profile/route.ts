@@ -12,7 +12,7 @@ import { useAuthUser } from "@/app/_hooks/useAuthUser";
 
 //プロフィールのレスポンスの型
 export type GetProfileResponse = {
-  supabaseUserId: string
+  supabaseUserId: string | null
   name: string | null
   userName: string | null
   thumbnailUrl: string | null
@@ -90,14 +90,16 @@ export type UpdateProfileRequestBody = {
   }[]
 }
 
-export const PUT = async (request: Request) => {
+export const PUT = async (request: NextRequest) => {
 
   //tokenの確認
-  const token = request.headers.get("authorization") ?? '';
-  const accessToken = token.replace("Bearer ", "");
-  // console.log(accessToken);
+  // const token = request.headers.get("authorization") ?? '';
+  // const accessToken = token.replace("Bearer ", "");
 
-  const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
+    const { user, error } = await useAuthUser(request);
+
+
+  // const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
 
   if ( error ){
     return NextResponse.json({ message: error.message }, { status: 401 });

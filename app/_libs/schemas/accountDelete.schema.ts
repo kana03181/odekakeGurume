@@ -1,11 +1,8 @@
 import { z } from "zod";
 
 export const accountDeleteSchema = z.object({
-  reasons: z.array(
-    z.object({
-      reason: z.string(),
-      })
-  ),
+  reasons: z.array(z.string())
+    .min(1, "退会理由を選択してください"),
 
   message: z.string()
     .max(500, "500文字以内で入力してください"),

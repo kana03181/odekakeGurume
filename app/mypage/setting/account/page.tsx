@@ -1,14 +1,10 @@
 "use client";
 
-import { supabase } from '@/app/_libs/supabase'
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { MenuItem } from "@/app/_components/MenuItem";
 
-
 export default function Page() {
-
   const {session, isLoading} = useSupabaseSession();
-
 
   return (
     <div>
@@ -37,7 +33,7 @@ export default function Page() {
                     アカウントの削除
                   </MenuItem>
                 </div>
-                  <p className='mypage-text-caution text-xs font-medium'>アカウントを削除すると、保存したお店や口コミが全て削除されます。ご注意ください。</p>
+                  <p className='mypage-text-caution text-xs font-medium'>アカウントを削除すると、プロフィール・お気に入り・閲覧履歴は削除されます。ご注意ください。</p>
               </div>
             </div>
           )}

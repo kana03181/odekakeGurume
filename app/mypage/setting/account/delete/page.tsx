@@ -3,9 +3,9 @@
 import { supabase } from '@/app/_libs/supabase'
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { accountDeleteSchema, type accountDeleteForm } from "@/app/_libs/schemas/accountDelete.schema";
-import { useSupabaseSession } from "@/app/_hook/useSupabaseSettion";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { Button } from "@/app/_components/Button";
 import { LinkButton } from "@/app/_components/LinkButton";
 import { CheckboxInput } from "@/app/_components/CheckboxInput";
@@ -13,26 +13,27 @@ import Label from "@/app/_components/Label";
 import TextArea from "@/app/_components/TextArea";
 
 export default function Page() {
-  // const router = useRouter()
-  const { session, isLoading } = useSupabaseSession();
+  const { token, session, isLoading } = useSupabaseSession()
+  const router = useRouter()
 
-    const {
-      register,
-      handleSubmit,
-      watch,
-      formState: {
-        errors,
-        isSubmitting,
-        isValid,
-      }
-    } = useForm<accountDeleteForm>({
-      mode: "onChange",
-      defaultValues: {
-        reasons: [],
-        agree: false,
-      },
-      resolver: zodResolver(accountDeleteSchema),
-    });
+  const {
+    register,
+    handleSubmit,
+    setError,
+    watch,
+    formState: {
+      errors,
+      isSubmitting,
+      isValid,
+    }
+  } = useForm<accountDeleteForm>({
+    mode: "onChange",
+    defaultValues: {
+      reasons: [],
+      agree: false,
+    },
+    resolver: zodResolver(accountDeleteSchema),
+  });
 
   const reasonOptions = [
     {
@@ -49,15 +50,52 @@ export default function Page() {
     },
   ]
 
-    const isAgreed = watch("agree");
-    const isEnabled = isValid && isAgreed;
+  const isAgreed = watch("agree");
+  const isEnabled = isValid && isAgreed;
+
+  //データの送信
+  const accountDeleteSubmit = async (data: accountDeleteForm) => {
+
+      try {
+        const { data: authData, error } = await supabase.auth.getSession();
+      // console.log(authData);
+
+        if (!token) return;
+
+        if ( error || !authData.session ) {
+          setError("root", {
+            message: "ユーザー情報が見つかりませんでした"
+          });
+          return;
+        }
+
+        const res = await fetch("/api/account/delete", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          }
+        })
+
+        console.log(res);
 
 
+        if (!res.ok) {
+          console.error("退会処理に失敗しました")
+          return
+        }
+        alert("退会処理が完了しました")
 
-    const accountDeleteSubmit = async (data: accountDeleteForm) => {
+        await supabase.auth.signOut();
+        router.replace("/sign_up")
 
-      const { reasons } = data;
-      console.log(reasons);
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message);
+        } else {
+          alert("エラーが発生しました");
+        }
+      }
 
   }
 
@@ -69,10 +107,16 @@ export default function Page() {
             <form onSubmit={handleSubmit(accountDeleteSubmit)} className='space-y-4 w-full max-w-100'>
               <div className='mb-8 text-center space-y-4'>
                 <p className='text-xl font-medium'>本当に削除しますか？</p>
-                <p className='text-primary text-sm font-medium'>アカウントを削除すると、これまでの投稿、お気に入り、閲覧履歴がすべて消去され、復元することはできません。</p>
+                <p className='text-primary text-sm font-medium'>
+                  アカウントを削除すると、プロフィール・お気に入り・閲覧履歴は削除され、復元できません。
+                  なお、他のお客様の参考となるよう、投稿した口コミは匿名化された状態でサービス上に残ります。
+                </p>
               </div>
               <div className='space-y-6'>
-                <h2>退会の理由をお聞かせください</h2>
+                <h2>
+                  <span className='inline-block'>退会の理由をお聞かせください</span>
+                  <span className='inline-block text-caution text-xs font-bold'>＊必須</span>
+                </h2>
                 <div className='space-y-3'>
                   {reasonOptions.map((reason) => (
                     <div className='flex gap-4 items-center justify-start' key={reason.id}>
