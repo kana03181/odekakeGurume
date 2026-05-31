@@ -4,7 +4,7 @@ import { supabase } from '@/app/_libs/supabase'
 import { useForm, useFieldArray  } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect} from "react";
 import { UpdateProfileRequestBody } from "@/app/api/profile/route";
 import { GetProfileResponse } from "@/app/api/profile/route";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";

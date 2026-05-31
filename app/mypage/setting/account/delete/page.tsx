@@ -1,7 +1,7 @@
 'use client'
 
 import { supabase } from '@/app/_libs/supabase'
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { accountDeleteSchema, type accountDeleteForm } from "@/app/_libs/schemas/accountDelete.schema";
@@ -76,9 +76,6 @@ export default function Page() {
             Authorization: token,
           }
         })
-
-        console.log(res);
-
 
         if (!res.ok) {
           console.error("退会処理に失敗しました")
