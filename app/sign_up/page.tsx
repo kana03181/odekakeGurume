@@ -8,6 +8,7 @@ import { userSchema, type UserForm } from "@/app/_libs/schemas/user.schema";
 import { TextInput } from "@/app/_components/TextInput";
 import Label from "@/app/_components/Label";
 import { Button } from "@/app/_components/Button";
+import { CheckboxInput } from "@/app/_components/CheckboxInput";
 
 export default function Page() {
 
@@ -128,15 +129,16 @@ export default function Page() {
           )}
         </div> */}
         <div className='flex items-center justify-start gap-x-1'>
-          <input
-            {...register("agree")}
-            type="checkbox"
-            id='agree'
-            />
           <Label htmlFor="agree"
             className='block text-sm font-medium text-primary'>
               <Link href="/terms" className='text-secondary'>利用規約</Link>と<Link href="/privacy_policy" className='text-secondary'>プライバシーポリシー</Link>に同意する
           </Label>
+          <CheckboxInput
+            {...register("agree")}
+            type="checkbox"
+            id='agree'
+            className='order-first rounded-[calc(6/16*1rem)] border-[#DAC2B1] border border-solid input-bg-secondary w-4.5 h-4.5'
+            />
         </div>
         {errors.agree && (
           <p className="text-caution text-sm font-bold">

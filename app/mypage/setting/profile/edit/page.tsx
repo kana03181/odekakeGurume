@@ -24,8 +24,8 @@ import Image from "next/image";
 
 
 export default function Page() {
-  const { token } = useSupabaseSession()
-  const router = useRouter()
+  const { token, isLoading: isSessionLoading } = useSupabaseSession()
+  // const router = useRouter()
 
   //RFHの設定
   const {
@@ -101,7 +101,6 @@ export default function Page() {
         alert("エラーが発生しました");
       }
     }
-
   }
 
 
@@ -160,7 +159,7 @@ export default function Page() {
   }
 
   //プロフィールを取得
-  const { data, error, isLoading } = useFetch<GetProfileResponse>("/api/profile")
+  const { data, error, isLoading:isUserLoading } = useFetch<GetProfileResponse>("/api/profile")
 
   useEffect(() => {
     if (!error) return;
@@ -204,7 +203,7 @@ export default function Page() {
     })
   }, [data, reset])
 
-  if (isLoading) {
+  if ( isSessionLoading || isUserLoading || !data) {
     return <div className='grid place-content-center'><p className='text-sm'>読み込み中...</p></div>
   }
 
