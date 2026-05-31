@@ -13,7 +13,7 @@ import { uploadImage } from "@/app/_libs/uploadImage";
 import { useStorageImage } from "@/app/_hooks/useStorageImage";
 import { profileSchema, type ProfileForm } from "@/app/_libs/schemas/profile.schema";
 import { TextInput } from "@/app/_components/TextInput";
-import { FileInput } from "@/app/_components/ImageInput";
+import { ImageInput } from "@/app/_components/ImageInput";
 import Label from "@/app/_components/Label";
 import { Button } from "@/app/_components/Button";
 import { BaseSelect } from "@/app/_components/BaseSelect";
@@ -217,7 +217,7 @@ export default function Page() {
       <form onSubmit={handleSubmit(profileSubmit)} className='space-y-8 w-full max-w-100'>
         <div className='space-y-2'>
           <Label htmlFor='profileThumbnailKey'>
-            <FileInput
+            <ImageInput
               id="profileThumbnailKey"
               onChange={handleImageChange}
             />

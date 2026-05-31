@@ -1,15 +1,13 @@
 import { ComponentPropsWithRef } from "react";
 import { cn } from "@/app/_libs/cn";
 
-// import { BaseInput } from "@/app/_components/BaseInput";
-
-
 type Props = ComponentPropsWithRef<'input'>;
 
-export const TextInput = ({ className, ref, ...props}: Props) => {
+export const DateInput = ({ className, type="checkbox", ref, ...props}: Props) => {
   return (
     <input
       {...props}
+      type={type}
       ref={ref}
       className={cn("rounded-[calc(48/16*1rem)]", className)}
     />

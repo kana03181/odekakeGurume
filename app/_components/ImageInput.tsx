@@ -5,7 +5,7 @@ import { cn } from "../_libs/cn";
 
 type Props = ComponentPropsWithRef<'input'>;
 
-export const FileInput = ({ className, ref, ...props}: Props) => {
+export const ImageInput = ({ className, ref, ...props}: Props) => {
   return (
     <input
       {...props}
