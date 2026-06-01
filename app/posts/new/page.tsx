@@ -92,54 +92,60 @@ export default function Page() {
 
 
   return (
-    <div>
-      <h2>口コミ投稿</h2>
+    <div className='flex items-center justify-center flex-col pt-60 gap-14'>
+      <h2 className='text-3xl font-medium'>口コミ投稿</h2>
 
-      <div>
-        <h3>どこで食べましたか？</h3>
-        <div className='space-y-2'>
-          <Label htmlFor='shopname'>
-              店名
-          </Label>
-          <TextInput
-            {...register("shopName")}
-            type='text'
-            id='shopName'
-            className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
-          />
-          {errors.shopName && (
-            <p className="text-caution text-sm font-bold">
-              {errors.shopName.message}
-            </p>
-          )}
-        </div>
-        <div className='space-y-2'>
-          <Label htmlFor='visitedDate'>
-              来店日
-          </Label>
-          <DateInput
-            {...register("visitedDate")}
-            id='visitedDate'
-            className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
-          />
-          {errors.visitedDate && (
-            <p className="text-caution text-sm font-bold">
-              {errors.visitedDate.message}
-            </p>
-          )}
-        </div>
-        <div className='space-y-2'>
-          <Label htmlFor='Prefecture'>
-              都道府県
-          </Label>
-          <PrefectureSelect
-            {...register("prefecture")}
-          />
-          {errors.Prefecture && (
-            <p className="text-caution text-sm font-bold">
-              {errors.Prefecture.message}
-            </p>
-          )}
+      <div className='space-y-8 w-full max-w-100'>
+        <div>
+          <h3 className='text-2xl font-medium'>どこで食べましたか？</h3>
+          <div className='space-y-2'>
+            <Label htmlFor='shopname'>
+                店名
+            </Label>
+            <TextInput
+              {...register("shopName")}
+              type='text'
+              id='shopName'
+              className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
+            />
+            {errors.shopName && (
+              <p className="text-caution text-sm font-bold">
+                {errors.shopName.message}
+              </p>
+            )}
+          </div>
+          <div className='flex items-center justify-center gap-3'>
+            <div className='space-y-2'>
+              <Label htmlFor='visitedDate'>
+                  来店日
+              </Label>
+              <DateInput
+                {...register("visitedDate")}
+                id='visitedDate'
+                className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
+              />
+              {errors.visitedDate && (
+                <p className="text-caution text-sm font-bold">
+                  {errors.visitedDate.message}
+                </p>
+              )}
+            </div>
+            <div className='space-y-2'>
+              <Label htmlFor='Prefecture'>
+                  都道府県
+              </Label>
+              <PrefectureSelect
+                {...register("prefecture")}
+                id='prefecture'
+                className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
+              />
+              {errors.prefecture && (
+                <p className="text-caution text-sm font-bold">
+                  {errors.prefecture.message}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

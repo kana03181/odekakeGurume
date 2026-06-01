@@ -3,7 +3,7 @@ import { cn } from "@/app/_libs/cn";
 
 type Props = ComponentPropsWithRef<'input'>;
 
-export const DateInput = ({ className, type="checkbox", ref, ...props}: Props) => {
+export const DateInput = ({ className, type="date", ref, ...props}: Props) => {
   return (
     <input
       {...props}
