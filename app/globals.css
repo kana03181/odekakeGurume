@@ -46,6 +46,10 @@ body {
     @apply bg-[#FFFFFF];
   }
 
+  .bg-checkbox-hover{
+    @apply bg-[#A3EED8];
+  }
+
   .text-primary{
     @apply text-[#544437];
   }
@@ -60,6 +64,10 @@ body {
 
   .text-caution{
     @apply text-red-500;
+  }
+
+  .text-checkbox-hover{
+    @apply text-[#1F6E5D];
   }
 
   .mypage-text-caution{
@@ -80,6 +88,18 @@ body {
 
   .textarea-bg-primary{
     @apply bg-[#F3EDE8];
+  }
+
+  .posts-bg-primary{
+    @apply bg-[#F8F3EE];
+  }
+
+  .posts-image-bg-primary{
+    @apply bg-[#DAC2B1]/30;
+  }
+
+  .posts-image-bg-secondary{
+    @apply bg-[#FF9F43]/20;
   }
 
 
