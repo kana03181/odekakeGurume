@@ -29,8 +29,11 @@ export const postsSchema = z.object({
       ageGroup: z.enum(["0_2", "3_5", "6_plus"]),
       count: z.number().min(0),
     })
-  )
+  ),
 
+  rating: z.number()
+    .min(1, "オススメ度を選択してください")
+    .max(3),
 
 
 

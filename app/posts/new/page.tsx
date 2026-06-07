@@ -22,6 +22,7 @@ import { BaseSelect } from "@/app/_components/BaseSelect";
 import { PrefectureSelect } from "@/app/_components/PrefectureSelect";
 import { createNumberOptions } from "@/app/_libs/selectOptions";
 import Image from "next/image";
+import { Star } from "lucide-react";
 
 
 export default function Page() {
@@ -61,6 +62,7 @@ export default function Page() {
           count: 0
         },
       ],
+      rating:0,
     },
     resolver: zodResolver(postsSchema),
   });
@@ -286,6 +288,34 @@ export default function Page() {
             </div>
           </div>
         ))}
+      </div>
+      <div className='posts-bg-primary rounded-[calc(32/16*1rem)] p-6 space-y-4'>
+        <h3 className='text-2xl font-medium'>オススメ度</h3>
+        <div>
+          <CheckboxInput
+            type="hidden"
+            {...register("rating")}
+          />
+          <div className="flex gap-1">
+            {[1, 2, 3].map((star) => (
+              <button
+                key={star}
+                type="button"
+                onClick={() => setValue("rating", star, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                })}
+              >
+                <Star className={`size-6 transition-colors ${
+                    star <= watch("rating")
+                      ? "posts-star-fill-active posts-star-text"
+                      : "posts-star-fill posts-star-text"
+                  }
+                `} />
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )
