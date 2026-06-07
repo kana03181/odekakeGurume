@@ -15,9 +15,6 @@ export const postsSchema = z.object({
     message: "日付を選択してください",
   }),
 
-  comment: z.string().optional(),
-    // .min(4, "4文字以上で入力してください")
-    // .max(20, "ユーザー名は20文字以内で入力してください"),
 
   postsImageUrl: z.string().optional(),
 
@@ -35,10 +32,10 @@ export const postsSchema = z.object({
     .min(1, "オススメ度を選択してください")
     .max(3),
 
-
+  comment: z.string()
+    .max(1000, "コメントはは1000文字以内で入力してください"),
 
 })
 
 // 型を自動生成
 export type PostsForm = z.input<typeof postsSchema>;
-// export type ProfileFormOutput = z.output<typeof profileSchema>;

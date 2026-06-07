@@ -17,6 +17,7 @@ import { DateInput } from "@/app/_components/DateInput";
 import { CheckboxInput } from "@/app/_components/CheckboxInput";
 import { RadioBtnInput } from "@/app/_components/RadioBtnInput";
 import Label from "@/app/_components/Label";
+import TextArea from "@/app/_components/TextArea";
 import { Button } from "@/app/_components/Button";
 import { BaseSelect } from "@/app/_components/BaseSelect";
 import { PrefectureSelect } from "@/app/_components/PrefectureSelect";
@@ -311,10 +312,25 @@ export default function Page() {
                       ? "posts-star-fill-active posts-star-text"
                       : "posts-star-fill posts-star-text"
                   }
-                `} />
+                `}
+                />
               </button>
             ))}
           </div>
+        </div>
+      </div>
+      <div className='posts-bg-primary rounded-[calc(32/16*1rem)] p-6 space-y-4'>
+        <h3 className='text-2xl font-medium'>コメント</h3>
+        <div className="max-w-[294px] w-[calc(294/768*100vw)]">
+          <Label htmlFor='comment' className="sr-only">
+              コメント
+          </Label>
+          <TextArea
+            {...register("comment")}
+            id="comment"
+            placeholder="お店の雰囲気や注意点など、自由に記入してください"
+            className="input-bg-secondary"
+          />
         </div>
       </div>
     </div>
