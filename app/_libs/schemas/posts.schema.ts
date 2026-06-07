@@ -24,6 +24,15 @@ export const postsSchema = z.object({
   usageScenes: z.array(z.string())
     .min(1, "利用シーンを選択してください"),
 
+  children: z.array(
+    z.object({
+      ageGroup: z.enum(["0_2", "3_5", "6_plus"]),
+      count: z.number().min(0),
+    })
+  )
+
+
+
 
 })
 

@@ -102,5 +102,9 @@ body {
     @apply bg-[#FF9F43]/20;
   }
 
+  .posts-countBtn{
+    @apply text-[#6D3A00];
+  }
+
 
 }
