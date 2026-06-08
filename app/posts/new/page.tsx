@@ -4,10 +4,7 @@ import { useForm, useFieldArray, useWatch  } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect} from "react";
-import { UpdateProfileRequestBody } from "@/app/api/profile/route";
-import { GetProfileResponse } from "@/app/api/profile/route";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
-import { useFetch } from "@/app/_hooks/useFetch";
 import { uploadImage } from "@/app/_libs/uploadImage";
 import { useStorageImage } from "@/app/_hooks/useStorageImage";
 import { postsSchema, type PostsForm } from "@/app/_libs/schemas/posts.schema";
@@ -19,9 +16,7 @@ import { RadioBtnInput } from "@/app/_components/RadioBtnInput";
 import Label from "@/app/_components/Label";
 import TextArea from "@/app/_components/TextArea";
 import { Button } from "@/app/_components/Button";
-import { BaseSelect } from "@/app/_components/BaseSelect";
 import { PrefectureSelect } from "@/app/_components/PrefectureSelect";
-import { createNumberOptions } from "@/app/_libs/selectOptions";
 import Image from "next/image";
 import { Star } from "lucide-react";
 
@@ -170,7 +165,7 @@ export default function Page() {
         })
       )
     );
-    console.log(postChildren);
+    // console.log(postChildren);
 
   }
 
@@ -254,85 +249,89 @@ export default function Page() {
                 </Label>
               ))}
             </div>
-          </div>
-      </div>
-      <div className='posts-bg-primary rounded-[calc(32/16*1rem)] p-6 space-y-4'>
-        <h3 className='text-2xl font-medium'>利用シーン</h3>
-        <div className="flex gap-2 flex-wrap">
-          {usageSceneOptions.map((usageScene) => (
-          <Label className="text-xl font-medium text-primary input-bg-secondary rounded-full hover:bg-[#A3EED8] hover:text-[rgb(31,110,93)] cursor-pointer" key={usageScene.id}>
-            <RadioBtnInput
-              value={usageScene.id}
-              {...register("usageScenes")}
-              className='peer sr-only rounded-full input-bg-secondary'
-            />
-            <span className="inline-block text-xl font-medium text-primary px-5 py-2.5 w-full rounded-full input-bg-secondary hover:bg-[#A3EED8] transition-colors peer-checked:bg-[#A3EED8] peer-checked:text-[#1F6E5D]">
-              {usageScene.label}
-            </span>
-          </Label>
-          ))}
         </div>
-      </div>
-      <div className='posts-bg-primary rounded-[calc(32/16*1rem)] p-6 space-y-4'>
-        <h3 className='text-2xl font-medium'>同伴した子供の詳細</h3>
-        <div className="flex gap-2 justify-between">
-          <p className="max-w-[147px]">年齢</p>
-          <p className="max-w-[147px]">人数</p>
-        </div>
-        { children.map((child, index) =>(
-          <div className="flex gap-2 justify-between" key={child.ageGroup}>
-            <p className="pt-1">{ ageGroupLabel[child.ageGroup] }</p>
-            <div className="flex items-center">
-              <Button type="button" onClick={() => handleDecrease(index)} className="w-8 h-8 rounded-full p-0 text-2xl posts-countBtn"> - </Button>
-              <span className="px-4">{ child.count}</span>
-              <Button type="button" onClick={() => handleIncrease(index)} className="w-8 h-8 rounded-full p-0 text-2xl posts-countBtn"> + </Button>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className='posts-bg-primary rounded-[calc(32/16*1rem)] p-6 space-y-4'>
-        <h3 className='text-2xl font-medium'>オススメ度</h3>
-        <div>
-          <CheckboxInput
-            type="hidden"
-            {...register("rating")}
-          />
-          <div className="flex gap-1">
-            {[1, 2, 3].map((star) => (
-              <button
-                key={star}
-                type="button"
-                onClick={() => setValue("rating", star, {
-                  shouldValidate: true,
-                  shouldDirty: true,
-                })}
-              >
-                <Star className={`size-6 transition-colors ${
-                    star <= watch("rating")
-                      ? "posts-star-fill-active posts-star-text"
-                      : "posts-star-fill posts-star-text"
-                  }
-                `}
-                />
-              </button>
+        <div className='posts-bg-primary rounded-[calc(32/16*1rem)] p-6 space-y-4'>
+          <h3 className='text-2xl font-medium'>利用シーン</h3>
+          <div className="flex gap-2 flex-wrap">
+            {usageSceneOptions.map((usageScene) => (
+            <Label className="text-xl font-medium text-primary input-bg-secondary rounded-full hover:bg-[#A3EED8] hover:text-[rgb(31,110,93)] cursor-pointer" key={usageScene.id}>
+              <RadioBtnInput
+                value={usageScene.id}
+                {...register("usageScenes")}
+                className='peer sr-only rounded-full input-bg-secondary'
+              />
+              <span className="inline-block text-xl font-medium text-primary px-5 py-2.5 w-full rounded-full input-bg-secondary hover:bg-[#A3EED8] transition-colors peer-checked:bg-[#A3EED8] peer-checked:text-[#1F6E5D]">
+                {usageScene.label}
+              </span>
+            </Label>
             ))}
           </div>
         </div>
-      </div>
-      <div className='posts-bg-primary rounded-[calc(32/16*1rem)] p-6 space-y-4'>
-        <h3 className='text-2xl font-medium'>コメント</h3>
-        <div className="max-w-[294px] w-[calc(294/768*100vw)]">
-          <Label htmlFor='comment' className="sr-only">
-              コメント
-          </Label>
-          <TextArea
-            {...register("comment")}
-            id="comment"
-            placeholder="お店の雰囲気や注意点など、自由に記入してください"
-            className="input-bg-secondary"
-          />
+        <div className='posts-bg-primary rounded-[calc(32/16*1rem)] p-6 space-y-4'>
+          <h3 className='text-2xl font-medium'>同伴した子供の詳細</h3>
+          <div className="flex gap-2 justify-between">
+            <p className="max-w-[147px]">年齢</p>
+            <p className="max-w-[147px]">人数</p>
+          </div>
+          { children.map((child, index) =>(
+            <div className="flex gap-2 justify-between" key={child.ageGroup}>
+              <p className="pt-1">{ ageGroupLabel[child.ageGroup] }</p>
+              <div className="flex items-center">
+                <Button type="button" onClick={() => handleDecrease(index)} className="w-8 h-8 rounded-full p-0 text-2xl posts-countBtn"> - </Button>
+                <span className="px-4">{ child.count}</span>
+                <Button type="button" onClick={() => handleIncrease(index)} className="w-8 h-8 rounded-full p-0 text-2xl posts-countBtn"> + </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className='posts-bg-primary rounded-[calc(32/16*1rem)] p-6 space-y-4'>
+          <h3 className='text-2xl font-medium'>オススメ度</h3>
+          <div>
+            <CheckboxInput
+              type="hidden"
+              {...register("rating")}
+            />
+            <div className="flex gap-1">
+              {[1, 2, 3].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setValue("rating", star, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })}
+                >
+                  <Star className={`size-6 transition-colors ${
+                      star <= watch("rating")
+                        ? "posts-star-fill-active posts-star-text"
+                        : "posts-star-fill posts-star-text"
+                    }
+                  `}
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className='posts-bg-primary rounded-[calc(32/16*1rem)] p-6 space-y-4'>
+          <h3 className='text-2xl font-medium'>コメント</h3>
+          <div>
+            <Label htmlFor='comment' className="sr-only">
+                コメント
+            </Label>
+            <TextArea
+              {...register("comment")}
+              id="comment"
+              placeholder="お店の雰囲気や注意点など、自由に記入してください"
+              className="input-bg-secondary"
+            />
+          </div>
+        </div>
+        <div>
+          <Button type="button">次へ</Button>
         </div>
       </div>
+
     </div>
   )
 }
