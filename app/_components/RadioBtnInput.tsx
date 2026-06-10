@@ -2,13 +2,13 @@ import { ComponentPropsWithRef } from "react";
 import { cn } from "@/app/_libs/cn";
 
 
-type Props = ComponentPropsWithRef<'input'>;
+type Props = Omit<ComponentPropsWithRef<'input'>, "type">;
 
-export const RadioBtnInput = ({ className, type="radio", ref, ...props}: Props) => {
+export const RadioBtnInput = ({ className, ref, ...props}: Props) => {
   return (
     <input
       {...props}
-      type={type}
+      type="radio"
       ref={ref}
       className={cn(className)}
     />

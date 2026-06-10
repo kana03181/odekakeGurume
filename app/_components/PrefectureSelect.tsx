@@ -1,14 +1,12 @@
 import { BaseSelect } from "@/app/_components/BaseSelect";
 import { prefectureOptions } from "@/app/_libs/selectOptions";
+import { ComponentPropsWithRef } from "react";
 
-type Props = {
+type Props = ComponentPropsWithRef<'select'> & {
   placeholder?: string
-} & React.SelectHTMLAttributes<HTMLSelectElement>
+}
 
-export const PrefectureSelect = ({
-  placeholder = "--",
-  ...props
-}: Props) => {
+export const PrefectureSelect = ({ placeholder = "--", ...props}: Props) => {
   return (
     <BaseSelect
       {...props}

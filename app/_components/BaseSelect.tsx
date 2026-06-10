@@ -2,11 +2,10 @@ import { cn } from "@/app/_libs/cn";
 import { SelectOption } from "@/app/_types/select";
 
 
-type Props = {
+type Props = React.SelectHTMLAttributes<HTMLSelectElement> & {
   options: SelectOption[]
   placeholder?: string
-} & React.SelectHTMLAttributes<HTMLSelectElement>
-
+}
 
 export const BaseSelect = ({
   options,
