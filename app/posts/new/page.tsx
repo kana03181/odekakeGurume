@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect} from "react";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
+import { usePublicFetch } from "@/app/_hooks/usePublicFetch";
+import { GetPrefectureResponse } from "@/app/api/prefectures/route";
 import { uploadImage } from "@/app/_libs/uploadImage";
 import { useStorageImage } from "@/app/_hooks/useStorageImage";
 import { postsSchema, type PostsForm } from "@/app/_libs/schemas/posts.schema";
@@ -153,6 +155,13 @@ export default function Page() {
         alert("エラーが発生しました");
       }
     }
+  }
+
+  //都道府県をAPIから取得
+  const { data: prefectures, error } = usePublicFetch<GetPrefectureResponse>("/api/prefectures")
+
+  if (error) {
+    return<p>取得失敗</p>
   }
 
   //データの送信
