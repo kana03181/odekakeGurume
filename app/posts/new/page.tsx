@@ -21,6 +21,7 @@ import { Button } from "@/app/_components/Button";
 import { PrefectureSelect } from "@/app/_components/PrefectureSelect";
 import Image from "next/image";
 import { Star } from "lucide-react";
+import { prefectureOptions } from '@/app/_libs/selectOptions';
 
 
 export default function Page() {
@@ -159,10 +160,21 @@ export default function Page() {
 
   //都道府県をAPIから取得
   const { data: prefectures, error } = usePublicFetch<GetPrefectureResponse>("/api/prefectures")
+  console.log(prefectures);
+
+  const prefectureOptions = prefectures?.map((prefecture) => ({
+      label: prefecture.name,
+      value: String(prefecture.id),
+    })
+  ) ?? [];
+
 
   if (error) {
     return<p>取得失敗</p>
   }
+
+
+
 
   //データの送信
   const postsSubmit = async (data: PostsForm) => {
@@ -226,6 +238,7 @@ export default function Page() {
                 {...register("prefecture")}
                 id='prefecture'
                 className='input-bg-primary placeholder-[#B4A89F] block w-full p-2.5'
+                options={prefectureOptions}
               />
               {errors.prefecture && (
                 <p className="text-caution text-sm font-bold">
