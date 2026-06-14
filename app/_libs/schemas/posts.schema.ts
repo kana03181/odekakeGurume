@@ -23,7 +23,7 @@ export const postsSchema = z.object({
 
   children: z.array(
     z.object({
-      ageGroup: z.enum(["0_2", "3_5", "6_plus"]),
+      ageGroup: z.string(),
       count: z.number().min(0),
     })
   ),

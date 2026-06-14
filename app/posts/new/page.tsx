@@ -7,6 +7,7 @@ import { ChangeEvent, useEffect} from "react";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { usePublicFetch } from "@/app/_hooks/usePublicFetch";
 import { GetPrefectureResponse } from "@/app/api/prefectures/route";
+import { GetFeatureResponse } from "@/app/api/features/route";
 import { uploadImage } from "@/app/_libs/uploadImage";
 import { useStorageImage } from "@/app/_hooks/useStorageImage";
 import { postsSchema, type PostsForm } from "@/app/_libs/schemas/posts.schema";
@@ -22,6 +23,7 @@ import { PrefectureSelect } from "@/app/_components/PrefectureSelect";
 import Image from "next/image";
 import { Star } from "lucide-react";
 import { prefectureOptions } from '@/app/_libs/selectOptions';
+import { features } from 'process';
 
 
 export default function Page() {
@@ -47,49 +49,17 @@ export default function Page() {
       shopName: "",
       comment: "",
       postsImageUrl: "",
-      children: [
-        {
-          ageGroup: "0_2",
-          count: 0
-        },
-        {
-          ageGroup: "3_5",
-          count: 0
-        },
-        {
-          ageGroup: "6_plus",
-          count: 0
-        },
-      ],
+      children: [],
       rating:0,
     },
     resolver: zodResolver(postsSchema),
   });
 
-  const usageSceneOptions = [
-    {
-      id: "morning",
-      label: "朝ごはん",
-    },
-    {
-      id: "lunch",
-      label: "昼ごはん",
-    },
-    {
-      id: "dinner",
-      label: "夜ごはん",
-    },
-    {
-      id: "break",
-      label: "カフェ・休憩",
-    }
-  ]
-
-  const ageGroupLabel = {
-    "0_2": "0-2歳",
-    "3_5": "3-5歳",
-    "6_plus": "6歳～",
-  } as const;
+  // const ageGroupLabel = {
+  //   "0_2": "0-2歳",
+  //   "3_5": "3-5歳",
+  //   "6_plus": "6歳～",
+  // } as const;
 
   const children = useWatch({
     control,
@@ -160,7 +130,7 @@ export default function Page() {
 
   //都道府県をAPIから取得
   const { data: prefectures, error } = usePublicFetch<GetPrefectureResponse>("/api/prefectures")
-  console.log(prefectures);
+  // console.log(prefectures);
 
   const prefectureOptions = prefectures?.map((prefecture) => ({
       label: prefecture.name,
@@ -170,8 +140,48 @@ export default function Page() {
 
 
   if (error) {
-    return<p>取得失敗</p>
+    return<p>都道府県を取得失敗しました</p>
   }
+
+  //利用シーンをAPIから取得
+  const { data: usageScenes } = usePublicFetch<GetFeatureResponse>("/api/features?category=利用シーン")
+  // console.log(usageScenes);
+
+  //option変換
+  const usageSceneOptions = usageScenes?.map((scene) => ({
+    label: scene.name,
+    value: String(scene.id),
+  })) ?? [];
+  // console.log(usageSceneOptions);
+
+  //年齢層をAPIから取得
+  const { data: ageGroups } = usePublicFetch<GetFeatureResponse>("/api/features?category=年齢層")
+  // console.log(ageGroups);
+
+
+  //id → labelの辞書化
+  const ageGroupLabel = Object.fromEntries(ageGroups?.map((group) => [
+    String(group.id),
+    group.name,
+  ]) ?? []
+  );
+  // console.log(ageGroupLabel);
+
+
+  //ageGroups を元にchildren を自動生成
+  useEffect(() => {
+    if (!ageGroups) return;
+
+    reset((prev) => ({
+      ...prev,
+      children: ageGroups.map((group) => ({
+        ageGroup: String(group.id),
+        count: 0,
+      })
+      )
+    }));
+
+  }, [ageGroups, reset]);
 
 
 
@@ -276,16 +286,16 @@ export default function Page() {
           <h3 className='text-2xl font-medium'>利用シーン</h3>
           <div className="flex gap-2 flex-wrap">
             {usageSceneOptions.map((usageScene) => (
-            <Label className="text-xl font-medium text-primary input-bg-secondary rounded-full hover:bg-[#A3EED8] hover:text-[rgb(31,110,93)] cursor-pointer" key={usageScene.id}>
-              <RadioBtnInput
-                value={usageScene.id}
-                {...register("usageScenes")}
-                className='peer sr-only rounded-full input-bg-secondary'
-              />
-              <span className="inline-block text-xl font-medium text-primary px-5 py-2.5 w-full rounded-full input-bg-secondary hover:bg-[#A3EED8] transition-colors peer-checked:bg-[#A3EED8] peer-checked:text-[#1F6E5D]">
-                {usageScene.label}
-              </span>
-            </Label>
+              <Label className="text-xl font-medium text-primary input-bg-secondary rounded-full hover:bg-[#A3EED8] hover:text-[rgb(31,110,93)] cursor-pointer" key={usageScene.value}>
+                <RadioBtnInput
+                  value={usageScene.value}
+                  {...register("usageScenes")}
+                  className='peer sr-only rounded-full input-bg-secondary'
+                />
+                <span className="inline-block text-xl font-medium text-primary px-5 py-2.5 w-full rounded-full input-bg-secondary hover:bg-[#A3EED8] transition-colors peer-checked:bg-[#A3EED8] peer-checked:text-[#1F6E5D]">
+                  {usageScene.label}
+                </span>
+              </Label>
             ))}
           </div>
         </div>

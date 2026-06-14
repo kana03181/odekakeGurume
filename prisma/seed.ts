@@ -1,5 +1,6 @@
 import { prisma } from "@/app/_libs/prisma";
 
+// 都道府県
 const prefectures = [
     "北海道",
     "青森県",
@@ -51,6 +52,7 @@ const prefectures = [
 ] as const;
 
 async function main() {
+  // 都道府県
   await prisma.prefecture.createMany({
     data: prefectures.map((name, index) => ({
       id: index + 1,
@@ -59,7 +61,69 @@ async function main() {
     skipDuplicates: true,
   });
 
-  console.log("都道府県seed完了");
+  // カテゴリー
+  await prisma.category.createMany({
+    data: [
+      { label: "利用シーン" },
+      { label: "年齢層" },
+    ],
+    skipDuplicates: true,
+  })
+
+  const usageSceneCategory = await prisma.category.findUnique({
+    where: {
+      label: "利用シーン",
+    }
+  })
+
+  const ageGroupCategory = await prisma.category.findUnique({
+    where: {
+      label: "年齢層",
+    }
+  })
+
+  // 利用シーン
+  await prisma.feature.createMany({
+    data: [
+      {
+        name: "朝ごはん",
+        categoryId: usageSceneCategory!.id,
+      },
+      {
+        name: "昼ごはん",
+        categoryId: usageSceneCategory!.id,
+      },
+      {
+        name: "夜ごはん",
+        categoryId: usageSceneCategory!.id,
+      },
+      {
+        name: "カフェ・休憩",
+        categoryId: usageSceneCategory!.id,
+      },
+    ],
+    skipDuplicates: true,
+  })
+
+  // 年齢層
+  await prisma.feature.createMany({
+    data: [
+      {
+        name: "0-2歳",
+        categoryId: ageGroupCategory!.id,
+      },
+      {
+        name: "3-5歳",
+        categoryId: ageGroupCategory!.id,
+      },
+      {
+        name: "6歳～",
+        categoryId: ageGroupCategory!.id,
+      }
+    ],
+    skipDuplicates: true,
+  })
+
 }
 
 main()

@@ -1,6 +1,5 @@
 import { prisma } from "@/app/_libs/prisma";
-import { NextResponse } from "next/server";
-import { NextRequest } from 'next/server'
+import { NextResponse} from "next/server";
 
 
 //都道府県のレスポンスの型
