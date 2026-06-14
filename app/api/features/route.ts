@@ -1,7 +1,7 @@
 import { prisma } from "@/app/_libs/prisma";
 import { NextResponse, NextRequest } from "next/server";
 
-//都道府県のレスポンスの型
+//カテゴリーのレスポンスの型
 export type GetFeatureResponse = {
   id: number
   name: string

@@ -23,7 +23,6 @@ import { PrefectureSelect } from "@/app/_components/PrefectureSelect";
 import Image from "next/image";
 import { Star } from "lucide-react";
 import { prefectureOptions } from '@/app/_libs/selectOptions';
-import { features } from 'process';
 
 
 export default function Page() {
@@ -54,12 +53,6 @@ export default function Page() {
     },
     resolver: zodResolver(postsSchema),
   });
-
-  // const ageGroupLabel = {
-  //   "0_2": "0-2歳",
-  //   "3_5": "3-5歳",
-  //   "6_plus": "6歳～",
-  // } as const;
 
   const children = useWatch({
     control,
@@ -182,8 +175,6 @@ export default function Page() {
     }));
 
   }, [ageGroups, reset]);
-
-
 
 
   //データの送信
