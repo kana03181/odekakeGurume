@@ -1,12 +1,9 @@
 'use client'
 
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
-import { UpdateProfileRequestBody } from "@/app/api/profile/route";
 import { GetProfileResponse } from "@/app/api/profile/route";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { useFetch } from "@/app/_hooks/useFetch";
-import { uploadImage } from "@/app/_libs/uploadImage";
 import { useStorageImage } from "@/app/_hooks/useStorageImage";
 import Image from "next/image";
 

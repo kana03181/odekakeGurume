@@ -1,35 +1,6 @@
-import { SelectOption } from "@/app/_types/select";
+import { PrismaClient } from "@/app/generated/prisma/client";
 
-type createNumberOptionProps = {
-  start: number
-  end: number
-  suffix?: string
-  reverse?: boolean
-}
-
-export const createNumberOptions = ({
-  start,
-  end,
-  suffix = "",
-  reverse = false,
-}: createNumberOptionProps): SelectOption[] => {
-
-  const arr = Array.from(
-    { length: end - start + 1 },
-    (_, i) => start + i
-  )
-
-  const numbers = reverse
-    ? arr.reverse()
-    : arr
-
-    return numbers.map((n) => ({
-      value: String(n),
-      label: `${n}${suffix}`,
-  }))
-
-}
-
+// 都道府県
 const prefectures = [
     "北海道",
     "青森県",
@@ -80,8 +51,12 @@ const prefectures = [
     "沖縄県"
 ] as const;
 
-export const prefectureOptions: SelectOption[] =
-  prefectures.map((prefecture) => ({
-    value: prefecture,
-    label: prefecture,
-  }))
+export const seedPrefectures = async ( prisma: PrismaClient ) => {
+  await prisma.prefecture.createMany({
+    data: prefectures.map((name, index) => ({
+      id: index + 1,
+      name,
+    })),
+    skipDuplicates: true,
+  });
+}
