@@ -5,7 +5,7 @@ import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 
 
 export const usePostForm = () => {
-    const { token, isLoading: isSessionLoading } = useSupabaseSession()
+  const { token, isLoading: isSessionLoading } = useSupabaseSession()
 
   const methods = useForm<PostsForm>({
     mode: "onChange",

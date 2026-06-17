@@ -118,5 +118,17 @@ body {
     @apply text-[#FF9F43];
   }
 
+  .posts-indicator-text{
+    @apply text-[#8F4E00];
+  }
+
+  .posts-indicator-bg{
+    @apply text-[#FFDCC2];
+  }
+
+  .posts-indicator-bg-active{
+    @apply text-[#8F4E00];
+  }
+
 
 }

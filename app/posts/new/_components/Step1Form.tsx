@@ -202,12 +202,11 @@ export default function Step1Form({
 
 
   return (
-    <div className='flex items-center justify-center flex-col pt-60 gap-14'>
-      {/* <h2 className='text-3xl font-medium'>口コミ投稿</h2> */}
+    <div className='flex items-center justify-center flex-col gap-14'>
 
-      {/* <div className='space-y-8 w-full max-w-100'> */}
-        {/* <div className='posts-bg-primary rounded-[calc(32/16*1rem)] p-6 space-y-4'> */}
-          {/* <h3 className='text-2xl font-medium'>どこで食べましたか？</h3> */}
+      <div className='space-y-8 w-full max-w-100'>
+        <div className='posts-bg-primary rounded-[calc(32/16*1rem)] p-6 space-y-4'>
+          <h3 className='text-2xl font-medium'>どこで食べましたか？</h3>
           <div className='space-y-2'>
             <Label htmlFor='shopname'>
                 店名
@@ -257,7 +256,7 @@ export default function Step1Form({
               )}
             </div>
           </div>
-        {/* </div> */}
+        </div>
         <div>
           <p className='mb-4 text-sm font-medium text-primary'>写真を追加（最大3枚まで）</p>
             <div className='flex gap-3 items-center justify-between'>
@@ -362,7 +361,7 @@ export default function Step1Form({
         <div>
           <Button type="button" onClick={handleNext}>次へ</Button>
         </div>
-      {/* </div> */}
+      </div>
 
     </div>
   )
