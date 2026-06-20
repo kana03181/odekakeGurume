@@ -4,7 +4,7 @@ import { useState } from "react";
 import { FormProvider } from "react-hook-form";
 
 import Step1Form from "@/app/posts/new/_components/Step1Form"
-// import Step2Form from "@/app/posts/new/_components/Step2Form"
+import Step2Form from "@/app/posts/new/_components/Step2Form"
 import { StepIndicator } from "@/app/posts/new/_components/StepIndicator"
 import { usePostForm } from "@/app/posts/new/_hook/usePostForm"
 
@@ -26,7 +26,7 @@ export default function NewPostPage() {
           <StepIndicator step={step} />
         <form onSubmit={methods.handleSubmit(postsSubmit)} className='space-y-8 w-full max-w-100'>
           <Step1Form onNext={() => setStep(2)}/>
-          {/* <Step1Form onNext={() => setStep(2)}/> */}
+          <Step2Form onPrev={() => setStep(1)}/>
         </form>
       </div>
     </FormProvider>

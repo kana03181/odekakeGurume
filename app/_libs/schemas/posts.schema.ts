@@ -35,7 +35,21 @@ export const postsSchema = z.object({
   comment: z.string()
     .max(1000, "コメントはは1000文字以内で入力してください"),
 
-})
+  meals: z.array(z.string())
+    .min(1, "お食事についてを選択してください"),
+
+  facilities: z.array(z.string())
+    .min(1, "お食事についてを選択してください"),
+
+
+  others: z.array(z.string()).optional(),
+
+  // kindness: z.enum(["true", "false"], {
+  //   error: "選択してください。"
+  // })
+  //   .transform((value) => value === "true"),
+
+});
 
 // 型を自動生成
 export type PostsForm = z.input<typeof postsSchema>;

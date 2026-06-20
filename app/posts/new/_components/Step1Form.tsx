@@ -22,18 +22,14 @@ import { Button } from "@/app/_components/Button";
 import { PrefectureSelect } from "@/app/_components/PrefectureSelect";
 import Image from "next/image";
 import { Star } from "lucide-react";
-import { prefectureOptions } from '@/app/_libs/selectOptions';
 
 
 type Props = {
   onNext: () => void;
 }
 
-export default function Step1Form({
-  onNext,
-}:Props) {
+export default function Step1Form({ onNext }:Props) {
   // const { token, isLoading: isSessionLoading } = useSupabaseSession()
-  // const router = useRouter()
 
   //RFHの設定
   const {
@@ -285,13 +281,13 @@ export default function Step1Form({
           <h3 className='text-2xl font-medium'>利用シーン</h3>
           <div className="flex gap-2 flex-wrap">
             {usageSceneOptions.map((usageScene) => (
-              <Label className="text-xl font-medium text-primary input-bg-secondary rounded-full hover:bg-[#A3EED8] hover:text-[rgb(31,110,93)] cursor-pointer" key={usageScene.value}>
+              <Label className="text-sm font-medium text-primary input-bg-secondary rounded-full hover:bg-[#A3EED8] hover:text-[rgb(31,110,93)] cursor-pointer" key={usageScene.value}>
                 <RadioBtnInput
                   value={usageScene.value}
                   {...register("usageScenes")}
                   className='peer sr-only rounded-full input-bg-secondary'
                 />
-                <span className="inline-block text-xl font-medium text-primary px-5 py-2.5 w-full rounded-full input-bg-secondary hover:bg-[#A3EED8] transition-colors peer-checked:bg-[#A3EED8] peer-checked:text-[#1F6E5D]">
+                <span className="inline-block text-sm font-medium text-primary px-5 py-2.5 w-full rounded-full input-bg-secondary hover:bg-[#A3EED8] transition-colors peer-checked:bg-[#A3EED8] peer-checked:text-[#1F6E5D]">
                   {usageScene.label}
                 </span>
               </Label>
