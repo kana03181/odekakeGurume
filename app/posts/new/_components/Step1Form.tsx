@@ -264,7 +264,7 @@ export default function Step1Form({ onNext }:Props) {
                   <div className='grid w-fit place-items-center gap-2 p-5 border-dashed rounded-[calc(24/16*1rem)] border-2 border-[#DAC2B1] overflow-hidden posts-image-bg-primary'>
                     <div className='w-fit posts-image-bg-secondary p-2 rounded-full'>
                       <Image
-                        src={postsImageUrl || "/posts/Icon_addPhoto.svg"}
+                        src={postsImageUrl || "/posts/addPhoto.svg"}
                         alt="お店の写真"
                         width={22}
                         height={20}

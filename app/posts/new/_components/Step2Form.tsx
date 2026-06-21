@@ -6,6 +6,7 @@ import { ChangeEvent, useEffect} from "react";
 import { usePublicFetch } from "@/app/_hooks/usePublicFetch";
 import { GetFeatureResponse } from "@/app/api/features/route";
 import { postsSchema, type PostsForm } from "@/app/_libs/schemas/posts.schema";
+import { childFriendlyVoteOptions } from "@/app/_constants/childFriendlyVoteOptions";
 import { TextInput } from "@/app/_components/TextInput";
 import { CheckboxInput } from "@/app/_components/CheckboxInput";
 import { RadioBtnInput } from "@/app/_components/RadioBtnInput";
@@ -47,7 +48,7 @@ export default function Step2Form({ onPrev }: Props) {
       label: meal.name,
       value: String(meal.id),
     })) ?? [];
-    console.log(mealOptions);
+    // console.log(mealOptions);
 
     //設備をAPIから取得
     const { data: facilities } = usePublicFetch<GetFeatureResponse>("/api/features?category=設備")
@@ -58,7 +59,7 @@ export default function Step2Form({ onPrev }: Props) {
       label: facility.name,
       value: String(facility.id),
     })) ?? [];
-    console.log(facilityOptions);
+    // console.log(facilityOptions);
 
     //その他をAPIから取得
     const { data: others } = usePublicFetch<GetFeatureResponse>("/api/features?category=その他")
@@ -69,7 +70,7 @@ export default function Step2Form({ onPrev }: Props) {
       label: other.name,
       value: String(other.id),
     })) ?? [];
-    console.log(otherOptions);
+    // console.log(otherOptions);
 
 
   return (
@@ -130,20 +131,31 @@ export default function Step2Form({ onPrev }: Props) {
             </div>
         </div>
         <div className='posts-bg-primary rounded-[calc(32/16*1rem)] p-6 space-y-4'>
-          <h3 className='text-2xl font-medium'>子供連れへの優しさは？</h3>
-            <div className="flex gap-2 flex-wrap">
-              {otherOptions.map((other) => (
-                <Label className="text-md font-medium text-primary input-bg-secondary rounded-full hover:bg-[#A3EED8] hover:text-[rgb(31,110,93)] cursor-pointer" key={other.value}>
-                  <CheckboxInput
-                    value={other.value}
-                    {...register("others")}
-                    className='peer sr-only rounded-full input-bg-secondary'
+          <h3 className='text-2xl font-medium text-center'>子供連れへの優しさは？</h3>
+          <div className="flex gap-4 items-center justify-center">
+            {childFriendlyVoteOptions.map((option) => (
+              <Label className="grid place-items-center cursor-pointer" key={option.value}>
+                <RadioBtnInput
+                  value={option.value}
+                  {...register("childFriendlyVote")}
+                  className='peer sr-only'
+                />
+
+                <div className='w-fit input-bg-secondary p-6 rounded-full transition-colors peer-checked:bg-[#A3EED8]'>
+                  <Image
+                    src={option.value === "true" ? "/posts/good.svg" : "/posts/bad.svg"}
+                    alt={option.value === "true" ? "親指を立てるアイコン" : "親指を下げるアイコン"}
+                    width={30}
+                    height={30}
+                    loading='lazy'
                   />
-                  <span className="inline-block text-sm font-medium text-primary px-5 py-2.5 w-full rounded-full input-bg-secondary hover:bg-[#A3EED8] transition-colors peer-checked:bg-[#A3EED8] peer-checked:text-[#1F6E5D]">
-                    {other.label}
-                  </span>
-                </Label>
-              ))}
+                </div>
+
+                <span className="inline-block text-sm font-medium text-primary px-4 pt-2 w-full ">
+                  {option.label}
+                </span>
+              </Label>
+            ))}
             </div>
         </div>
       </div>

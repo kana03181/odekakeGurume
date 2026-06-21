@@ -44,10 +44,9 @@ export const postsSchema = z.object({
 
   others: z.array(z.string()).optional(),
 
-  // kindness: z.enum(["true", "false"], {
-  //   error: "選択してください。"
-  // })
-  //   .transform((value) => value === "true"),
+  childFriendlyVote: z.enum(["true", "false"], {
+    error: "選択してください。"
+  }).transform((value) => value === "true"),
 
 });
 

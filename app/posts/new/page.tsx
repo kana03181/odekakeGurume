@@ -24,10 +24,10 @@ export default function NewPostPage() {
       <div className="flex items-center justify-center flex-col pt-60">
           <h2 className="text-3xl font-medium">口コミ投稿</h2>
           <StepIndicator step={step} />
-        <form onSubmit={methods.handleSubmit(postsSubmit)} className='space-y-8 w-full max-w-100'>
+        {/* <form onSubmit={methods.handleSubmit(postsSubmit)} className='space-y-8 w-full max-w-100'> */}
           <Step1Form onNext={() => setStep(2)}/>
           <Step2Form onPrev={() => setStep(1)}/>
-        </form>
+        {/* </form> */}
       </div>
     </FormProvider>
   )
