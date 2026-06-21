@@ -40,6 +40,7 @@ export default function Step1Form({ onNext }:Props) {
     setValue,
     watch,
     trigger,
+    getFieldState,
     control,
     formState: {
       errors,
@@ -173,12 +174,30 @@ export default function Step1Form({ onNext }:Props) {
     }
   }
 
+  //次へボタン
   const handleNext = async () => {
-    const isValid = await trigger();
+    //1P目のバリデーションチェック
+    const isValid = await trigger([
+      "shopName",
+      "visitedDate",
+      "prefecture",
+      // "postsImageUrl",
+      "usageScenes",
+      "rating",
+      "comment"
+    ]);
+
+    // console.log("isValid", isValid);
+    // console.log("errors", errors);
 
     if (!isValid) return;
 
+
     onNext();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    })
   }
 
 

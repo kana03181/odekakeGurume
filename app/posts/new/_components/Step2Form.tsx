@@ -86,7 +86,7 @@ export default function Step2Form({ onPrev }: Props) {
                 <Label className="text-md font-medium text-primary input-bg-secondary rounded-full hover:bg-[#A3EED8] hover:text-[rgb(31,110,93)] cursor-pointer" key={meal.value}>
                   <CheckboxInput
                     value={meal.value}
-                    {...register("usageScenes")}
+                    {...register("meals")}
                     className='peer sr-only rounded-full input-bg-secondary'
                   />
                   <span className="inline-block text-sm font-medium text-primary px-5 py-2.5 w-full rounded-full input-bg-secondary hover:bg-[#A3EED8] transition-colors peer-checked:bg-[#A3EED8] peer-checked:text-[#1F6E5D]">
@@ -103,7 +103,7 @@ export default function Step2Form({ onPrev }: Props) {
                 <Label className="text-md font-medium text-primary input-bg-secondary rounded-full hover:bg-[#A3EED8] hover:text-[rgb(31,110,93)] cursor-pointer" key={facility.value}>
                   <CheckboxInput
                     value={facility.value}
-                    {...register("usageScenes")}
+                    {...register("facilities")}
                     className='peer sr-only rounded-full input-bg-secondary'
                   />
                   <span className="inline-block text-sm font-medium text-primary px-5 py-2.5 w-full rounded-full input-bg-secondary hover:bg-[#A3EED8] transition-colors peer-checked:bg-[#A3EED8] peer-checked:text-[#1F6E5D]">

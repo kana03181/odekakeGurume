@@ -18,7 +18,7 @@ export const postsSchema = z.object({
 
   postsImageUrl: z.string().optional(),
 
-  usageScenes: z.array(z.string())
+  usageScenes: z.string()
     .min(1, "利用シーンを選択してください"),
 
   children: z.array(
@@ -39,13 +39,12 @@ export const postsSchema = z.object({
     .min(1, "お食事についてを選択してください"),
 
   facilities: z.array(z.string())
-    .min(1, "お食事についてを選択してください"),
-
+    .min(1, "設備を選択してください"),
 
   others: z.array(z.string()).optional(),
 
   childFriendlyVote: z.enum(["true", "false"], {
-    error: "選択してください。"
+    error: "どちらかを選択してください。"
   }).transform((value) => value === "true"),
 
 });

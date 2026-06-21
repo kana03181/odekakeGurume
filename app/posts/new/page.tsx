@@ -25,8 +25,13 @@ export default function NewPostPage() {
           <h2 className="text-3xl font-medium">口コミ投稿</h2>
           <StepIndicator step={step} />
         {/* <form onSubmit={methods.handleSubmit(postsSubmit)} className='space-y-8 w-full max-w-100'> */}
+        {step === 1 && (
           <Step1Form onNext={() => setStep(2)}/>
+        )}
+
+        {step === 2 && (
           <Step2Form onPrev={() => setStep(1)}/>
+        )}
         {/* </form> */}
       </div>
     </FormProvider>
