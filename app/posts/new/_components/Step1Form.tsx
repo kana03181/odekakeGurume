@@ -2,8 +2,7 @@
 
 import { useFormContext, useWatch } from "react-hook-form";
 // import { zodResolver } from "@hookform/resolvers/zod";
-// import { useRouter } from "next/navigation";
-// import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { ChangeEvent, useEffect} from "react";
 import { usePublicFetch } from "@/app/_hooks/usePublicFetch";
 import { GetPrefectureResponse } from "@/app/api/prefectures/route";
@@ -29,7 +28,7 @@ type Props = {
 }
 
 export default function Step1Form({ onNext }:Props) {
-  // const { token, isLoading: isSessionLoading } = useSupabaseSession()
+  const { token, isLoading: isSessionLoading } = useSupabaseSession()
 
   //RFHの設定
   const {
@@ -187,11 +186,7 @@ export default function Step1Form({ onNext }:Props) {
       "comment"
     ]);
 
-    // console.log("isValid", isValid);
-    // console.log("errors", errors);
-
     if (!isValid) return;
-
 
     onNext();
     window.scrollTo({
@@ -199,22 +194,6 @@ export default function Step1Form({ onNext }:Props) {
       behavior: "smooth",
     })
   }
-
-
-
-  //データの送信
-  // const postsSubmit = async (data: PostsForm) => {
-  //   const postChildren = data.children.flatMap(
-  //     (child) => Array.from(
-  //       { length: child.count },
-  //       () => ({
-  //         age_Group: child.ageGroup,
-  //       })
-  //     )
-  //   );
-
-  // }
-
 
   return (
     <div className='flex items-center justify-center flex-col gap-14'>

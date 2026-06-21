@@ -16,7 +16,7 @@ export const usePostForm = () => {
       children: [],
       rating: 0,
     },
-    resolver: zodResolver(postsSchema),
+    // resolver: zodResolver(postsSchema),
   });
 
   const {

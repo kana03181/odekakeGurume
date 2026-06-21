@@ -12,10 +12,17 @@ import { usePostForm } from "@/app/posts/new/_hook/usePostForm"
 export default function NewPostPage() {
   const [step, setStep] = useState<1 | 2>(1)
 
-  const {
-    methods,
-    postsSubmit,
-  } = usePostForm();
+  const { methods } = usePostForm();
+
+  // const postsSubmit = async (data: PostsFormValues) => {
+  //   const res = await fetch("/api/posts", {
+  //     method: "POST",
+  //     headers: {
+  //       "content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(data),
+  //   })
+  // }
 
   return (
     <FormProvider
