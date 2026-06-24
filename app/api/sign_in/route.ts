@@ -3,14 +3,14 @@
 import { prisma } from "@/app/_libs/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/app/_libs/supabase";
-import { useAuthUser } from "@/app/_hooks/useAuthUser";
+import { getAuthUser } from "@/app/_libs/getAuthUser";
 
 export type PostProfileRequest = {
   supabaseUserId: string;
 }
 
 export const POST = async (request: NextRequest) => {
-    const { user, error } = await useAuthUser(request);
+    const { user, error } = await getAuthUser(request);
 
   // const token = request.headers.get("authorization") ?? '';
   // const accessToken = token.replace("Bearer ", "");

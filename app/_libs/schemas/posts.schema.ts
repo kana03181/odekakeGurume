@@ -15,7 +15,6 @@ export const postsSchema = z.object({
     message: "日付を選択してください",
   }),
 
-
   postsImageUrl: z.string().optional(),
 
   usageScenes: z.string()
