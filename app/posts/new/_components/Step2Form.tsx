@@ -1,14 +1,9 @@
 'use client'
 
-import { useFormContext, useWatch } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
-// import { useRouter } from "next/navigation";
-import { ChangeEvent, useEffect} from "react";
-import { usePublicFetch } from "@/app/_hooks/usePublicFetch";
-import { GetFeatureResponse } from "@/app/api/features/route";
-import { postsSchema, type PostsForm } from "@/app/_libs/schemas/posts.schema";
+import { type PostsForm } from "@/app/_libs/schemas/posts.schema";
 import { childFriendlyVoteOptions } from "@/app/_constants/childFriendlyVoteOptions";
-import { CheckboxInput } from "@/app/_components/CheckboxInput";
 import { RadioBtnInput } from "@/app/_components/RadioBtnInput";
 import Label from "@/app/_components/Label";
 import { Button } from "@/app/_components/Button";
@@ -36,42 +31,17 @@ export default function Step2Form({ onPrev }: Props) {
 
 
     //データの送信
-  const postsSubmit = async (data: PostsForm) => {
-    // try {
-    //   const res = await fetch("/api/posts", {
-    //     method: "POST",
-    //     headers: {
-    //       "content-Type": "application/json",
-    //     },
-    //     // body: JSON.stringify({
-    //     //   shopId: data.shopId,
-    //     // }),
-    //   })
-
-    //   if (!res.ok) {
-    //     throw new Error("投稿に失敗しました");
-    //   }
-
-    //   alert("投稿が完了しました！")
-    //   // router.replace("/posts")
-
-    // } catch (error) {
-    //   console.error(error);
-    //   alert("エラーが発生しました")
-
-    // }
+  // const postsSubmit = async (data: PostsForm) => {
 
 
-    // const postChildren = data.children.flatMap(
-    //   (child) => Array.from(
-    //     { length: child.count },
-    //     () => ({
-    //       age_Group: child.ageGroup,
-    //     })
-    //   )
-    // );
 
-  }
+  //   try {
+
+
+
+
+
+  // }
 
 
   return (

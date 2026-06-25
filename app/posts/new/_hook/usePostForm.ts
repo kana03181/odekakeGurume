@@ -1,6 +1,5 @@
 import { useForm, useWatch } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { postsSchema, PostsForm } from "@/app/_libs/schemas/posts.schema";
+import { PostsForm } from "@/app/_libs/schemas/posts.schema";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 
 

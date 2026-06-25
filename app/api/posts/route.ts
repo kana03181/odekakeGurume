@@ -1,5 +1,4 @@
 import { prisma } from "@/app/_libs/prisma";
-import { supabase } from "@/app/_libs/supabase";
 import { NextResponse } from "next/server";
 import { NextRequest } from 'next/server'
 import { Rating } from "@/app/generated/prisma/client"

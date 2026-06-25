@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { FormProvider } from "react-hook-form";
-
+import { PostsForm } from "@/app/_libs/schemas/posts.schema";
 import Step1Form from "@/app/posts/new/_components/Step1Form"
 import Step2Form from "@/app/posts/new/_components/Step2Form"
 import { StepIndicator } from "@/app/posts/new/_components/StepIndicator"
@@ -14,15 +14,15 @@ export default function NewPostPage() {
 
   const { methods } = usePostForm();
 
-  // const postsSubmit = async (data: PostsFormValues) => {
-  //   const res = await fetch("/api/posts", {
-  //     method: "POST",
-  //     headers: {
-  //       "content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(data),
-  //   })
-  // }
+  const postsSubmit = async (data: PostsForm) => {
+    const res = await fetch("/api/posts", {
+      method: "POST",
+      headers: {
+        "content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+  }
 
   return (
     <FormProvider
