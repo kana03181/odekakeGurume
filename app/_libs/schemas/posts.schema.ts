@@ -15,10 +15,9 @@ export const postsSchema = z.object({
     message: "日付を選択してください",
   }),
 
-
   postsImageUrl: z.string().optional(),
 
-  usageScenes: z.array(z.string())
+  usageScenes: z.string()
     .min(1, "利用シーンを選択してください"),
 
   children: z.array(
@@ -35,7 +34,19 @@ export const postsSchema = z.object({
   comment: z.string()
     .max(1000, "コメントはは1000文字以内で入力してください"),
 
-})
+  meals: z.array(z.string())
+    .min(1, "お食事についてを選択してください"),
+
+  facilities: z.array(z.string())
+    .min(1, "設備を選択してください"),
+
+  others: z.array(z.string()).optional(),
+
+  childFriendlyVote: z.enum(["true", "false"], {
+    error: "どちらかを選択してください。"
+  }).transform((value) => value === "true"),
+
+});
 
 // 型を自動生成
 export type PostsForm = z.input<typeof postsSchema>;

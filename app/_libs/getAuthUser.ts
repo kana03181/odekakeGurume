@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import { supabase } from "@/app/_libs/supabase";
 
 
-export const useAuthUser = async (request: NextRequest) => {
+export const getAuthUser = async (request: NextRequest) => {
     const token = request.headers.get("authorization") ?? '';
     const accessToken = token.replace("Bearer ", "");
     // console.log(accessToken);

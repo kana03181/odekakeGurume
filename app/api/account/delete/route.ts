@@ -2,10 +2,10 @@ import { prisma } from "@/app/_libs/prisma";
 import { supabaseAdmin } from "@/app/_libs/supabaseAdmin";
 import { NextResponse } from "next/server";
 import { NextRequest } from 'next/server'
-import { useAuthUser } from "@/app/_hooks/useAuthUser";
+import { getAuthUser } from "@/app/_libs/getAuthUser";
 
 export const DELETE = async (request:NextRequest) => {
-  const { user, error } = await useAuthUser(request);
+  const { user, error } = await getAuthUser(request);
 
   if ( error ){
     return NextResponse.json({ message: error.message }, { status: 401 });

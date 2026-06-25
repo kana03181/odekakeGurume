@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { NextRequest } from 'next/server'
 import { Child, Gender } from "@/app/generated/prisma/client"
 import { supabase } from "@/app/_libs/supabase";
-import { useAuthUser } from "@/app/_hooks/useAuthUser";
+import { getAuthUser } from "@/app/_libs/getAuthUser";
 
 
 /* ======================
@@ -28,7 +28,7 @@ export type GetProfileResponse = {
 
 export const GET = async (request: NextRequest) => {
 
-  const { user, error } = await useAuthUser(request);
+  const { user, error } = await getAuthUser(request);
 
   if ( error ){
     return NextResponse.json({ message: error.message }, { status: 401 });
@@ -96,7 +96,7 @@ export const PUT = async (request: NextRequest) => {
   // const token = request.headers.get("authorization") ?? '';
   // const accessToken = token.replace("Bearer ", "");
 
-    const { user, error } = await useAuthUser(request);
+    const { user, error } = await getAuthUser(request);
 
 
   // const { data:{ user }, error } = await supabase.auth.getUser(accessToken);

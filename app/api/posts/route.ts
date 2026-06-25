@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { NextRequest } from 'next/server'
 import { Rating } from "@/app/generated/prisma/client"
 import { AgeGroup } from "@/app/generated/prisma/client"
-import { useAuthUser } from "@/app/_hooks/useAuthUser";
+import { getAuthUser } from "@/app/_libs/getAuthUser";
 
 
 // 投稿作成時に送られてくるリクエストのbodyの型
@@ -29,17 +29,14 @@ export type CreatePostRequestBody = {
   childFriendlyVote: boolean
 }
 
+//APIが返すレスポンスの型
+export type CreatePostResponse = {
+  id: number
+}
+
 export const POST = async (request: NextRequest) => {
   //tokenの確認
-    const { user, error } = await useAuthUser(request);
-
-  // const authHeader = request.headers.get('Authorization') ?? ''
-  // const accessToken = authHeader.replace('Bearer ', '')
-
-  // console.log("authHeader:", authHeader);
-  // console.log("accessToken:", accessToken);
-
-  // const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
+    const { user, error } = await getAuthUser(request);
 
   if ( error ){
     return NextResponse.json({ message: error.message }, { status: 401 });
@@ -103,20 +100,13 @@ export const POST = async (request: NextRequest) => {
       }
     })
 
-    return NextResponse.json<CreatePostRequestBody>( newPost, { status: 200 }
-    )
+    return NextResponse.json<CreatePostResponse>( { id: newPost.id}, { status: 200 } )
 
   } catch (error) {
     if (error instanceof Error) {
-      return NextResponse.json(
-        { message: error.message },
-        { status: 400 }
-      )
+      return NextResponse.json( { message: error.message }, { status: 400 } )
     }
 
-    return NextResponse.json(
-      { message: "予期しないエラーが発生しました" },
-      { status: 500 }
-    )
+    return NextResponse.json( { message: "予期しないエラーが発生しました" }, { status: 500 } )
   }
 }
