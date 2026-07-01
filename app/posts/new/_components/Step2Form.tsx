@@ -29,21 +29,6 @@ export default function Step2Form({ onPrev }: Props) {
     }
   } = useFormContext<PostsForm>();
 
-
-    //データの送信
-  // const postsSubmit = async (data: PostsForm) => {
-
-
-
-  //   try {
-
-
-
-
-
-  // }
-
-
   return (
     <div className='space-y-8 w-full max-w-100'>
       <div className="w-fit mx-auto mb-6 text-center">

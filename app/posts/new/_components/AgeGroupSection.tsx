@@ -3,7 +3,7 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { useEffect} from "react";
 import { usePublicFetch } from "@/app/_hooks/usePublicFetch";
 import { GetFeatureResponse } from "@/app/api/features/route";
-import { postsSchema, type PostsForm } from "@/app/_libs/schemas/posts.schema";
+import { type PostsForm } from "@/app/_libs/schemas/posts.schema";
 import { Button } from "@/app/_components/Button";
 
 
@@ -29,6 +29,8 @@ export const AgeGroupSection = () => {
 
   //ageGroups を元にchildren を自動生成
   useEffect(() => {
+    console.log(ageGroups);
+
     if (!ageGroups) return
 
     reset((prev) => ({

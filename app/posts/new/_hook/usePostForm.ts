@@ -50,6 +50,8 @@ export const usePostForm = () => {
 
   const postsSubmit = async (data: PostsForm) => {
     console.log(data);
+    console.log("送信完了");
+
   }
 
   return {

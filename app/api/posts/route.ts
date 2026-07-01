@@ -1,6 +1,5 @@
 import { prisma } from "@/app/_libs/prisma";
-import { NextResponse } from "next/server";
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from "next/server";
 import { Rating } from "@/app/generated/prisma/client"
 import { AgeGroup } from "@/app/generated/prisma/client"
 import { getAuthUser } from "@/app/_libs/getAuthUser";
@@ -20,13 +19,27 @@ export type CreatePostRequestBody = {
   }[]
 
   postChildren: {
-    ageGroup: AgeGroup
+    ageGroup: number
   }[]
 
-  rating: Rating
+  rating: number
   comment: string
   childFriendlyVote: boolean
 }
+
+
+const AgeGroupMap: Record<number, AgeGroup> = {
+  1: AgeGroup.ZERO_TO_TWO,
+  2: AgeGroup.THREE_TO_FIVE,
+  3: AgeGroup.OVER_SIX,
+}
+
+const ratingMap: Record<number, Rating> = {
+  1: Rating.ONE,
+  2: Rating.TWO,
+  3: Rating.THREE,
+}
+
 
 //APIが返すレスポンスの型
 export type CreatePostResponse = {
@@ -60,7 +73,14 @@ export const POST = async (request: NextRequest) => {
 
     // リクエストのbodyを取得
     const body: CreatePostRequestBody = await request.json()
+
     const { shopId, visitedDate, postImages, postFeatures, postChildren, rating, comment, childFriendlyVote } = body
+
+    const prismaRating = ratingMap[rating];
+
+    if (!prismaRating) {
+      throw new Error("不正な評価です");
+    }
 
 
     // 投稿をDBに生成
@@ -69,7 +89,7 @@ export const POST = async (request: NextRequest) => {
         userId: dbUser.id,
         shopId,
         visitedDate: new Date(visitedDate),
-        rating,
+        rating:prismaRating,
         comment,
         childFriendlyVote,
 
@@ -86,9 +106,17 @@ export const POST = async (request: NextRequest) => {
         },
 
         postChildren: {
-          create: postChildren.map((child) => ({
-            ageGroup: child.ageGroup
-          }))
+          create: postChildren.map((child) => {
+            const prismaAgeGroup = AgeGroupMap[child.ageGroup];
+
+            if(!prismaAgeGroup) {
+              throw new Error("不正な年齢区分です");
+            }
+
+            return{
+              ageGroup: prismaAgeGroup,
+            }
+          })
         },
       },
 

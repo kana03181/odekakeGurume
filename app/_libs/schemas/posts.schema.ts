@@ -49,4 +49,4 @@ export const postsSchema = z.object({
 });
 
 // 型を自動生成
-export type PostsForm = z.input<typeof postsSchema>;
+export type PostsForm = z.infer<typeof postsSchema>;

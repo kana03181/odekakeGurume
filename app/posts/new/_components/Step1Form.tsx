@@ -1,7 +1,6 @@
 'use client'
 
 import { useFormContext } from "react-hook-form";
-import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { ChangeEvent } from "react";
 import { uploadImage } from "@/app/_libs/uploadImage";
 import { useStorageImage } from "@/app/_hooks/useStorageImage";
@@ -25,7 +24,6 @@ type Props = {
 }
 
 export default function Step1Form({ onNext }:Props) {
-  const { token, isLoading: isSessionLoading } = useSupabaseSession()
 
   //RFHの設定
   const {
