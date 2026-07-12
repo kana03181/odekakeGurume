@@ -3,6 +3,8 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { useEffect} from "react";
 import { usePublicFetch } from "@/app/_hooks/usePublicFetch";
 import { GetFeatureResponse } from "@/app/api/features/route";
+import { AgeGroup } from "@/app/generated/prisma/client"
+import { AGE_GROUP_OPTIONS, AGE_GROUP_LABEL } from "@/app/_constants/ageGroupOptions";
 import { type PostsForm } from "@/app/_libs/schemas/posts.schema";
 import { Button } from "@/app/_components/Button";
 
@@ -25,37 +27,54 @@ export const AgeGroupSection = () => {
 
 
   //年齢層をAPIから取得
-  const { data: ageGroups, error: ageGroupsError } = usePublicFetch<GetFeatureResponse>("/api/features?category=年齢層")
+  // const { data: ageGroups, error: ageGroupsError } = usePublicFetch<GetFeatureResponse>("/api/features?category=年齢層")
+
+  // const ageGroups = [
+  //   {
+  //     value: AgeGroup.ZERO_TO_TWO,
+  //     label: "0-2歳",
+  //   },
+  //   {
+  //     value: AgeGroup.THREE_TO_FIVE,
+  //     label: "3-5歳",
+  //   },
+  //   {
+  //     value: AgeGroup.OVER_SIX,
+  //     label: "6歳～",
+  //   },
+
+  // ]
 
   //ageGroups を元にchildren を自動生成
   useEffect(() => {
-    console.log(ageGroups);
+    if (!AGE_GROUP_OPTIONS) return
 
-    if (!ageGroups) return
+    console.log(AGE_GROUP_OPTIONS);
+
 
     reset((prev) => ({
       ...prev,
-      children: ageGroups.map((group) => ({
-        ageGroup: String(group.id),
+      children: AGE_GROUP_OPTIONS.map((group) => ({
+        ageGroup: group.value,
         count: 0,
       }))
     }));
 
-  }, [ageGroups, reset]);
+  }, [AGE_GROUP_OPTIONS, reset]);
 
-  if (ageGroupsError) {
-    return <p>読み込みに失敗しました</p>
-  }
+  // if (ageGroupsError) {
+  //   return <p>読み込みに失敗しました</p>
+  // }
 
-    if (!ageGroups) {
+    if (!AGE_GROUP_OPTIONS) {
     return <p>読み込み中</p>
   }
 
   //id → labelの辞書化
-  const ageGroupLabel = Object.fromEntries(ageGroups.map((group) => [
-    String(group.id),
-    group.name,
-  ]));
+  // const ageGroupLabel = Object.fromEntries(ageGroups.map((group) => [
+  //   String(group.id),
+  //   group.name,
+  // ]));
   // console.log(ageGroupLabel);
 
     // 人数 +
@@ -91,7 +110,7 @@ export const AgeGroupSection = () => {
       </div>
       { children.map((child, index) =>(
         <div className="flex gap-2 justify-between" key={child.ageGroup}>
-          <p className="pt-1">{ ageGroupLabel[child.ageGroup] }</p>
+          <p className="pt-1">{ AGE_GROUP_LABEL[child.ageGroup] }</p>
           <div className="flex items-center">
             <Button type="button" onClick={() => handleDecrease(index)} className="w-8 h-8 rounded-full p-0 text-2xl posts-countBtn"> - </Button>
             <span className="px-4">{ child.count }</span>

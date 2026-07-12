@@ -1,38 +1,39 @@
 import { prisma } from "@/app/_libs/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { Rating } from "@/app/generated/prisma/client"
-import { AgeGroup } from "@/app/generated/prisma/client"
+// import { AgeGroup } from "@/app/generated/prisma/client"
+import type { AgeGroup } from "@/app/_constants/ageGroupOptions";
 import { getAuthUser } from "@/app/_libs/getAuthUser";
 
 
 // 投稿作成時に送られてくるリクエストのbodyの型
 export type CreatePostRequestBody = {
-  shopId: number
-  visitedDate: Date
+  shopId: number;
+  visitedDate: Date;
 
   postImages: {
-    imageUrl: string
-  }[]
+    imageUrl: string;
+  }[];
 
   postFeatures: {
-    featureId: number
-  }[]
+    featureId: number;
+  }[];
 
   postChildren: {
-    ageGroup: number
-  }[]
+    ageGroup: AgeGroup;
+  }[];
 
-  rating: number
-  comment: string
-  childFriendlyVote: boolean
+  rating: number;
+  comment: string;
+  childFriendlyVote: boolean;
 }
 
 
-const AgeGroupMap: Record<number, AgeGroup> = {
-  1: AgeGroup.ZERO_TO_TWO,
-  2: AgeGroup.THREE_TO_FIVE,
-  3: AgeGroup.OVER_SIX,
-}
+// const AgeGroupMap: Record<number, AgeGroup> = {
+//   1: AgeGroup.ZERO_TO_TWO,
+//   2: AgeGroup.THREE_TO_FIVE,
+//   3: AgeGroup.OVER_SIX,
+// }
 
 const ratingMap: Record<number, Rating> = {
   1: Rating.ONE,
@@ -82,6 +83,9 @@ export const POST = async (request: NextRequest) => {
       throw new Error("不正な評価です");
     }
 
+    console.log(postChildren);
+
+
 
     // 投稿をDBに生成
     const newPost =  await prisma.post.create({
@@ -106,17 +110,9 @@ export const POST = async (request: NextRequest) => {
         },
 
         postChildren: {
-          create: postChildren.map((child) => {
-            const prismaAgeGroup = AgeGroupMap[child.ageGroup];
-
-            if(!prismaAgeGroup) {
-              throw new Error("不正な年齢区分です");
-            }
-
-            return{
-              ageGroup: prismaAgeGroup,
-            }
-          })
+          create: postChildren.map((child) => ({
+            ageGroup: child.ageGroup as AgeGroup
+          }))
         },
       },
 

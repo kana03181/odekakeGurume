@@ -1,3 +1,4 @@
+import { AGE_GROUP_VALUES } from "@/app/_constants/ageGroupOptions"
 import { z } from "zod";
 
 export const postsSchema = z.object({
@@ -11,7 +12,7 @@ export const postsSchema = z.object({
       message: "都道府県を選択してください",
     }),
 
-  visitedDate: z.coerce.date({
+  visitedDate: z.string({
     message: "日付を選択してください",
   }),
 
@@ -22,7 +23,7 @@ export const postsSchema = z.object({
 
   children: z.array(
     z.object({
-      ageGroup: z.string(),
+      ageGroup: z.enum(AGE_GROUP_VALUES),
       count: z.number().min(0),
     })
   ),
@@ -44,7 +45,7 @@ export const postsSchema = z.object({
 
   childFriendlyVote: z.enum(["true", "false"], {
     error: "どちらかを選択してください。"
-  }).transform((value) => value === "true"),
+  }),
 
 });
 

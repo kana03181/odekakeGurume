@@ -5,7 +5,7 @@ export const seedFeatures = async ( prisma: PrismaClient ) => {
   const categories = await prisma.category.findMany({
     where: {
       label: {
-        in: ["利用シーン", "年齢層", "お食事", "設備", "その他"],
+        in: ["利用シーン", "お食事", "設備", "その他"],
       },
     },
   });
@@ -18,7 +18,7 @@ export const seedFeatures = async ( prisma: PrismaClient ) => {
   )
 
 
-  if (categoryMap["利用シーン"] === undefined || categoryMap["年齢層"] === undefined || categoryMap["お食事"] === undefined || categoryMap["設備"] === undefined || categoryMap["その他"] === undefined) {
+  if (categoryMap["利用シーン"] === undefined || categoryMap["お食事"] === undefined || categoryMap["設備"] === undefined || categoryMap["その他"] === undefined) {
     throw new Error("カテゴリーが存在しません");
   }
 
@@ -43,18 +43,18 @@ export const seedFeatures = async ( prisma: PrismaClient ) => {
       },
 
       // 年齢層
-      {
-        name: "0-2歳",
-        categoryId: categoryMap["年齢層"],
-      },
-      {
-        name: "3-5歳",
-        categoryId: categoryMap["年齢層"],
-      },
-      {
-        name: "6歳～",
-        categoryId: categoryMap["年齢層"],
-      },
+      // {
+      //   name: "0-2歳",
+      //   categoryId: categoryMap["年齢層"],
+      // },
+      // {
+      //   name: "3-5歳",
+      //   categoryId: categoryMap["年齢層"],
+      // },
+      // {
+      //   name: "6歳～",
+      //   categoryId: categoryMap["年齢層"],
+      // },
 
       // お食事
       {

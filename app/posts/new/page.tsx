@@ -14,8 +14,6 @@ import { CreatePostResponse } from "@/app/api/posts/route"
 import { createPostChildren } from './../../_libs/createPostChildren';
 
 
-
-
 export default function NewPostPage() {
   const { token, isLoading: isSessionLoading } = useSupabaseSession()
   const [step, setStep] = useState<1 | 2>(1)
@@ -28,9 +26,14 @@ export default function NewPostPage() {
     if (!token) return;
 
     try {
+      console.log(data);
+      console.log(data.others);
+      console.log(typeof data.others);
+      console.log("isArray:", Array.isArray(data.others));
+
       const body: CreatePostRequestBody = {
         shopId: 1,
-        visitedDate: data.visitedDate,
+        visitedDate: new Date(data.visitedDate),
         postImages: data.postsImageUrl ? [{ imageUrl: data.postsImageUrl }] : [],
         postFeatures: [
           { featureId: Number(data.usageScenes) },
@@ -42,21 +45,23 @@ export default function NewPostPage() {
         postChildren: createPostChildren(data.children),
         rating: Number(data.rating),
         comment: data.comment,
-        childFriendlyVote: data.childFriendlyVote
+        childFriendlyVote: data.childFriendlyVote === "true",
       }
-
-
 
       const res = await fetch("/api/posts", {
         method: "POST",
         headers: {
           "content-Type": "application/json",
+          Authorization: token,
         },
         body: JSON.stringify(body),
       })
 
       if (!res.ok) {
-        throw new Error("投稿に失敗しました");
+        const error = await res.json()
+        console.log(error);
+
+        throw new Error(error.message);
       }
 
       const result:CreatePostResponse = await res.json()
