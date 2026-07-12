@@ -83,9 +83,17 @@ export const POST = async (request: NextRequest) => {
       throw new Error("不正な評価です");
     }
 
-    console.log(postChildren);
-
-
+    // console.log(JSON.stringify({
+    //   userId: dbUser.id,
+    //   shopId,
+    //   visitedDate,
+    //   rating: prismaRating,
+    //   comment,
+    //   childFriendlyVote,
+    //   postChildren,
+    //   postFeatures,
+    //   postImages,
+    // }, null, 2));
 
     // 投稿をDBに生成
     const newPost =  await prisma.post.create({
@@ -126,6 +134,9 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json<CreatePostResponse>( { id: newPost.id}, { status: 200 } )
 
   } catch (error) {
+      // console.error("===== API ERROR =====");
+      // console.error(error);
+
     if (error instanceof Error) {
       return NextResponse.json( { message: error.message }, { status: 400 } )
     }

@@ -26,13 +26,13 @@ export default function NewPostPage() {
     if (!token) return;
 
     try {
-      console.log(data);
-      console.log(data.others);
-      console.log(typeof data.others);
-      console.log("isArray:", Array.isArray(data.others));
+      // console.log(data);
+      // console.log(data.others);
+      // console.log(typeof data.others);
+      // console.log("isArray:", Array.isArray(data.others));
 
       const body: CreatePostRequestBody = {
-        shopId: 1,
+        shopId: 3,
         visitedDate: new Date(data.visitedDate),
         postImages: data.postsImageUrl ? [{ imageUrl: data.postsImageUrl }] : [],
         postFeatures: [
@@ -59,15 +59,14 @@ export default function NewPostPage() {
 
       if (!res.ok) {
         const error = await res.json()
-        console.log(error);
-
+        // console.log(error);
         throw new Error(error.message);
       }
 
       const result:CreatePostResponse = await res.json()
 
-      console.log(res);
-      console.log(result);
+      // console.log(res);
+      // console.log(result);
 
       alert("投稿完了しました！")
       router.replace(`/posts/${result.id}`)
