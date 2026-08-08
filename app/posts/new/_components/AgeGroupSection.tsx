@@ -1,9 +1,9 @@
 
+import { AgeGroup } from "@/app/generated/prisma/client"
 import { useFormContext, useWatch } from "react-hook-form";
 import { useEffect} from "react";
 import { usePublicFetch } from "@/app/_hooks/usePublicFetch";
 import { GetFeatureResponse } from "@/app/api/features/route";
-import { AgeGroup } from "@/app/generated/prisma/client"
 import { AGE_GROUP_OPTIONS, AGE_GROUP_LABEL } from "@/app/_constants/ageGroupOptions";
 import { type PostsForm } from "@/app/_libs/schemas/posts.schema";
 import { Button } from "@/app/_components/Button";
@@ -45,11 +45,14 @@ export const AgeGroupSection = () => {
 
   // ]
 
+  // console.log(AgeGroup);
+
+
   //ageGroups を元にchildren を自動生成
   useEffect(() => {
     if (!AGE_GROUP_OPTIONS) return
 
-    console.log(AGE_GROUP_OPTIONS);
+    // console.log(AGE_GROUP_OPTIONS);
 
 
     reset((prev) => ({

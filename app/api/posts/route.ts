@@ -1,8 +1,6 @@
 import { prisma } from "@/app/_libs/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { Rating } from "@/app/generated/prisma/client"
-// import { AgeGroup } from "@/app/generated/prisma/client"
-import type { AgeGroup } from "@/app/_constants/ageGroupOptions";
+import { Rating, AgeGroup } from "@/app/generated/prisma/client"
 import { getAuthUser } from "@/app/_libs/getAuthUser";
 
 
@@ -27,13 +25,6 @@ export type CreatePostRequestBody = {
   comment: string;
   childFriendlyVote: boolean;
 }
-
-
-// const AgeGroupMap: Record<number, AgeGroup> = {
-//   1: AgeGroup.ZERO_TO_TWO,
-//   2: AgeGroup.THREE_TO_FIVE,
-//   3: AgeGroup.OVER_SIX,
-// }
 
 const ratingMap: Record<number, Rating> = {
   1: Rating.ONE,
@@ -83,18 +74,6 @@ export const POST = async (request: NextRequest) => {
       throw new Error("不正な評価です");
     }
 
-    // console.log(JSON.stringify({
-    //   userId: dbUser.id,
-    //   shopId,
-    //   visitedDate,
-    //   rating: prismaRating,
-    //   comment,
-    //   childFriendlyVote,
-    //   postChildren,
-    //   postFeatures,
-    //   postImages,
-    // }, null, 2));
-
     // 投稿をDBに生成
     const newPost =  await prisma.post.create({
       data: {
@@ -119,7 +98,7 @@ export const POST = async (request: NextRequest) => {
 
         postChildren: {
           create: postChildren.map((child) => ({
-            ageGroup: child.ageGroup as AgeGroup
+            ageGroup: child.ageGroup
           }))
         },
       },
@@ -134,9 +113,6 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json<CreatePostResponse>( { id: newPost.id}, { status: 200 } )
 
   } catch (error) {
-      // console.error("===== API ERROR =====");
-      // console.error(error);
-
     if (error instanceof Error) {
       return NextResponse.json( { message: error.message }, { status: 400 } )
     }

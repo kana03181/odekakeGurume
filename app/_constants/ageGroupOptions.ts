@@ -1,11 +1,10 @@
+import { AgeGroup } from "@/app/generated/prisma/client";
 
 export const AGE_GROUP = {
   ZERO_TO_TWO: "ZERO_TO_TWO",
   THREE_TO_FIVE: "THREE_TO_FIVE",
   OVER_SIX: "OVER_SIX",
 } as const
-
-export type AgeGroup = typeof AGE_GROUP[keyof typeof AGE_GROUP];
 
 export const AGE_GROUP_VALUES = [
   AGE_GROUP.ZERO_TO_TWO,
