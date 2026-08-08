@@ -9,9 +9,10 @@ import Step1Form from "@/app/posts/new/_components/Step1Form"
 import Step2Form from "@/app/posts/new/_components/Step2Form"
 import { StepIndicator } from "@/app/posts/new/_components/StepIndicator"
 import { usePostForm } from "@/app/posts/new/_hook/usePostForm"
-import { CreatePostRequestBody } from "@/app/api/posts/route"
-import { CreatePostResponse } from "@/app/api/posts/route"
+// import { CreatePostResponse } from "@/app/api/posts/route"
 import { createPostChildren } from './../../_libs/createPostChildren';
+import { type CreatePostResponse, type CreatePostRequestBody } from "@/app/_types/posts";
+
 
 
 export default function NewPostPage() {
@@ -26,11 +27,6 @@ export default function NewPostPage() {
     if (!token) return;
 
     try {
-      // console.log(data);
-      // console.log(data.others);
-      // console.log(typeof data.others);
-      // console.log("isArray:", Array.isArray(data.others));
-
       const body: CreatePostRequestBody = {
         shopId: 3,
         visitedDate: new Date(data.visitedDate),

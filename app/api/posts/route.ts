@@ -2,29 +2,33 @@ import { prisma } from "@/app/_libs/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { Rating, AgeGroup } from "@/app/generated/prisma/client"
 import { getAuthUser } from "@/app/_libs/getAuthUser";
+import { type CreatePostResponse, type CreatePostRequestBody } from "@/app/_types/posts";
+import { createPostRequestSchema } from "@/app/_libs/schemas/createPostRequestSchema";
 
 
 // 投稿作成時に送られてくるリクエストのbodyの型
-export type CreatePostRequestBody = {
-  shopId: number;
-  visitedDate: Date;
+// export type CreatePostRequestBody = {
+//   shopId: number;
+//   visitedDate: Date;
 
-  postImages: {
-    imageUrl: string;
-  }[];
+//   postImages: {
+//     imageUrl: string;
+//   }[];
 
-  postFeatures: {
-    featureId: number;
-  }[];
+//   postFeatures: {
+//     featureId: number;
+//   }[];
 
-  postChildren: {
-    ageGroup: AgeGroup;
-  }[];
+//   postChildren: {
+//     ageGroup: AgeGroup;
+//   }[];
 
-  rating: number;
-  comment: string;
-  childFriendlyVote: boolean;
-}
+//   rating: number;
+//   comment: string;
+//   childFriendlyVote: boolean;
+// }
+
+// const ageGroups = Object.values(AgeGroup);
 
 const ratingMap: Record<number, Rating> = {
   1: Rating.ONE,
@@ -34,9 +38,9 @@ const ratingMap: Record<number, Rating> = {
 
 
 //APIが返すレスポンスの型
-export type CreatePostResponse = {
-  id: number
-}
+// export type CreatePostResponse = {
+//   id: number
+// }
 
 export const POST = async (request: NextRequest) => {
   //tokenの確認
@@ -63,10 +67,12 @@ export const POST = async (request: NextRequest) => {
       return NextResponse.json( { message: "ユーザーが存在しません" }, { status: 404 })
     }
 
-    // リクエストのbodyを取得
-    const body: CreatePostRequestBody = await request.json()
+    // リクエストのbodyを取得 + バリデーション
+    const body = createPostRequestSchema.parse(
+      await request.json()
+    )
 
-    const { shopId, visitedDate, postImages, postFeatures, postChildren, rating, comment, childFriendlyVote } = body
+    const { shopId, visitedDate, postImages, postFeatures, postChildren, rating, comment, childFriendlyVote } = body;
 
     const prismaRating = ratingMap[rating];
 
@@ -103,11 +109,11 @@ export const POST = async (request: NextRequest) => {
         },
       },
 
-      include: {
-        postImages: true,
-        postFeatures: true,
-        postChildren: true,
-      }
+      // include: {
+      //   postImages: true,
+      //   postFeatures: true,
+      //   postChildren: true,
+      // }
     })
 
     return NextResponse.json<CreatePostResponse>( { id: newPost.id}, { status: 200 } )

@@ -1,4 +1,3 @@
-import { AGE_GROUP_VALUES } from "@/app/_constants/ageGroupOptions"
 import { z } from "zod";
 
 export const postsSchema = z.object({
@@ -23,7 +22,7 @@ export const postsSchema = z.object({
 
   children: z.array(
     z.object({
-      ageGroup: z.enum(AGE_GROUP_VALUES),
+      ageGroup: z.string().min(1, "年齢を選択してください"),
       count: z.number().min(0),
     })
   ),
