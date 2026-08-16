@@ -10,9 +10,8 @@ import Step2Form from "@/app/posts/new/_components/Step2Form"
 import { StepIndicator } from "@/app/posts/new/_components/StepIndicator"
 import { usePostForm } from "@/app/posts/new/_hook/usePostForm"
 // import { CreatePostResponse } from "@/app/api/posts/route"
-import { createPostChildren } from './../../_libs/createPostChildren';
+import { createPostChildren } from "@/app/_libs/createPostChildren";
 import { type CreatePostResponse, type CreatePostRequestBody } from "@/app/_types/posts";
-
 
 
 export default function NewPostPage() {
@@ -30,7 +29,9 @@ export default function NewPostPage() {
       const body: CreatePostRequestBody = {
         shopId: 3,
         visitedDate: new Date(data.visitedDate),
-        postImages: data.postsImageUrl ? [{ imageUrl: data.postsImageUrl }] : [],
+        postImages: data.postsImageUrl.map((imageUrl) => ({
+          imageUrl
+        })),
         postFeatures: [
           { featureId: Number(data.usageScenes) },
           ...data.meals.map((id) => ({ featureId: Number(id) })),
@@ -55,14 +56,10 @@ export default function NewPostPage() {
 
       if (!res.ok) {
         const error = await res.json()
-        // console.log(error);
         throw new Error(error.message);
       }
 
       const result:CreatePostResponse = await res.json()
-
-      // console.log(res);
-      // console.log(result);
 
       alert("投稿完了しました！")
       router.replace(`/posts/${result.id}`)
