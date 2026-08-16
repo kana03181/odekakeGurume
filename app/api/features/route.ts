@@ -31,6 +31,7 @@ export const GET = async (request: NextRequest) => {
     return NextResponse.json<GetFeatureResponse>(features, {status: 200})
 
   } catch (error) {
+
     if (error instanceof Error) {
       return NextResponse.json({message: error.message}, {status: 500})
     }

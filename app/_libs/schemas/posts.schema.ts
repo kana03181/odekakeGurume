@@ -11,7 +11,7 @@ export const postsSchema = z.object({
       message: "都道府県を選択してください",
     }),
 
-  visitedDate: z.coerce.date({
+  visitedDate: z.string({
     message: "日付を選択してください",
   }),
 
@@ -22,7 +22,7 @@ export const postsSchema = z.object({
 
   children: z.array(
     z.object({
-      ageGroup: z.string(),
+      ageGroup: z.string().min(1, "年齢を選択してください"),
       count: z.number().min(0),
     })
   ),
@@ -44,9 +44,9 @@ export const postsSchema = z.object({
 
   childFriendlyVote: z.enum(["true", "false"], {
     error: "どちらかを選択してください。"
-  }).transform((value) => value === "true"),
+  }),
 
 });
 
 // 型を自動生成
-export type PostsForm = z.input<typeof postsSchema>;
+export type PostsForm = z.infer<typeof postsSchema>;

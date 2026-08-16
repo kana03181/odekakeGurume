@@ -1,38 +1,46 @@
 import { prisma } from "@/app/_libs/prisma";
-import { supabase } from "@/app/_libs/supabase";
-import { NextResponse } from "next/server";
-import { NextRequest } from 'next/server'
-import { Rating } from "@/app/generated/prisma/client"
-import { AgeGroup } from "@/app/generated/prisma/client"
+import { NextRequest, NextResponse } from "next/server";
+import { Rating, AgeGroup } from "@/app/generated/prisma/client"
 import { getAuthUser } from "@/app/_libs/getAuthUser";
+import { type CreatePostResponse, type CreatePostRequestBody } from "@/app/_types/posts";
+import { createPostRequestSchema } from "@/app/_libs/schemas/createPostRequestSchema";
 
 
 // 投稿作成時に送られてくるリクエストのbodyの型
-export type CreatePostRequestBody = {
-  shopId: number
-  visitedDate: Date
+// export type CreatePostRequestBody = {
+//   shopId: number;
+//   visitedDate: Date;
 
-  postImages: {
-    imageUrl: string
-  }[]
+//   postImages: {
+//     imageUrl: string;
+//   }[];
 
-  postFeatures: {
-    featureId: number
-  }[]
+//   postFeatures: {
+//     featureId: number;
+//   }[];
 
-  postChildren: {
-    ageGroup: AgeGroup
-  }[]
+//   postChildren: {
+//     ageGroup: AgeGroup;
+//   }[];
 
-  rating: Rating
-  comment: string
-  childFriendlyVote: boolean
+//   rating: number;
+//   comment: string;
+//   childFriendlyVote: boolean;
+// }
+
+// const ageGroups = Object.values(AgeGroup);
+
+const ratingMap: Record<number, Rating> = {
+  1: Rating.ONE,
+  2: Rating.TWO,
+  3: Rating.THREE,
 }
+
 
 //APIが返すレスポンスの型
-export type CreatePostResponse = {
-  id: number
-}
+// export type CreatePostResponse = {
+//   id: number
+// }
 
 export const POST = async (request: NextRequest) => {
   //tokenの確認
@@ -59,10 +67,18 @@ export const POST = async (request: NextRequest) => {
       return NextResponse.json( { message: "ユーザーが存在しません" }, { status: 404 })
     }
 
-    // リクエストのbodyを取得
-    const body: CreatePostRequestBody = await request.json()
-    const { shopId, visitedDate, postImages, postFeatures, postChildren, rating, comment, childFriendlyVote } = body
+    // リクエストのbodyを取得 + バリデーション
+    const body = createPostRequestSchema.parse(
+      await request.json()
+    )
 
+    const { shopId, visitedDate, postImages, postFeatures, postChildren, rating, comment, childFriendlyVote } = body;
+
+    const prismaRating = ratingMap[rating];
+
+    if (!prismaRating) {
+      throw new Error("不正な評価です");
+    }
 
     // 投稿をDBに生成
     const newPost =  await prisma.post.create({
@@ -70,7 +86,7 @@ export const POST = async (request: NextRequest) => {
         userId: dbUser.id,
         shopId,
         visitedDate: new Date(visitedDate),
-        rating,
+        rating:prismaRating,
         comment,
         childFriendlyVote,
 
@@ -93,11 +109,11 @@ export const POST = async (request: NextRequest) => {
         },
       },
 
-      include: {
-        postImages: true,
-        postFeatures: true,
-        postChildren: true,
-      }
+      // include: {
+      //   postImages: true,
+      //   postFeatures: true,
+      //   postChildren: true,
+      // }
     })
 
     return NextResponse.json<CreatePostResponse>( { id: newPost.id}, { status: 200 } )

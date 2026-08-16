@@ -1,6 +1,6 @@
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { postsSchema, PostsForm } from "@/app/_libs/schemas/posts.schema";
+import { postsSchema, type PostsForm } from "@/app/_libs/schemas/posts.schema";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 
 
@@ -16,7 +16,7 @@ export const usePostForm = () => {
       children: [],
       rating: 0,
     },
-    // resolver: zodResolver(postsSchema),
+    resolver: zodResolver(postsSchema),
   });
 
   const {
@@ -51,6 +51,8 @@ export const usePostForm = () => {
 
   const postsSubmit = async (data: PostsForm) => {
     console.log(data);
+    console.log("送信完了");
+
   }
 
   return {

@@ -1,12 +1,10 @@
 'use client'
 
-import { useFormContext, useWatch } from "react-hook-form";
-// import { zodResolver } from "@hookform/resolvers/zod";
-import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
-import { ChangeEvent, useEffect} from "react";
+import { useFormContext } from "react-hook-form";
+import { ChangeEvent } from "react";
 import { uploadImage } from "@/app/_libs/uploadImage";
 import { useStorageImage } from "@/app/_hooks/useStorageImage";
-import { postsSchema, type PostsForm } from "@/app/_libs/schemas/posts.schema";
+import { type PostsForm } from "@/app/_libs/schemas/posts.schema";
 import { TextInput } from "@/app/_components/TextInput";
 import { ImageInput } from "@/app/_components/ImageInput";
 import { DateInput } from "@/app/_components/DateInput";
@@ -26,7 +24,6 @@ type Props = {
 }
 
 export default function Step1Form({ onNext }:Props) {
-  const { token, isLoading: isSessionLoading } = useSupabaseSession()
 
   //RFHの設定
   const {
@@ -187,24 +184,6 @@ export default function Step1Form({ onNext }:Props) {
               {...register("rating")}
             />
             <div className="flex gap-1">
-              {/* {[1, 2, 3].map((star) => (
-                <button
-                  key={star}
-                  type="button"
-                  onClick={() => setValue("rating", star, {
-                    shouldValidate: true,
-                    shouldDirty: true,
-                  })}
-                >
-                  <Star className={`size-6 transition-colors ${
-                      star <= watch("rating")
-                        ? "posts-star-fill-active posts-star-text"
-                        : "posts-star-fill posts-star-text"
-                    }
-                  `}
-                  />
-                </button>
-              ))} */}
               {RATING_STARS.map((star) => (
                 <button
                   key={star}

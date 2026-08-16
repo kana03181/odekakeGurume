@@ -1,5 +1,5 @@
 import { prisma } from "@/app/_libs/prisma";
-import { NextResponse} from "next/server";
+import { NextResponse } from "next/server";
 
 
 //都道府県のレスポンスの型
@@ -22,5 +22,6 @@ export const GET = async () => {
     if ( error instanceof Error ) {
       return NextResponse.json( { message: error.message }, { status: 400 })
     }
+
   }
 }
