@@ -3,7 +3,7 @@
 import { useFormContext } from "react-hook-form";
 import { ChangeEvent, useState } from "react";
 import { uploadImage } from "@/app/_libs/uploadImage";
-import { useStorageImageUrls } from "@/app/_hooks/useStorageImageUrls";
+import { useStorageImageUrls } from "@/app/_utils/getStorageImageUrls";
 import { type PostsForm } from "@/app/_libs/schemas/posts.schema";
 import { TextInput } from "@/app/_components/TextInput";
 import { ImageInput } from "@/app/_components/ImageInput";

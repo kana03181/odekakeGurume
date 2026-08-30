@@ -10,7 +10,7 @@ import { GetProfileResponse } from "@/app/api/profile/route";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { useFetch } from "@/app/_hooks/useFetch";
 import { uploadImage } from "@/app/_libs/uploadImage";
-import { useStorageImageUrls } from "@/app/_hooks/useStorageImageUrls";
+import { useStorageImageUrls } from "@/app/_utils/getStorageImageUrls";
 import { profileSchema, type ProfileForm } from "@/app/_libs/schemas/profile.schema";
 import { TextInput } from "@/app/_components/TextInput";
 import { ImageInput } from "@/app/_components/ImageInput";
