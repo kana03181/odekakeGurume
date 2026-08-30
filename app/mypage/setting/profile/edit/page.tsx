@@ -10,7 +10,7 @@ import { GetProfileResponse } from "@/app/api/profile/route";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { useFetch } from "@/app/_hooks/useFetch";
 import { uploadImage } from "@/app/_libs/uploadImage";
-import { useStorageImage } from "@/app/_hooks/useStorageImage";
+import { useStorageImageUrls } from "@/app/_utils/getStorageImageUrls";
 import { profileSchema, type ProfileForm } from "@/app/_libs/schemas/profile.schema";
 import { TextInput } from "@/app/_components/TextInput";
 import { ImageInput } from "@/app/_components/ImageInput";
@@ -66,9 +66,9 @@ export default function Page() {
   // 画像URL取得
   const profileThumbnailKey = watch("thumbnailUrl");
 
-  const profileThumbnailUrl = useStorageImage({
+  const profileThumbnailUrl = useStorageImageUrls({
     bucket: "profile_thumbnail",
-    imageKey: profileThumbnailKey
+    imageKeys: profileThumbnailKey ? [profileThumbnailKey] : [],
   });
 
 
@@ -224,7 +224,7 @@ export default function Page() {
             <div className='relative w-[clamp(44px,calc(88/768*100vw),88px)] mx-auto'>
               <div className='w-fit rounded-full border-5 border-white overflow-hidden bg-profileThumbnail'>
                 <Image
-                  src={profileThumbnailUrl || "/profile/default_avatar.svg"}
+                  src={profileThumbnailUrl[0] || "/profile/default_avatar.svg"}
                   alt="プロフィール画像"
                   width={88}
                   height={110}

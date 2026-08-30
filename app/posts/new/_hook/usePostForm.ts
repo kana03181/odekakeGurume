@@ -12,7 +12,7 @@ export const usePostForm = () => {
     defaultValues: {
       shopName: "",
       comment: "",
-      postsImageUrl: "",
+      postsImageUrl: [],
       children: [],
       rating: 0,
     },
@@ -24,6 +24,7 @@ export const usePostForm = () => {
     setValue,
     watch,
     reset,
+    getValues,
   } = methods
 
   const children = useWatch({
@@ -52,7 +53,6 @@ export const usePostForm = () => {
   const postsSubmit = async (data: PostsForm) => {
     console.log(data);
     console.log("送信完了");
-
   }
 
   return {
@@ -60,6 +60,7 @@ export const usePostForm = () => {
     children,
     watch,
     setValue,
+    getValues,
     handleIncrease,
     handleDecrease,
     postsSubmit,

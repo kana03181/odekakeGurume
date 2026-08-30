@@ -15,7 +15,7 @@ export const postsSchema = z.object({
     message: "日付を選択してください",
   }),
 
-  postsImageUrl: z.string().optional(),
+  postsImageUrl: z.array(z.string()).max(3),
 
   usageScenes: z.string()
     .min(1, "利用シーンを選択してください"),
