@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 
 // 投稿作成時に送られてくるGETリクエストの型
-export type postShowResponse = {
+export type PostShowResponse = {
   post: {
     id: number,
     shop: {
@@ -19,7 +19,7 @@ export type postShowResponse = {
     createdAt: Date;
 
     user: {
-      userName: string;
+      userName: string | null;
       thumbnailUrl: string | null;
     };
 
@@ -73,7 +73,7 @@ export const GET = async(
       },
     })
 
-    console.log("詳細の情報：", post);
+    // console.log("詳細の情報：", post);
 
     if (!post) {
       return NextResponse.json(
@@ -83,7 +83,7 @@ export const GET = async(
     }
 
     //レスポンスを返す
-    return NextResponse.json(
+    return NextResponse.json<PostShowResponse>(
       { post },
       { status: 200 }
     )

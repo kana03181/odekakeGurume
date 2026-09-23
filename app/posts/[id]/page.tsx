@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { postShowResponse } from "@/app/api/posts/[id]/route";
+import { PostShowResponse } from "@/app/api/posts/[id]/route";
 import { supabase } from "@/app/_libs/supabase";
 import { useFetch } from "@/app/_hooks/useFetch";
 import Image from "next/image";
@@ -17,10 +17,10 @@ export default function detailPostPage() {
   const { id } = useParams<{ id: string }>();
   const [thimbnailImageUrl, setThumbnailImageUrl] = useState<null | string>(null);
 
-  const { data, error, isLoading } = useFetch<postShowResponse>(`/api/posts/${id}`)
+  const { data, error, isLoading } = useFetch<PostShowResponse>(`/api/posts/${id}`)
 
   const post = data?.post;
-  console.log(post);
+  // console.log(post);
 
 
   if (isLoading) return <div><p>読み込み中...</p></div>
