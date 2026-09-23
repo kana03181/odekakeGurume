@@ -130,5 +130,21 @@ body {
     @apply text-[#8F4E00];
   }
 
+  .posts-detail-bg{
+    @apply bg-[#FFFFFF];
+  }
+
+  .posts-detail-section-bg{
+    @apply bg-[#8F4E00]/5;
+  }
+
+  .posts-recommend-text{
+    @apply text-[#8F4E00];
+  }
+
+  .posts-section-text{
+    @apply text-[#A8A29E];
+  }
+
 
 }

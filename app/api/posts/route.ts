@@ -1,46 +1,16 @@
 import { prisma } from "@/app/_libs/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { Rating, AgeGroup } from "@/app/generated/prisma/client"
+import { Rating } from "@/app/generated/prisma/client"
 import { getAuthUser } from "@/app/_libs/getAuthUser";
-import { type CreatePostResponse, type CreatePostRequestBody } from "@/app/_types/posts";
+import { type CreatePostResponse } from "@/app/_types/posts";
 import { createPostRequestSchema } from "@/app/_libs/schemas/createPostRequestSchema";
 
-
-// 投稿作成時に送られてくるリクエストのbodyの型
-// export type CreatePostRequestBody = {
-//   shopId: number;
-//   visitedDate: Date;
-
-//   postImages: {
-//     imageUrl: string;
-//   }[];
-
-//   postFeatures: {
-//     featureId: number;
-//   }[];
-
-//   postChildren: {
-//     ageGroup: AgeGroup;
-//   }[];
-
-//   rating: number;
-//   comment: string;
-//   childFriendlyVote: boolean;
-// }
-
-// const ageGroups = Object.values(AgeGroup);
 
 const ratingMap: Record<number, Rating> = {
   1: Rating.ONE,
   2: Rating.TWO,
   3: Rating.THREE,
 }
-
-
-//APIが返すレスポンスの型
-// export type CreatePostResponse = {
-//   id: number
-// }
 
 export const POST = async (request: NextRequest) => {
   //tokenの確認
@@ -80,6 +50,11 @@ export const POST = async (request: NextRequest) => {
       throw new Error("不正な評価です");
     }
 
+    //口コミ投稿完了後にconsole.logで入力した情報を表示
+    console.log("入力データ：", body);
+
+
+
     // 投稿をDBに生成
     const newPost =  await prisma.post.create({
       data: {
@@ -96,9 +71,9 @@ export const POST = async (request: NextRequest) => {
           }))
         },
 
-        postFeatures: {
-          create: postFeatures.map((feature) => ({
-            featureId: feature.featureId
+          postFeatures: {
+            create: postFeatures.map((feature) => ({
+              featureId: feature.featureId
           }))
         },
 
@@ -109,12 +84,18 @@ export const POST = async (request: NextRequest) => {
         },
       },
 
-      // include: {
-      //   postImages: true,
-      //   postFeatures: true,
-      //   postChildren: true,
-      // }
+      //console.logで確認するために追加（後ほど削除）
+      include:{
+        postImages: true,
+        postFeatures: true,
+        postChildren: true,
+      },
+
     })
+
+    //DBに保存された投稿
+    console.log("保存された投稿:", newPost);
+
 
     return NextResponse.json<CreatePostResponse>( { id: newPost.id}, { status: 200 } )
 
