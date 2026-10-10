@@ -3,25 +3,21 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { PostShowResponse } from "@/app/api/posts/[id]/route";
-import { supabase } from "@/app/_libs/supabase";
 import { useFetch } from "@/app/_hooks/useFetch";
 import Image from "next/image";
 import { Rating } from "@/app/posts/[id]/_components/Rating";
 import { PostChildSection } from "@/app/posts/[id]/_components/PostChildren";
 import { FeatureList } from "@/app/posts/[id]/_components/FeatureList";
+import { UserAvatar } from "@/app/posts/[id]/_components/UserAvatar";
+import { PostImages } from "@/app/posts/[id]/_components/PostImages";
 import { FEATURE_CATEGORY_ID } from "@/app/_constants/featureCategoryId";
-
 
 
 export default function detailPostPage() {
   const { id } = useParams<{ id: string }>();
-  const [thimbnailImageUrl, setThumbnailImageUrl] = useState<null | string>(null);
-
   const { data, error, isLoading } = useFetch<PostShowResponse>(`/api/posts/${id}`)
 
   const post = data?.post;
-  // console.log(post);
-
 
   if (isLoading) return <div><p>読み込み中...</p></div>
 
@@ -34,14 +30,15 @@ export default function detailPostPage() {
     <div className="flex items-center justify-center flex-col pt-60">
       <article className="space-y-8 w-full max-w-100 posts-detail-bg rounded-4xl shadow-[0_8px_30px_0_rgb(0_0_0_/_0.04)]">
         <div className="p-6">
-          <div className="mb-4">
+          <div className="mb-4 flex items-center gap-3">
             <div className="postUserIcon">
-              <img src="" alt="" />
+              <UserAvatar
+                thumbnailUrl={post.user.thumbnailUrl}
+                userName={post.user.userName}
+              />
             </div>
             <div className="postUserName">
-              <p className="font-base font-bold">{post.user.userName}</p>
-              {/* <div>
-                <img src={post.user.thumbnailUrl} alt="" /></div> */}
+              <p className="text-base font-bold">{post.user.userName}</p>
             </div>
           </div>
           <div className="grid gap-8">
@@ -60,6 +57,7 @@ export default function detailPostPage() {
                   loading='lazy'
                   src={post.childFriendlyVote ? "/posts/recommend.svg" : "/posts/bad.svg"}
                   alt=""
+                  className="aspect-square"
                 />
               </div>
             </div>
@@ -92,9 +90,7 @@ export default function detailPostPage() {
             </div>
 
             <div className="postImages">
-              {post.postImages.map((image) => (
-                <img key={image.imageUrl} src="{image.imageUrl}" alt="" />
-              ))}
+              <PostImages images={post.postImages}/>
             </div>
             <div className="postComment">
               <p className="posts-section-text font-medium text-base mb-4">コメント</p>
