@@ -51,8 +51,7 @@ export const POST = async (request: NextRequest) => {
     }
 
     //口コミ投稿完了後にconsole.logで入力した情報を表示
-    console.log("入力データ：", body);
-
+    // console.log("入力データ：", body);
 
 
     // 投稿をDBに生成
@@ -94,7 +93,7 @@ export const POST = async (request: NextRequest) => {
     })
 
     //DBに保存された投稿
-    console.log("保存された投稿:", newPost);
+    // console.log("保存された投稿:", newPost);
 
 
     return NextResponse.json<CreatePostResponse>( { id: newPost.id}, { status: 200 } )

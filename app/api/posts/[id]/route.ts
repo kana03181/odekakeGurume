@@ -1,6 +1,6 @@
 import { prisma } from '@/app/_libs/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-
+import { supabase } from "@/app/_libs/supabase";
 
 // 投稿作成時に送られてくるGETリクエストの型
 export type PostShowResponse = {
@@ -73,18 +73,30 @@ export const GET = async(
       },
     })
 
-    // console.log("詳細の情報：", post);
-
-    if (!post) {
+    if(!post){
       return NextResponse.json(
-        { message: "投稿が見つかりません。" },
-        { status: 404 }
+      { message: "投稿が見つかりません。" },
+      { status: 404 }
       )
     }
 
+    let ProfileThumbnailUrl: string | null = null;
+
+    if (post.user.thumbnailUrl) {
+      const { data, error } = await supabase
+        .storage
+        .from("profile_thumbnail")
+        .createSignedUrl( post.user.thumbnailUrl, 60 * 60)
+
+      if (data) {
+        ProfileThumbnailUrl = data.signedUrl;
+      }
+    }
+
+
     //レスポンスを返す
     return NextResponse.json<PostShowResponse>(
-      { post },
+      { post},
       { status: 200 }
     )
 
@@ -95,6 +107,5 @@ export const GET = async(
         { status: 400 }
       )
   }
-
 
 }

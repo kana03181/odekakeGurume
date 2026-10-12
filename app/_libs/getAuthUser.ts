@@ -10,5 +10,5 @@ export const getAuthUser = async (request: NextRequest) => {
     //誰のtokenかを確認
     const { data:{ user }, error } = await supabase.auth.getUser(accessToken);
 
-  return { user, error };
+  return { user, error, accessToken };
 }
