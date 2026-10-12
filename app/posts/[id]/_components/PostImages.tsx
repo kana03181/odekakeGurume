@@ -1,4 +1,5 @@
-import { useSignedUrls } from "@/app/_hooks/useSignedUrl";
+import { useSignedUrls } from "@/app/_hooks/useSignedUrls";
+import Image from "next/image";
 
 type PostImagesProps = {
   images: { imageUrl: string }[];
@@ -23,7 +24,7 @@ export function PostImages( {images}: PostImagesProps ) {
     <div className="grid grid-cols-2 gap-2 my-3">
       {signedUrls.map((url, index) =>
         url ? (
-          <img
+          <Image
             key={index}
             src={url}
             alt={`投稿画像 ${index + 1}`}

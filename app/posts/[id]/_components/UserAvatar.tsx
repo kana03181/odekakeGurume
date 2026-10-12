@@ -1,4 +1,6 @@
 import { useSignedUrl } from "@/app/_hooks/useSignedUrl";
+import Image from "next/image";
+
 
 type UserAvatarProps = {
   thumbnailUrl: string | null;
@@ -21,7 +23,7 @@ export function UserAvatar( {thumbnailUrl, userName}: UserAvatarProps ) {
 
   return (
     //取得した有効な署名付きURLをimageタグに渡して表示
-    <img
+    <Image
       src={signedUrl}
       alt={userName ? `${userName}のプロフィール画像` : "プロフィール画像"}
       width={40}
