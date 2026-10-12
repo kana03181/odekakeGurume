@@ -142,6 +142,10 @@ body {
     @apply text-[#8F4E00];
   }
 
+  .posts-shopName-text{
+    @apply text-[#8F4E00];
+  }
+
   .posts-section-text{
     @apply text-[#A8A29E];
   }
