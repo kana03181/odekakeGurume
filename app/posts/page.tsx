@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useFetch } from "@/app/_hooks/useFetch";
+import { useState } from "react";
 import { type PostsIndexResponse } from "@/app/_types/posts";
-import Image from "next/image";
 import { Rating } from "@/app/posts/[id]/_components/Rating";
-import { PostChildSection } from "@/app/posts/[id]/_components/PostChildren";
+// import { PostChildSection } from "@/app/posts/[id]/_components/PostChildren";
 import { FeatureList } from "@/app/posts/[id]/_components/FeatureList";
 import { UserAvatar } from "@/app/posts/[id]/_components/UserAvatar";
 import { PostImages } from "@/app/posts/[id]/_components/PostImages";
@@ -15,7 +15,10 @@ import { FEATURE_CATEGORY_ID } from "@/app/_constants/featureCategoryId";
 
 export default function Page() {
 
-  const { data, error, isLoading } = useFetch<PostsIndexResponse>("/api/posts");
+  const [currentPage, setCurrentPage] = useState(1);
+  console.log("現在のページ:", currentPage);
+
+  const { data, error, isLoading } = useFetch<PostsIndexResponse>(`/api/posts?page=${currentPage}`);
 
   if ( isLoading ) return <div><p>読み込み中...</p></div>;
 
@@ -78,9 +81,34 @@ export default function Page() {
                 </div>
               </Link>
             </article>
-
           )}
         </div>
+        { data && data.totalPages > 0 && (
+          <div className="flex items-center justify-center gap-4 py-8">
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => page - 1)}
+              disabled={currentPage === 1}
+              className="disabled:opacity-40"
+            >
+              前へ
+            </button>
+
+            <span>
+              {currentPage} / {data.totalPages}
+            </span>
+
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => page + 1)}
+              disabled={currentPage >= data.totalPages}
+              className="disabled:opacity-40"
+            >
+              次へ
+
+            </button>
+          </div>
+        )}
       </main>
     </div>
   )

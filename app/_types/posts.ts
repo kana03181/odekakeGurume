@@ -65,4 +65,8 @@ export type PostsIndexResponse = {
       }
     }[];
   }[];
+
+  totalCount: number,
+  currentPage: number,
+  totalPages: number,
 };
