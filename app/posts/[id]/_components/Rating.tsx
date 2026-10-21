@@ -2,13 +2,16 @@ import { RATING_VALUE } from "@/app/_constants/rating";
 import { Star } from "lucide-react";
 
 type RatingProps = {
-  rating: string;
+  rating: string | number;
 };
 
 const MAX_RATING = 3;
 
 export const Rating = ({ rating }: RatingProps) => {
-  const ratingValue = RATING_VALUE[rating];
+  const ratingValue =
+    typeof rating === "number"
+      ? rating
+      : RATING_VALUE[rating];
 
   // DBに存在しない評価値だった場合は表示しない
   if (!ratingValue) return null;
