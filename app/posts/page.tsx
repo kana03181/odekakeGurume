@@ -16,7 +16,6 @@ import { FEATURE_CATEGORY_ID } from "@/app/_constants/featureCategoryId";
 export default function Page() {
 
   const [currentPage, setCurrentPage] = useState(1);
-  console.log("現在のページ:", currentPage);
 
   const { data, error, isLoading } = useFetch<PostsIndexResponse>(`/api/posts?page=${currentPage}`);
 
