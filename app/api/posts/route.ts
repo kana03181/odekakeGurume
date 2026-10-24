@@ -121,8 +121,7 @@ const getRatingMap: Record<Rating, number> = {
 // GET: 口コミ一覧取得
 export const GET = async (request:NextRequest) => {
   try {
-
-    //ページネーション
+    //ページネーション・絞り込み条件
     const {searchParams} = new URL(request.url);
     const pageParam = Number(searchParams.get("page") ?? "1");
     const page = Number.isInteger(pageParam) && pageParam > 0
@@ -131,78 +130,106 @@ export const GET = async (request:NextRequest) => {
 
     const limit = 10;
 
+    // 都道府県IDを取得
+    const prefectureParams = searchParams.get("prefectureId");
+
+    let prefectureId: number | undefined;
+
+    if ( prefectureParams !== null ) {
+      const parsedId = Number(prefectureParams);
+
+      if (!Number.isInteger(parsedId) || parsedId <= 0) {
+        return NextResponse.json(
+          { message: "都道府県IDが不正です" },
+          { status: 400 }
+        )
+      };
+
+      prefectureId = parsedId;
+    }
+
+    const where = prefectureId !== undefined
+      ? {
+        shop: {
+          prefectureId,
+        },
+      }
+      : {};
+
     // DBから口コミ一覧と総件数を取得
     const [posts, totalCount] = await Promise.all([
-      prisma.post.findMany
-        ({
-          select: {
-            id: true,
-            visitedDate: true,
-            rating: true,
-            childFriendlyVote: true,
-            comment: true,
-            createdAt: true,
+      prisma.post.findMany({
+        where,
 
-            shop: {
-              select: {
-                id: true,
-                prefectureId: true,
-                name: true,
-                address: true,
-              },
+        select: {
+          id: true,
+          visitedDate: true,
+          rating: true,
+          childFriendlyVote: true,
+          comment: true,
+          createdAt: true,
+
+          shop: {
+            select: {
+              id: true,
+              prefectureId: true,
+              name: true,
+              address: true,
             },
+          },
 
-            user: {
-              select: {
-                userName: true,
-                thumbnailUrl: true,
-              },
+          user: {
+            select: {
+              userName: true,
+              thumbnailUrl: true,
             },
+          },
 
-            postChildren: {
-              select: {
-                ageGroup: true,
-              }
+          postChildren: {
+            select: {
+              ageGroup: true,
+            }
+          },
+
+          postImages: {
+            select: {
+              imageUrl: true,
             },
+          },
 
-            postImages: {
-              select: {
-                imageUrl: true,
-              },
-            },
-
-            postFeatures: {
-              select: {
-                featureId: true,
-                feature: {
-                  select: {
-                    name: true,
-                    categoryId: true,
-                    category: {
-                      select: {
-                        label: true,
-                      },
+          postFeatures: {
+            select: {
+              featureId: true,
+              feature: {
+                select: {
+                  name: true,
+                  categoryId: true,
+                  category: {
+                    select: {
+                      label: true,
                     },
                   },
                 },
               },
             },
           },
+        },
 
-          // 作成日時の降順で取得
-          orderBy: {
-            createdAt: "desc",
-          },
+        // 作成日時の降順で取得
+        orderBy: {
+          createdAt: "desc",
+        },
 
-          //ページネーション
-          skip: (page - 1) * limit,
-          take: limit,
+        //ページネーション
+        skip: (page - 1) * limit,
+        take: limit,
 
-        }),
+      }),
 
-        //口コミの総件数
-        prisma.post.count(),
-
+      //口コミの総件数
+      prisma.post.count({
+        where,
+      }),
     ]);
 
     const formattedPosts = posts.map((post) => ({

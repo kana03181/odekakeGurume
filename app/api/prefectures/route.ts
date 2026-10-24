@@ -1,12 +1,6 @@
 import { prisma } from "@/app/_libs/prisma";
 import { NextResponse } from "next/server";
-
-
-//都道府県のレスポンスの型
-export type GetPrefectureResponse = {
-  id: number
-  name: string
-}[]
+import { type GetPrefectureResponse } from "@/app/_types/prefecture";
 
 export const GET = async () => {
   try {
