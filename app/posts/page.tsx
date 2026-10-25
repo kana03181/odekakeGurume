@@ -41,7 +41,7 @@ export default function Page() {
     params.set("page", String(newPage));
 
     // 更新したURLへ遷移
-    router.push(`${pathName}?${params.toString()}`);
+    router.replace(`${pathName}?${params.toString()}`);
   }
 
 

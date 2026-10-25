@@ -34,7 +34,7 @@ export const usePrefectureFilter = () => {
       params.delete("prefectureId");
     }
 
-    router.push(`${pathName}?${params.toString()}`);
+    router.replace(`${pathName}?${params.toString()}`);
 
     // 適用後にモーダルを閉じる
     setIsFilterOpen(false);
