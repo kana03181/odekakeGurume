@@ -4,6 +4,7 @@ import { Rating } from "@/app/generated/prisma/client"
 import { getAuthUser } from "@/app/_libs/getAuthUser";
 import { type CreatePostResponse } from "@/app/_types/posts";
 import { type PostsIndexResponse } from "@/app/_types/posts";
+import { type SortType, allowedSortTypes } from "@/app/_types/sort";
 import { createPostRequestSchema } from "@/app/_libs/schemas/createPostRequestSchema";
 
 
@@ -114,15 +115,27 @@ const getRatingMap: Record<Rating, number> = {
   [Rating.ONE]: 1,
   [Rating.TWO]: 2,
   [Rating.THREE]: 3,
-
 }
 
 
 // GET: 口コミ一覧取得
 export const GET = async (request:NextRequest) => {
+
   try {
     //ページネーション・絞り込み条件
     const {searchParams} = new URL(request.url);
+
+    // 並び替え条件を取得
+    const sort = searchParams.get("sort") ?? "newest";
+
+    if (!allowedSortTypes.includes( sort as (typeof allowedSortTypes)[number] )) {
+      return NextResponse.json(
+        { message: "並べ替え条件が不正です" },
+        { status: 400 }
+      );
+    }
+
+    // ページネーションのパラメータを取得
     const pageParam = Number(searchParams.get("page") ?? "1");
     const page = Number.isInteger(pageParam) && pageParam > 0
       ? pageParam
@@ -216,9 +229,10 @@ export const GET = async (request:NextRequest) => {
         },
 
         // 作成日時の降順で取得
-        orderBy: {
-          createdAt: "desc",
-        },
+        orderBy:
+          sort === "rating_desc"
+            ? { rating: "desc" }
+            : { createdAt: "desc" },
 
         //ページネーション
         skip: (page - 1) * limit,
