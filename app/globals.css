@@ -142,12 +142,16 @@ body {
     @apply text-[#8F4E00];
   }
 
-  .posts-shopName-text{
+  .posts-secondary-text{
     @apply text-[#8F4E00];
   }
 
   .posts-section-text{
     @apply text-[#A8A29E];
+  }
+
+  .posts-border-primary{
+    @apply border-[#DAC2B1]/30;
   }
 
 
