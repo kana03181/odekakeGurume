@@ -154,5 +154,16 @@ body {
     @apply border-[#DAC2B1]/30;
   }
 
+  .posts-tag-bg{
+    @apply bg-[#EDE7E2];
+  }
 
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
 }

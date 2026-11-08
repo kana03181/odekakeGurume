@@ -47,11 +47,11 @@ export const FacilitySection = () => {
             </Label>
           ))}
       </div>
-      {errors.facilities && (
+      {/* {errors.facilities && (
         <p className="text-caution text-sm font-bold">
           {errors.facilities.message}
         </p>
-      )}
+      )} */}
 
     </div>
   )

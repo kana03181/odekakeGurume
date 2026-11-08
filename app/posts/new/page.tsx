@@ -34,8 +34,8 @@ export default function NewPostPage() {
         })),
         postFeatures: [
           { featureId: Number(data.usageScenes) },
-          ...data.meals.map((id) => ({ featureId: Number(id) })),
-          ...data.facilities.map((id) => ({ featureId: Number(id) })),
+          ...(data.meals ?? []).map((id) => ({ featureId: Number(id) })),
+          ...(data.facilities ?? []).map((id) => ({ featureId: Number(id) })),
           ...(data.others ?? []).map((id) => ({ featureId: Number(id) })),
         ],
 

@@ -17,10 +17,6 @@ type Props = {
 }
 
 export default function Step2Form({ onPrev }: Props) {
-  const { token, isLoading: isSessionLoading } = useSupabaseSession()
-  // const router = useRouter()
-
-
   //RFHの設定
   const {
     register,

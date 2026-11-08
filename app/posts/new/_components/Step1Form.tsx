@@ -69,7 +69,7 @@ export default function Step1Form({ onNext }: Props) {
         file,
         bucket:"posts_image",
       })
-      console.log(imagePath);
+      // console.log(imagePath);
 
 
       //画像表示用URLの読み込み中にする
