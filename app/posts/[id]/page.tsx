@@ -18,12 +18,22 @@ export default function detailPostPage() {
   const { data, error, isLoading } = useFetch<PostShowResponse>(`/api/posts/${id}`)
 
   const post = data?.post;
+  // console.log(post);
 
   if (isLoading) return <div><p>読み込み中...</p></div>
 
   if (error) return <div><p>エラー：{error instanceof Error ? error.message : "不明なエラー"}</p></div>
 
   if (!post) return <div><p>投稿が見つかりません。</p></div>
+
+  const mealFeatures = post.postFeatures.filter((feature) => {
+    return feature.feature.categoryId === FEATURE_CATEGORY_ID.MEAL
+  })
+
+  const facilityFeatures = post.postFeatures.filter((feature) => {
+    return feature.feature.categoryId === FEATURE_CATEGORY_ID.FACILITY
+  })
+
 
 
   return (
@@ -70,31 +80,40 @@ export default function detailPostPage() {
               </div>
 
             </div>
-            <div className="postMeal">
-              <p className="posts-section-text font-medium text-base mb-4">お食事</p>
-              <div className="grid grid-cols-2 gap-3">
-                <FeatureList
-                  features={post.postFeatures}
-                  categoryId={FEATURE_CATEGORY_ID.MEAL}
-                />
+            { mealFeatures.length > 0 && (
+              <div className="postMeal">
+                <p className="posts-section-text font-medium text-base mb-4">お食事</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <FeatureList
+                    features={post.postFeatures}
+                    categoryId={FEATURE_CATEGORY_ID.MEAL}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="postFacility">
-              <p className="posts-section-text font-medium text-base mb-4">設備</p>
-              <div className="grid  grid-cols-2 gap-3">
-                <FeatureList
-                  features={post.postFeatures}
-                  categoryId={FEATURE_CATEGORY_ID.FACILITY}
-                />
+            )}
+            { facilityFeatures.length > 0 && (
+              <div className="postFacility">
+                <p className="posts-section-text font-medium text-base mb-4">設備</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <FeatureList
+                    features={post.postFeatures}
+                    categoryId={FEATURE_CATEGORY_ID.FACILITY}
+                  />
+                </div>
               </div>
-            </div>
-
-            <div className="postImages">
-              <PostImages images={post.postImages}/>
-            </div>
-            <div className="postComment">
-              <p className="posts-section-text font-medium text-base mb-4">コメント</p>
-              <p className="posts-bg-primary p-6 rounded-2xl text-primary text-sm font-medium min-h-28">{ post.comment }</p>
+            )}
+            {post.comment.trim() !== "" && (
+              <div className="postComment">
+                <p className="posts-section-text font-medium text-base mb-4">コメント</p>
+                <p className="posts-bg-primary p-6 rounded-2xl text-primary text-sm font-medium min-h-28">{ post.comment }</p>
+              </div>
+            )}
+            <div className="overflow-x-auto scrollbar-hide">
+              {post.postImages.length > 0 && (
+                <div className="postImages">
+                  <PostImages images={post.postImages}/>
+                </div>
+              )}
             </div>
             <div className="postTime">
               <p className="posts-section-text font-medium text-sm text-right">来店日：{ new Date(post.visitedDate).toLocaleDateString("ja-JP", { year: "numeric", month: "numeric", day: "numeric" })}</p>

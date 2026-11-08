@@ -1,7 +1,7 @@
 
 import { useFormContext } from "react-hook-form";
 import { usePublicFetch } from "@/app/_hooks/usePublicFetch";
-import { GetPrefectureResponse } from "@/app/api/prefectures/route";
+import { type GetPrefectureResponse } from "@/app/_types/prefecture";
 import { type PostsForm } from "@/app/_libs/schemas/posts.schema";
 import Label from "@/app/_components/Label";
 import { PrefectureSelect } from "@/app/_components/PrefectureSelect";
@@ -14,7 +14,6 @@ export const PrefectureSection = () => {
 
   //都道府県をAPIから取得
   const { data: prefectures, error: prefectureError } = usePublicFetch<GetPrefectureResponse>("/api/prefectures")
-  // console.log(prefectures);
 
   if (prefectureError) {
     return <p>読み込みに失敗しました</p>

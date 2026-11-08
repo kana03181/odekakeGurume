@@ -32,13 +32,11 @@ export const postsSchema = z.object({
     .max(3),
 
   comment: z.string()
-    .max(1000, "コメントは1000文字以内で入力してください"),
+    .max(500, "コメントは500文字以内で入力してください"),
 
-  meals: z.array(z.string())
-    .min(1, "お食事についてを選択してください"),
+  meals: z.array(z.string()).optional(),
 
-  facilities: z.array(z.string())
-    .min(1, "設備を選択してください"),
+  facilities: z.array(z.string()).optional(),
 
   others: z.array(z.string()).optional(),
 

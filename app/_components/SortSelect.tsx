@@ -22,6 +22,7 @@ export const SortSelect = ({
   ];
 
   const handleSortChange = (selectedValue: string) => {
+
     if(isSortType(selectedValue)){
       onChange(selectedValue)
       setIsOpen(false);

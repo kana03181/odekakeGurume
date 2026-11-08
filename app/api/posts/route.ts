@@ -4,7 +4,8 @@ import { Rating } from "@/app/generated/prisma/client"
 import { getAuthUser } from "@/app/_libs/getAuthUser";
 import { type CreatePostResponse } from "@/app/_types/posts";
 import { type PostsIndexResponse } from "@/app/_types/posts";
-import { type SortType, allowedSortTypes } from "@/app/_types/sort";
+import { isSortType } from "@/app/_types/sort";
+
 import { createPostRequestSchema } from "@/app/_libs/schemas/createPostRequestSchema";
 
 
@@ -128,7 +129,7 @@ export const GET = async (request:NextRequest) => {
     // 並び替え条件を取得
     const sort = searchParams.get("sort") ?? "newest";
 
-    if (!allowedSortTypes.includes( sort as (typeof allowedSortTypes)[number] )) {
+    if (!isSortType(sort)) {
       return NextResponse.json(
         { message: "並べ替え条件が不正です" },
         { status: 400 }

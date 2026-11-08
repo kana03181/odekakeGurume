@@ -21,17 +21,18 @@ export function PostImages( {images}: PostImagesProps ) {
 
   // 取得したURLの配列をmapで展開し、1枚ずつ画像として描画
   return (
-    <div className="grid grid-cols-2 gap-2 my-3">
+    <div className="flex gap-2 snap-x snap-mandatory my-3">
       {signedUrls.map((url, index) =>
         url ? (
-          <Image
-            key={index}
-            src={url}
-            alt={`投稿画像 ${index + 1}`}
-            width={300}
-            height={200}
-            className="rounded-lg object-cover w-full h-48"
-          />
+          <div key={index} className="w-32 shrink-0 snap-start">
+            <Image
+              src={url}
+              alt={`投稿画像 ${index + 1}`}
+              width={300}
+              height={300}
+              className="w-full aspect-square rounded-lg object-cover"
+            />
+          </div>
         ): null
       )}
     </div>

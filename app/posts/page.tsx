@@ -30,7 +30,7 @@ export default function Page() {
   const searchParams = useSearchParams();
   const pathName = usePathname();
   const { isFilterOpen, handleOpenFilter, handleCloseFilter, handleApplyFilter } = usePrefectureFilter();
-  const [sortOpen, isSortOpen] = useState<SortType>("newest");
+  // const [sortOpen, isSortOpen] = useState<SortType>("newest");
 
 
   // URLからページ番号を取得
@@ -128,7 +128,7 @@ export default function Page() {
     const params = new URLSearchParams(searchParams.toString());
 
     // 並び替え条件を更新
-    params.set("page", String(newSort));
+    params.set("sort", String(newSort));
 
     // 並び替えを変更したら1ページ目に戻す
     params.set("page", "1");
@@ -148,7 +148,6 @@ export default function Page() {
 
   if ( !posts ) return <div><p>投稿が見つかりませんでした。</p></div>
   // console.log(posts);
-
 
   return (
     <div>
@@ -180,68 +179,105 @@ export default function Page() {
                   onClose={handleCloseFilter}
                   onApply={handleApplyFilter}
                 />
-                <SortSelect value={sortOpen} onChange={isSortOpen}/>
+                <SortSelect value={sort} onChange={handleSortChange}/>
               </div>
             )}
             {posts.length === 0 ? (
               <p>投稿が見つかりませんでした。</p>
             ) : (
-              posts.map(( post ) => (
-                <article key={ post.id } className="w-full space-y-8 posts-detail-bg rounded-4xl shadow-[0_8px_30px_0_rgb(0_0_0_/_0.04)]">
-                  <Link href={ `/posts/${post.id}` }>
-                    <div className="p-6">
-                      <div className="mb-4 flex items-center gap-3">
-                        <div className="postUserIcon">
-                          <UserAvatar
-                            thumbnailUrl={post.user.thumbnailUrl}
-                            userName={post.user.userName}
-                          />
-                        </div>
-                        <div>
-                          <div className="flex gap-2">
-                            <div className="postUserName">
-                              <p className="text-base font-bold">{post.user.userName}</p>
-                            </div>
-                            <div className="star">
-                              <Rating rating={post.rating} />
-                            </div>
-                          </div>
-                          <h3 className="text-sm font-medium posts-secondary-text">{post.shop.name}</h3>
-                        </div>
-                      </div>
-                      <div className="grid gap-8">
-                        <div className="postImages">
-                          <PostImages images={post.postImages}/>
-                        </div>
-                        <div className="postComment">
-                          <p className="posts-bg-primary p-6 rounded-2xl text-primary text-sm font-medium min-h-28">{ post.comment }</p>
-                        </div>
-                        <div className="postMeal">
-                          <div className="grid grid-cols-2 gap-3">
-                            <FeatureList
-                              features={post.postFeatures}
-                              categoryId={FEATURE_CATEGORY_ID.MEAL}
+              posts.map((post) => {
+                const mealFeatures = post.postFeatures.filter((feature) => {
+                  return feature.feature.categoryId === FEATURE_CATEGORY_ID.MEAL
+                })
+
+                const facilityFeatures = post.postFeatures.filter((feature) => {
+                  return feature.feature.categoryId === FEATURE_CATEGORY_ID.FACILITY
+                })
+
+                return (
+                  <article key={ post.id } className="w-full space-y-8 posts-detail-bg rounded-4xl shadow-[0_8px_30px_0_rgb(0_0_0_/_0.04)]">
+                    <Link href={ `/posts/${post.id}` }>
+                      <div className="p-6">
+                        <div className="mb-4 flex items-center gap-3">
+                          <div className="postUserIcon">
+                            <UserAvatar
+                              thumbnailUrl={post.user.thumbnailUrl}
+                              userName={post.user.userName}
                             />
                           </div>
-                        </div>
-                        <div className="postFacility">
-                          <div className="grid  grid-cols-2 gap-3">
-                            <FeatureList
-                              features={post.postFeatures}
-                              categoryId={FEATURE_CATEGORY_ID.FACILITY}
-                            />
+                          <div>
+                            <div className="flex gap-2">
+                              <div className="postUserName">
+                                <p className="text-base font-bold">{post.user.userName}</p>
+                              </div>
+                              <div className="star">
+                                <Rating rating={post.rating} />
+                              </div>
+                            </div>
+                            <h3 className="text-sm font-medium posts-secondary-text">{post.shop.name}</h3>
                           </div>
                         </div>
                         <div>
-                          <p className="posts-section-text font-medium text-sm text-right">
-                            投稿日：{new Date(post.createdAt).toLocaleDateString("ja-JP", { year: "numeric", month: "numeric", day: "numeric" })}
-                          </p>
+                          {post.postImages?.length > 0 && (
+                            <div className="overflow-x-auto scrollbar-hide mb-6">
+                              <PostImages images={post.postImages}/>
+                            </div>
+                          )}
+                          { post.comment.trim() !== "" && (
+                            <div className="mb-6">
+                              <p className="text-primary text-sm font-medium">
+                                {post.comment.length > 80 ? (
+                                  <>
+                                    {post.comment.slice(0, 80)}…
+                                    <Link
+                                      href={`/posts/${post.id}`}
+                                      className="text-primary text-sm font-medium"
+                                    >
+                                      もっと見る
+                                    </Link>
+                                  </>
+                                ):(
+                                  post.comment
+                                )}
+                              </p>
+                            </div>
+                          )}
+                          { mealFeatures.length > 0 && (
+                            <div className="mb-3">
+                              <div className="grid grid-cols-[repeat(2,max-content)] gap-3">
+                                <FeatureList
+                                  features={post.postFeatures}
+                                  categoryId={FEATURE_CATEGORY_ID.MEAL}
+                                  itemClassName="flex items-center justify-start gap-1.5 px-3 py-2 posts-tag-bg rounded-full w-fit"
+                                  iconClassName="w-3 h-3"
+                                />
+                              </div>
+                            </div>
+
+                          )}
+                          { facilityFeatures.length > 0 && (
+                            <div className="mb-6">
+                              <div className="grid grid-cols-[repeat(2,max-content)] gap-3">
+                                <FeatureList
+                                  features={post.postFeatures}
+                                  categoryId={FEATURE_CATEGORY_ID.FACILITY}
+                                  itemClassName="flex items-center justify-start gap-1.5 px-3 py-2 posts-tag-bg rounded-full w-fit"
+                                  iconClassName="w-3 h-3"
+                                />
+                              </div>
+                            </div>
+                          )}
+                          <div>
+                            <p className="posts-section-text font-medium text-sm text-right">
+                              投稿日：{new Date(post.createdAt).toLocaleDateString("ja-JP", { year: "numeric", month: "numeric", day: "numeric" })}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Link>
-                </article>
-              ))
+                    </Link>
+                  </article>
+                )
+              })
             )}
           </div>
           { data && data.totalPages > 0 && (
