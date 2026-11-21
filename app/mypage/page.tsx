@@ -4,7 +4,9 @@ import { useRouter } from "next/navigation";
 import { GetProfileResponse } from "@/app/api/profile/route";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { useFetch } from "@/app/_hooks/useFetch";
-import { useStorageImage } from "@/app/_hooks/useStorageImage";
+// import { useStorageImage } from "@/app/_hooks/useStorageImage";
+import { UserAvatar } from "@/app/_components/UserAvatar";
+
 import Image from "next/image";
 
 type profileValues = {
@@ -24,10 +26,10 @@ export default function Page() {
     thumbnailUrl: data?.thumbnailUrl ?? null
   }
 
-  const profileThumbnailUrl = useStorageImage({
-    bucket: "profile_thumbnail",
-    imageKey: profileData.thumbnailUrl
-  });
+  // const profileThumbnailUrl = useStorageImage({
+  //   bucket: "profile_thumbnail",
+  //   imageKey: profileData.thumbnailUrl
+  // });
 
   if (error) {
     return (
@@ -54,13 +56,19 @@ export default function Page() {
     <div className='flex items-center justify-center flex-col pt-60 space-y-10'>
       <div className='w-full max-w-100 grid place-items-center gap-3'>
         <div className='w-fit rounded-full overflow-hidden bg-profileThumbnail'>
-          <Image
+          {/* <Image
             src={profileThumbnailUrl || "/profile/default_avatar.svg"}
             alt="プロフィール画像"
             width={96}
             height={96}
             loading='eager'
             className='aspect-square object-cover'
+          /> */}
+          <UserAvatar
+            thumbnailUrl={profileData.thumbnailUrl}
+            userName={profileData.userName}
+            width={96}
+            height={96}
           />
         </div>
         <div className='text-center text-3xl font-bold'>

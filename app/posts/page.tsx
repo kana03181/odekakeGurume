@@ -10,7 +10,7 @@ import { type SortType } from "@/app/_types/sort";
 import { Rating } from "@/app/posts/[id]/_components/Rating";
 // import { PostChildSection } from "@/app/posts/[id]/_components/PostChildren";
 import { FeatureList } from "@/app/posts/[id]/_components/FeatureList";
-import { UserAvatar } from "@/app/posts/[id]/_components/UserAvatar";
+import { UserAvatar } from "@/app/_components/UserAvatar";
 import { PostImages } from "@/app/posts/[id]/_components/PostImages";
 import { FEATURE_CATEGORY_ID } from "@/app/_constants/featureCategoryId";
 import { PrefectureFilterModal } from "@/app/_components/PrefectureFilterModal";
