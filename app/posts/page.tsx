@@ -220,7 +220,12 @@ export default function Page() {
                         <div>
                           {post.postImages?.length > 0 && (
                             <div className="overflow-x-auto scrollbar-hide mb-6">
-                              <PostImages images={post.postImages}/>
+                              <PostImages
+                                images={post.postImages}
+                                className="snap-x snap-mandatory my-3"
+                                width={300}
+                                height={300}
+                              />
                             </div>
                           )}
                           { post.comment.trim() !== "" && (

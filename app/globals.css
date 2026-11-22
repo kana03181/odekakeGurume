@@ -158,12 +158,30 @@ body {
     @apply bg-[#EDE7E2];
   }
 
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  .mypage-posts-shopName{
+    @apply text-[#1D1B19];
+  }
+
+  .mypage-posts-date{
+    @apply text-[#544437];
+  }
+
+  .mypage-posts-total{
+    @apply text-[#6D3A00];
+  }
+
+  .mypage-posts-total-bg{
+    @apply bg-[#FF9F43]/20;
+  }
+
 }

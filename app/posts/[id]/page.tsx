@@ -111,7 +111,11 @@ export default function detailPostPage() {
             <div className="overflow-x-auto scrollbar-hide">
               {post.postImages.length > 0 && (
                 <div className="postImages">
-                  <PostImages images={post.postImages}/>
+                  <PostImages
+                    images={post.postImages}
+                    width={160}
+                    height={160}
+                  />
                 </div>
               )}
             </div>

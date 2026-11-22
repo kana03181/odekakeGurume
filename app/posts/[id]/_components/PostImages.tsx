@@ -1,12 +1,26 @@
 import { useSignedUrls } from "@/app/_hooks/useSignedUrls";
 import Image from "next/image";
+import { cn } from "@/app/_libs/cn";
+
 
 type PostImagesProps = {
   images: { imageUrl: string }[];
+  className?: string;
+  itemClassName?: string;
+  imageClassName?: string;
+  width?: number;
+  height?: number;
 }
 
 
-export function PostImages( {images}: PostImagesProps ) {
+export function PostImages({
+  images,
+  className,
+  imageClassName,
+  itemClassName,
+  width,
+  height
+}: PostImagesProps) {
   // 投稿画像のオブジェクト配列から「画像パスの文字列だけの配列」に変換する
   const imagePaths = images.map( (img) => img.imageUrl );
 
@@ -21,16 +35,19 @@ export function PostImages( {images}: PostImagesProps ) {
 
   // 取得したURLの配列をmapで展開し、1枚ずつ画像として描画
   return (
-    <div className="flex gap-2 snap-x snap-mandatory my-3">
+    <div className={cn("flex gap-2", className)}>
       {signedUrls.map((url, index) =>
         url ? (
-          <div key={index} className="w-32 shrink-0 snap-start">
+          <div key={index} className={cn("w-32 shrink-0 snap-start", itemClassName)}>
             <Image
               src={url}
               alt={`投稿画像 ${index + 1}`}
-              width={300}
-              height={300}
-              className="w-full aspect-square rounded-lg object-cover"
+              className={cn(
+                "w-full aspect-square rounded-lg object-cover",
+                imageClassName
+              )}
+              width={width}
+              height={height}
             />
           </div>
         ): null
