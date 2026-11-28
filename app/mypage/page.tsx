@@ -8,6 +8,7 @@ import { type MyPagePostsResponse } from "@/app/_types/mypage";
 import { PostImages } from "@/app/posts/[id]/_components/PostImages";
 import { UserAvatar } from "@/app/_components/UserAvatar";
 import Link from "next/link";
+import mypageStyles from "./mypage.module.css";
 
 
 type profileValues = {
@@ -72,7 +73,7 @@ export default function Page() {
       <div className="grid gap-6">
         <div className="flex align-middle justify-between">
           <h3 className='text-3xl font-bold'>投稿一覧</h3>
-          <p className='text-sm font-semibold mypage-posts-total px-3 py-2 mypage-posts-total-bg rounded-full'>
+          <p className={`text-sm font-semibold px-3 py-2 ${mypageStyles.postsTotal}  ${mypageStyles.postsTotalBg} rounded-full`}>
             {postsData?.totalCount ?? 0}件
           </p>
         </div>
@@ -100,8 +101,8 @@ export default function Page() {
                         </div>
                       )}
                       <div className="p-3">
-                        <h3 className="text-sm font-medium .mypage-posts-shopName">{post.shop.name}</h3>
-                        <p className="mypage-posts-date font-medium text-xs text-left">
+                        <h3 className={`text-sm font-medium ${mypageStyles.ShopName}`}>{post.shop.name}</h3>
+                        <p className={`font-medium text-xs text-left ${mypageStyles.postDate}`}>
                           投稿日：{new Date(post.createdAt).toLocaleDateString("ja-JP", { year: "numeric", month: "numeric", day: "numeric" })}
                         </p>
                       </div>
