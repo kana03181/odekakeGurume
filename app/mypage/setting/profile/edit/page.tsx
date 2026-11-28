@@ -223,14 +223,6 @@ export default function Page() {
             />
             <div className='relative w-[clamp(44px,calc(88/768*100vw),88px)] mx-auto'>
               <div className='w-fit rounded-full border-5 border-white overflow-hidden bg-profileThumbnail'>
-                {/* <Image
-                  src={profileThumbnailUrl[0] || "/profile/default_avatar.svg"}
-                  alt="プロフィール画像"
-                  width={88}
-                  height={110}
-                  loading='eager'
-                  className='aspect-square object-cover'
-                /> */}
                 <UserAvatar
                   thumbnailUrl={profileThumbnailKey || "/profile/default_avatar.svg"}
                   userName={watch("username") || null}

@@ -4,10 +4,12 @@ import { useRouter } from "next/navigation";
 import { GetProfileResponse } from "@/app/api/profile/route";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { useFetch } from "@/app/_hooks/useFetch";
-// import { useStorageImage } from "@/app/_hooks/useStorageImage";
+import { type MyPagePostsResponse } from "@/app/_types/mypage";
+import { PostImages } from "@/app/posts/[id]/_components/PostImages";
 import { UserAvatar } from "@/app/_components/UserAvatar";
+import Link from "next/link";
+import mypageStyles from "./mypage.module.css";
 
-import Image from "next/image";
 
 type profileValues = {
   userName: string | null
@@ -18,25 +20,23 @@ export default function Page() {
     const { token, isLoading: isSessionLoading } = useSupabaseSession()
   // const router = useRouter()
 
-    //プロフィールを取得
-  const { data, error, isLoading:isUserLoading } = useFetch<GetProfileResponse>("/api/profile")
+  //プロフィールを取得
+  const { data, error:getProfileError, isLoading:isUserLoading } = useFetch<GetProfileResponse>("/api/profile")
 
   const profileData: profileValues = {
     userName: data?.userName ?? null,
     thumbnailUrl: data?.thumbnailUrl ?? null
   }
 
-  // const profileThumbnailUrl = useStorageImage({
-  //   bucket: "profile_thumbnail",
-  //   imageKey: profileData.thumbnailUrl
-  // });
+///投稿を取得
+  const { data: postsData, error:getPostsError , isLoading: isPostsLoading } = useFetch<MyPagePostsResponse>("/api/mypage");
 
-  if (error) {
+  if (getProfileError) {
     return (
       <div>
         <p>
-          エラー：{error instanceof Error
-            ? error.message
+          エラー：{getProfileError instanceof Error
+            ? getProfileError.message
             : "プロフィールの取得に失敗しました"}
         </p>
       </div>
@@ -51,19 +51,14 @@ export default function Page() {
     )
   }
 
+  const posts = postsData?.posts ?? [];
+
+  if ( !posts ) return <div><p>投稿が見つかりませんでした。</p></div>
 
   return(
     <div className='flex items-center justify-center flex-col pt-60 space-y-10'>
       <div className='w-full max-w-100 grid place-items-center gap-3'>
         <div className='w-fit rounded-full overflow-hidden bg-profileThumbnail'>
-          {/* <Image
-            src={profileThumbnailUrl || "/profile/default_avatar.svg"}
-            alt="プロフィール画像"
-            width={96}
-            height={96}
-            loading='eager'
-            className='aspect-square object-cover'
-          /> */}
           <UserAvatar
             thumbnailUrl={profileData.thumbnailUrl}
             userName={profileData.userName}
@@ -75,8 +70,49 @@ export default function Page() {
           <p>{profileData.userName}</p>
         </div>
       </div>
-      <div className='text-left text-3xl font-bold'>
-        <p>投稿一覧</p>
+      <div className="grid gap-6">
+        <div className="flex align-middle justify-between">
+          <h3 className='text-3xl font-bold'>投稿一覧</h3>
+          <p className={`text-sm font-semibold px-3 py-2 ${mypageStyles.postsTotal}  ${mypageStyles.postsTotalBg} rounded-full`}>
+            {postsData?.totalCount ?? 0}件
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          {posts.length === 0 ? (
+            <p>まだ投稿がありません</p>
+          ) : (
+            posts.map((post) => {
+              return (
+                <article
+                  key={post.id}
+                  className="w-full space-y-8 posts-detail-bg rounded-4xl shadow-[0_8px_30px_0_rgb(0_0_0_/_0.04)]"
+                >
+                  <Link href={ `/posts/${post.id}` }>
+                    <div>
+                      {post.postImages?.length > 0 && (
+                        <div>
+                          <PostImages
+                            images={post.postImages.slice(0, 1)}
+                            itemClassName="w-full"
+                            imageClassName="rounded-[32px_32px_0_0] aspect-auto"
+                            width={163}
+                            height={128}
+                          />
+                        </div>
+                      )}
+                      <div className="p-3">
+                        <h3 className={`text-sm font-medium ${mypageStyles.ShopName}`}>{post.shop.name}</h3>
+                        <p className={`font-medium text-xs text-left ${mypageStyles.postDate}`}>
+                          投稿日：{new Date(post.createdAt).toLocaleDateString("ja-JP", { year: "numeric", month: "numeric", day: "numeric" })}
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                </article>
+              )
+            })
+          )}
+        </div>
       </div>
     </div>
   )
